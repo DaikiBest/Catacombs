@@ -13,16 +13,9 @@ public class DarkWizard extends GameCharacter implements Enemy {
         //stub
     }
 
-    // REQUIRES: dmg >= 0, this hp > 0
-    // MODIFIES: this
-    // EFFECTS: this loses hp by the amount dmg
-    public void takeDamage(int dmg) {
-        //stub
-    }
-
     // EFFECTS: if the enemy's health drops to 0 or below,
     // the enemy perishes and the enounter is over.
     public void Perish() {
-
+        //stub
     }
 }

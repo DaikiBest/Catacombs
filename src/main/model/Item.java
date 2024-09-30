@@ -1,11 +1,10 @@
 package model;
 
 // Represents an Item – either armor or weapon – for the Player.
-public class Item {
+public interface Item {
     
-    // EFFECTS: creates an item with the given type, and the properties of the type
-    public Item() {
-        //stub
-    }
+    public String getName();
+    public int getStat();
+    public int getValue();
 
 }

@@ -3,8 +3,9 @@ package model;
 // Represents the Player
 public class Player extends GameCharacter {
     
-    // EFFECTS: create the Player with 5hp and their base 
-    // inventory (no armor, Dagger as weapon, and 5 coins)
+    // EFFECTS: create the Player with default inventory (no armor, 
+    // Dagger as weapon, and 5 coins). Set the player hp to 5, and damage as 1.
+
     public Player() {
         //stub
     }
@@ -14,16 +15,6 @@ public class Player extends GameCharacter {
         //stub
     }
 
-    // REQUIRES: dmg >= 0, this hp > 0
-    // MODIFIES: this
-    // EFFECTS: this loses hp by the amount dmg
-    public void takeDamage(int dmg) {
-        //stub
-    }
-
-
-    public int getPlayerHealth() {
-        return 0;
-    }
+    // Basic getters and setters all in GameCharacter superclass (eg. getHealth, setDamage, etc.)
 
 }

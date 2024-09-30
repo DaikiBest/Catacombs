@@ -1,9 +1,9 @@
 package model;
 public class GameCharacter {
     
-    // EFFECTS: roll dice...
-    public void rollDice() {
-        //stub
+    // EFFECTS: roll D20 (1-20) dice. ie. return random number between 1 and 20
+    public int rollDice() {
+        return 0;
     }
 
     // EFFECTS: attack opponent using this dmg
@@ -18,7 +18,19 @@ public class GameCharacter {
         //stub
     }
 
-    public int getHealthRemaining() {
+    public void setDamage() {
+        //stub
+    }
+
+    public void setHealth() {
+        //stub
+    }
+
+    public int getDamage() {
+        return 0;
+    }
+
+    public int getHealth() {
         return 0;
     }
 }

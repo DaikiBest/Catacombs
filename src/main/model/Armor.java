@@ -1,15 +1,23 @@
 package model;
 
 // Represents Armor used to boost Player's hp.
-public class Armor {
+public class Armor implements Item {
     
-    // EFFECTS: create an armor with an hp bonus stat and value
-    public Armor() {
+    // EFFECTS: create an armor with name, hp bonus stat, and value.
+    public Armor(String name, int stat, int value) {
         //stub
     }
 
-    public Armor getArmor() {
-        return new Armor();
+    public String getName() {
+        return "";
+    }
+
+    public int getStat() {
+        return 0;
+    }
+
+    public int getValue() {
+        return 0;
     }
     
 
