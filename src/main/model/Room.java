@@ -10,19 +10,8 @@ public class Room {
         //stub
     }
 
-    // EFFECTS: go to the next room
-    public void nextRoom() {
-        //stub
-    }
-
-    // EFFECTS: 
-    public void handleEncounter() {
-        //stub
-    }
-
-
-    // EFFECTS: determine the type of encounter (using randomizer)
-    public void generateRandomEncounter() {
+    // EFFECTS: determine and begin encounter
+    public void nextEncounter() {
         //stub
     }
 
