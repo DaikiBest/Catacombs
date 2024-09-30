@@ -34,7 +34,7 @@ public class TestInventory {
     @Test
     void testConstructor() {
         assertEquals("Dagger", testInventory.getItem("Dagger").getName());
-        for (Item item : testInventory.getInventoryList()) {
+        for (Item item : testInventory.getItems()) {
             assertFalse(item instanceof Armor); 
             }; //check if items of type Armor are in inventory
         assertEquals(5, testInventory.getCoins());
@@ -50,7 +50,7 @@ public class TestInventory {
     @Test
     void testCollectSameWeapon() {
         testInventory.collect(testDagger);
-        int countD = countItem("Dagger", testInventory.getInventoryList());
+        int countD = testInventory.countItem("Dagger", testInventory.getItems());
         assertEquals(2, countD);
     }
 
@@ -62,8 +62,8 @@ public class TestInventory {
         testInventory.collect(testMace);
         testInventory.collect(testMace);
 
-        int countD = countItem("Dagger", testInventory.getInventoryList());
-        int countM = countItem("Mace", testInventory.getInventoryList());
+        int countD = testInventory.countItem("Dagger", testInventory.getItems());
+        int countM = testInventory.countItem("Mace", testInventory.getItems());
 
         assertEquals(2, countD);
         assertEquals(3, countM);
@@ -74,14 +74,14 @@ public class TestInventory {
     void testDiscard() {
         testInventory.collect(testMace);
         testInventory.discard("Mace");
-        int countM = countItem("Mace", testInventory.getInventoryList());
+        int countM = testInventory.countItem("Mace", testInventory.getItems());
         assertEquals(0, countM);
     }
 
     @Test
     void testNotDiscardLastWeapon() {
         testInventory.discard("Dagger");
-        int countD = countItem("Dagger", testInventory.getInventoryList());
+        int countD = testInventory.countItem("Dagger", testInventory.getItems());
         assertEquals(1, countD);
     }
 
@@ -90,7 +90,7 @@ public class TestInventory {
         testInventory.collect(testMace);
         testInventory.discard("Dagger");
         testInventory.discard("Mace");
-        int countM = countItem("Mace", testInventory.getInventoryList());
+        int countM = testInventory.countItem("Mace", testInventory.getItems());
         assertEquals(1, countM);
     }
 
@@ -139,15 +139,4 @@ public class TestInventory {
         assertEquals(7, testPlayer.getHealth());
     }
 
-
-
-    public int countItem(String itemName, List<Item> inventoryList) {
-        int count = 0;
-        for (Item item : inventoryList) {
-            if (item.getName() == itemName) {
-                count++;
-            }
-        }
-        return count;
-    }
 }

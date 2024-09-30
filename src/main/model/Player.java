@@ -3,11 +3,13 @@ package model;
 // Represents the Player
 public class Player extends GameCharacter {
     
-    // EFFECTS: create the Player with default inventory (no armor, 
-    // Dagger as weapon, and 5 coins). Set the player hp to 5, and damage as 1.
+    int hp;
+    int dmg;
 
+    // EFFECTS: create the Player with default inventory (no armor, 
+    // Dagger as weapon, and 5 coins). Set the player hp (hit points) to 5, and dmg (damage) as 1.
     public Player() {
-        //stub
+        this.setHealth(5);
     }
 
     // EFFECTS: attack opponent using this dmg

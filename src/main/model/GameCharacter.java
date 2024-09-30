@@ -1,6 +1,9 @@
 package model;
 public class GameCharacter {
     
+    int hp;
+    int dmg;
+
     // EFFECTS: roll D20 (1-20) dice. ie. return random number between 1 and 20
     public int rollDice() {
         return 0;
@@ -11,26 +14,26 @@ public class GameCharacter {
         //stub
     }
 
-    // REQUIRES: dmg >= 0, this hp > 0
+    // REQUIRES: dmgInflicted >= 0, this hp > 0
     // MODIFIES: this
-    // EFFECTS: this loses hp by the amount dmg
-    public void takeDamage(int dmg) {
-        //stub
+    // EFFECTS: this loses hp by the amount dmgInflicted
+    public void takeDamage(int dmgInflicted) {
+        hp = hp - dmgInflicted;
     }
 
-    public void setDamage() {
-        //stub
+    public void setDamage(int dmg) {
+        this.dmg = dmg;
     }
 
-    public void setHealth() {
-        //stub
+    public void setHealth(int hp) {
+        this.hp = hp;
     }
 
     public int getDamage() {
-        return 0;
+        return dmg;
     }
 
     public int getHealth() {
-        return 0;
+        return hp;
     }
 }

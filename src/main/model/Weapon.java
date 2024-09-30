@@ -3,21 +3,27 @@ package model;
 // Represents a weapon used to deal damage
 public class Weapon implements Item {
     
+    String name;
+    int stat;
+    int value;
+
     // EFFECTS: create an armor with name, damage stat, and value.
     public Weapon(String name, int stat, int value) {
-        //stub
+        this.name = name;
+        this.stat = stat;
+        this.value = value;
     }
 
     public String getName() {
-        return "";
+        return this.name;
     }
 
     public int getStat() {
-        return 0;
+        return this.stat;
     }
 
     public int getValue() {
-        return 0;
+        return this.value;
     }
     
 }
