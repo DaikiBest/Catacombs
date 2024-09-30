@@ -1,9 +1,7 @@
 package model;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 
 import org.junit.jupiter.api.BeforeEach;
@@ -20,12 +18,12 @@ public class TestInventory {
 
     @BeforeEach
     void runBefore() {
-        testInventory = new Inventory();
+        testPlayer = new Player();
+        testInventory = new Inventory(testPlayer);
         testDagger = new Weapon("Dagger", 1, 0);
         testMace = new Weapon("Mace", 2, 2);
-        testCap = new Armor("Farmer's Cap", 2, 2);
-        testHood = new Armor("Thieve's Hood", 4, 4);
-        testPlayer = new Player();
+        testCap = new Armor("Farmer's Cap", 7, 2);
+        testHood = new Armor("Thieve's Hood", 9, 4);
     }
 
     //test Inventory()
@@ -41,13 +39,13 @@ public class TestInventory {
     //tests collect()
     @Test
     void testCollect() {
-        testInventory.collect(testMace);
+        testInventory.collect(testMace, testPlayer);
         assertEquals("Mace", testInventory.getItem("Mace").getName());
     }
 
     @Test
     void testCollectSameWeapon() {
-        testInventory.collect(testDagger);
+        testInventory.collect(testDagger, testPlayer);
         int countD = testInventory.countItem("Dagger", testInventory.getItems());
         assertEquals(2, countD);
     }
@@ -55,10 +53,10 @@ public class TestInventory {
     @Test
     void testCollectManyItems() {
 
-        testInventory.collect(testDagger);
-        testInventory.collect(testMace);
-        testInventory.collect(testMace);
-        testInventory.collect(testMace);
+        testInventory.collect(testDagger, testPlayer);
+        testInventory.collect(testMace, testPlayer);
+        testInventory.collect(testMace, testPlayer);
+        testInventory.collect(testMace, testPlayer);
 
         int countD = testInventory.countItem("Dagger", testInventory.getItems());
         int countM = testInventory.countItem("Mace", testInventory.getItems());
@@ -70,48 +68,57 @@ public class TestInventory {
     //tests discard()
     @Test
     void testDiscard() {
-        testInventory.collect(testMace);
-        testInventory.discard("Mace");
+        testInventory.collect(testMace, testPlayer);
+        testInventory.discard("Mace", testPlayer);
         int countM = testInventory.countItem("Mace", testInventory.getItems());
         assertEquals(0, countM);
     }
 
     @Test
     void testNotDiscardLastWeapon() {
-        testInventory.discard("Dagger");
+        testInventory.discard("Dagger", testPlayer);
         int countD = testInventory.countItem("Dagger", testInventory.getItems());
         assertEquals(1, countD);
+    }
+    
+    @Test
+    void testDiscardOnlyOneCopy() {
+        testInventory.collect(testMace, testPlayer);
+        testInventory.collect(testMace, testPlayer);
+        testInventory.discard("Mace", testPlayer);
+        int countM = testInventory.countItem("Mace", testInventory.getItems());
+        assertEquals(1, countM);
     }
 
     @Test
     void testNotDiscardLastWeaponNotDagger() {
-        testInventory.collect(testMace);
-        testInventory.discard("Dagger");
-        testInventory.discard("Mace");
+        testInventory.collect(testMace, testPlayer);
+        testInventory.discard("Dagger", testPlayer);
+        testInventory.discard("Mace", testPlayer);
         int countM = testInventory.countItem("Mace", testInventory.getItems());
         assertEquals(1, countM);
     }
 
     //tests updateWeapon() 
-    //collect() and discard() should call updateWeapon() and updateArmor()
+    //collect() and discard() always call either updateWeapon() or updateArmor().
     @Test
     void testUpdateWeapon() {
         assertEquals(1, testPlayer.getDamage());
-        testInventory.collect(testMace);
+        testInventory.collect(testMace, testPlayer);
         assertEquals(2, testPlayer.getDamage());
     }
 
     @Test
     void testUpdateWeaponAfterDiscard() {
-        testInventory.collect(testMace);
-        testInventory.discard("Mace");
+        testInventory.collect(testMace, testPlayer);
+        testInventory.discard("Mace", testPlayer);
         assertEquals(1, testPlayer.getDamage());
     }
 
     @Test
     void testUpdateWeaponDuplicate() {
-        testInventory.collect(testMace);
-        testInventory.collect(testMace);
+        testInventory.collect(testMace, testPlayer);
+        testInventory.collect(testMace, testPlayer);
         assertEquals(2, testPlayer.getDamage());
     }
 
@@ -119,22 +126,22 @@ public class TestInventory {
     @Test
     void testUpdateArmor() {
         assertEquals(5, testPlayer.getHealth());
-        testInventory.collect(testCap);
-        assertEquals(7, testPlayer.getHealth());
+        testInventory.collect(testCap, testPlayer);
+        assertEquals(7, testPlayer.getMaxHP());
     }
 
     @Test
     void testUpdateArmorAfterDiscard() {
-        testInventory.collect(testCap);
-        testInventory.discard("Farmer's Cap");
-        assertEquals(5, testPlayer.getHealth());
+        testInventory.collect(testCap, testPlayer);
+        testInventory.discard("Farmer's Cap", testPlayer);
+        assertEquals(5, testPlayer.getMaxHP());
     }
 
     @Test
     void testUpdateArmorDuplicate() {
-        testInventory.collect(testCap);
-        testInventory.collect(testCap);
-        assertEquals(7, testPlayer.getHealth());
+        testInventory.collect(testCap, testPlayer);
+        testInventory.collect(testCap, testPlayer);
+        assertEquals(7, testPlayer.getMaxHP());
     }
 
 }

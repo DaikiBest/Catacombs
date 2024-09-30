@@ -11,82 +11,59 @@ public class Inventory {
     int coins;
 
     // EFFECTS: create an inventory with a dagger, no armor, and 5 coins. 
-    public Inventory() {
+    public Inventory(Player player) {
         Weapon dagger = new Weapon("Dagger", 1, 0);
-        this.collect(dagger);
+        Armor cap = new Armor("Farmer's Cap", 7, 2);
+        this.collect(dagger, player);
+        this.collect(cap, player);
+        this.discard("Farmer's Cap", player);
         coins = 5;
     }
 
     // MODIFIES: this
     // EFFECTS: add item to the inventory and, if the item is a weapon, update weapon; and vice versa for armor.
     // There can be duplicates of the same item.
-    public void collect(Item item) {
+    public void collect(Item item, Player player) {
         items.add(item);
         if (item instanceof Weapon) {
-            updateWeapon();
+            player.updateWeapon(items);
         } else {
-            updateArmor();
+            player.updateArmor(items);
         }
     }
 
-    // REQUIRES: item to be removed is in the inventory //MAYBE
+    // REQUIRES: item to be removed is in the inventory
     // MODIFIES: this
     // EFFECTS: discards one copy of the selected item (identified using the item name)
     // from the inventory. If item is the last weapon in inventory, do not discard.
-    public void discard(String itemName) {
+    public void discard(String itemName, Player player) {
         for (Item item : items) {
             if (itemName == item.getName()) {
 
-                int weaponCount = 0;
-                for (Item i : items) {
-                    if (i instanceof Weapon) {
-                        weaponCount++; //count number of weapons in inventory
-                    }
-                }
-
                 if (item instanceof Weapon) { 
+
+                    int weaponCount = 0;
+                    for (Item i : items) {
+                        if (i instanceof Weapon) {
+                            weaponCount++; //count number of weapons in inventory
+                        }
+                    }
 
                     if (weaponCount <= 1) { //last weapon in inventory?
                         //will not discard. No weapons left.
                         break;
                     } else {
                         items.remove(item);
-                        updateWeapon();
+                        player.updateWeapon(items);
                     }
 
                 } else {
                     items.remove(item);
-                    updateArmor();
+                    player.updateArmor(items);
                 }
                 break;
             }
         }
-    }
-
-    // REQUIRES: inventory is not empty, a weapon must be equipped
-    // MODIFIES: this
-    // EFFECTS: update the player's damage to the highest tier weapon in
-    // the inventory.
-    public void updateWeapon() {
-        int maxDmg = 0;
-        for (Item item : items) {
-            if (item instanceof Weapon & item.getStat() > maxDmg) {
-                maxDmg = item.getStat(); //get the weapon with highest stats
-            }
-        }
-        //Player.setDamage(maxDmg); //problem.... BUG........
-    }
-
-    // EFFECTS: update the player's health to the highest tier armor in the inventory.
-    // If the inventory has no armors left, then MAX player hp goes to the default 5.
-    public void updateArmor() {
-        int maxArmor = 0;
-        for (Item item : items) {
-            if (item instanceof Armor & item.getStat() > maxArmor) {
-                maxArmor = item.getStat(); //get the Armor with highest stats
-            }
-        }
-        //Player.setHealth(maxArmor); //problem.... BUG........    
     }
 
     // EFFECTS: get the list of items of inventory

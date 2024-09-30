@@ -1,12 +1,17 @@
 package model;
+
+import java.util.Random;
+
 public class GameCharacter {
-    
+
     int hp;
     int dmg;
+    Random random = new Random();
+    
 
     // EFFECTS: roll D20 (1-20) dice. ie. return random number between 1 and 20
     public int rollDice() {
-        return 0;
+        return random.nextInt(19);
     }
 
     // EFFECTS: attack opponent using this dmg
