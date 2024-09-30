@@ -1,6 +1,5 @@
 package model;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,13 +68,25 @@ public class Inventory {
     // EFFECTS: update the player's damage to the highest tier weapon in
     // the inventory.
     public void updateWeapon() {
-        //stub
+        int maxDmg = 0;
+        for (Item item : items) {
+            if (item instanceof Weapon & item.getStat() > maxDmg) {
+                maxDmg = item.getStat(); //get the weapon with highest stats
+            }
+        }
+        //Player.setDamage(maxDmg); //problem.... BUG........
     }
 
     // EFFECTS: update the player's health to the highest tier armor in the inventory.
     // If the inventory has no armors left, then MAX player hp goes to the default 5.
     public void updateArmor() {
-        //stub
+        int maxArmor = 0;
+        for (Item item : items) {
+            if (item instanceof Armor & item.getStat() > maxArmor) {
+                maxArmor = item.getStat(); //get the Armor with highest stats
+            }
+        }
+        //Player.setHealth(maxArmor); //problem.... BUG........    
     }
 
     // EFFECTS: get the list of items of inventory
