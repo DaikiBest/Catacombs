@@ -26,7 +26,7 @@ public class Player extends GameCharacter {
         }
     }
 
-    // REQUIRES: inventory is not empty, a weapon must be equipped
+    // REQUIRES: inventory is not empty, inventory must have at least one weapon
     // MODIFIES: this
     // EFFECTS: update the player's damage to the highest tier weapon in
     // the inventory.

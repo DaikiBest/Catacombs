@@ -1,8 +1,6 @@
 package model;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,13 +23,13 @@ public class TestBattle {
     }
 
     @Test
-    void testDiceHandler() {
+    void testDiceHandler() { //PROBLEM
         String battleOutcome = testBattle.diceHandler(testPlayer, testGoblin);
         if (testBattle.getPlayerRoll() > testBattle.getEnemyRoll()) {
             assertEquals("won", battleOutcome);
         }
         else if (testBattle.getPlayerRoll() < testBattle.getEnemyRoll()) {
-            assertEquals("loss", battleOutcome);
+            assertEquals("lose", battleOutcome);
         } else {
             assertEquals("tie", battleOutcome);
         }
