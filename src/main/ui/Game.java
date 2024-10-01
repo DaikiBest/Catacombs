@@ -6,6 +6,7 @@ import model.BattleHandler;
 import model.Inventory;
 import model.Player;
 import model.Goblin;
+import model.Item;
 
 // Represents a room and its encounters
 public class Game {
@@ -20,7 +21,9 @@ public class Game {
         Goblin goblin = new Goblin();
         battleHandler = new BattleHandler();
 
-        battleHandler.diceHandler(player, goblin);
+        battleHandler.diceHandler(player, goblin, player.rollDice(), goblin.rollDice());
+
+        Item item = inventory.getItem("Mace");
 
         // System.out.println(inventory.getItems());
 

@@ -21,9 +21,7 @@ public class BattleHandler {
     // EFFECTS: handle dice. If player rolls higher, return "won" and damage enemy.
     // If enemy rolls higher, return "loss" and damage player. If both rolls are equal,
     // return "tie" and no one gets damaged.
-    public String diceHandler(GameCharacter player, GameCharacter enemy) {
-        playerRoll = player.rollDice();
-        enemyRoll = enemy.rollDice();
+    public String diceHandler(GameCharacter player, GameCharacter enemy, int playerRoll, int enemyRoll) {
         if (playerRoll > enemyRoll) {
             enemy.takeDamage(player.getDamage());
             return "won";
@@ -41,13 +39,5 @@ public class BattleHandler {
     public void endEncounter(Inventory inventory, GameCharacter enemy) {
         int reward = enemy.getReward();
         inventory.collectCoins(reward);
-    }
-
-    public int getPlayerRoll() {
-        return playerRoll;
-    }
-
-    public int getEnemyRoll() {
-        return enemyRoll;
     }
 }

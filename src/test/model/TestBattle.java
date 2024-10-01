@@ -23,16 +23,21 @@ public class TestBattle {
     }
 
     @Test
-    void testDiceHandler() { //PROBLEM
-        String battleOutcome = testBattle.diceHandler(testPlayer, testGoblin);
-        if (testBattle.getPlayerRoll() > testBattle.getEnemyRoll()) {
-            assertEquals("won", battleOutcome);
-        }
-        else if (testBattle.getPlayerRoll() < testBattle.getEnemyRoll()) {
-            assertEquals("lose", battleOutcome);
-        } else {
-            assertEquals("tie", battleOutcome);
-        }
+    void testDiceHandlerWin() {
+        String battleOutcome = testBattle.diceHandler(testPlayer, testGoblin, 8, 7);
+        assertEquals("won", battleOutcome);
+    }
+
+    @Test
+    void testDiceHandlerLose() {
+        String battleOutcome = testBattle.diceHandler(testPlayer, testGoblin, 7, 8);
+        assertEquals("lose", battleOutcome);
+    }
+
+    @Test
+    void testDiceHandlerTie() {
+        String battleOutcome = testBattle.diceHandler(testPlayer, testGoblin, 7, 7);
+        assertEquals("tie", battleOutcome);
     }
 
     @Test

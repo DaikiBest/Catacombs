@@ -66,7 +66,7 @@ public class Inventory {
         }
     }
 
-    // REQUIRES: newCoins > 0
+    // REQUIRES: newCoins >= 0
     // MODIFIES: this
     // EFFECTS: add newCoins to current coins
     public void collectCoins(int newCoins) {
@@ -78,7 +78,7 @@ public class Inventory {
         return this.items; //stub
     }
 
-    // EFFECTS return number of times given item appears in items
+    // EFFECTS returns the number of times the item appears in inventory list
     public int countItem(String itemName, List<Item> items) {
         int count = 0;
         for (Item item : items) {
@@ -89,8 +89,7 @@ public class Inventory {
         return count;
     }
 
-    // REQUIRES: item is in inventory's list of items
-    // EFFECTS: get item according to the name
+    // EFFECTS: get item according to the name, returns null if not found.
     public Item getItem(String name) {
         for (Item item : items) {
             if (item.getName().equals(name)) {
@@ -100,9 +99,13 @@ public class Inventory {
         return null;
     }
 
-    // EFFECTS: get item according to the name
+    // REQUIRES: new coins amount >= 0.
+    public void setCoins(int coins) {
+        this.coins = coins;
+    }
+
     public int getCoins() {
-        return this.coins; //stub
+        return this.coins;
     }
 
 }

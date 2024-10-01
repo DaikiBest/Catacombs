@@ -78,8 +78,7 @@ public class TestInventory {
     void testDiscard() {
         testInventory.collect(testMace, testPlayer);
         testInventory.discard("Mace", testPlayer);
-        int countM = testInventory.countItem("Mace", testInventory.getItems());
-        assertEquals(0, countM);
+        assertEquals(null, testInventory.getItem("Mace"));
     }
 
     @Test
@@ -113,9 +112,7 @@ public class TestInventory {
         testInventory.collect(testHood, testPlayer);
         testInventory.discard("Farmer's Cap", testPlayer);
         testInventory.discard("Thieve's Hood", testPlayer);
-        int countC = testInventory.countItem("Farmer's Cap", testInventory.getItems());
-        int countH = testInventory.countItem("Thieve's Hood", testInventory.getItems());
-        assertEquals(0, countC);
-        assertEquals(0, countH);
+        assertEquals(null, testInventory.getItem("Farmer's Cap"));
+        assertEquals(null, testInventory.getItem("Thieve's Hood"));
     }
 }
