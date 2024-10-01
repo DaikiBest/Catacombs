@@ -17,12 +17,8 @@ public class Player extends GameCharacter {
         inventory = new Inventory(this);
     }
 
-    // EFFECTS: attack opponent using this dmg
-    public void attack() {
-        //stub
-    }
-
     // REQUIRES: hp <= maxHP
+    // MODIFIES: this
     // EFFECTS: heal hp by one. Can only heal up to maxHP
     public void heal() {
         if (hp < maxHP) {
@@ -44,6 +40,7 @@ public class Player extends GameCharacter {
         this.setDamage(maxDmg);
     }
 
+    // MODIFIES: this
     // EFFECTS: update the player's health to the highest tier armor in the inventory.
     // If the inventory has no armors left, then MAX player hp goes to the default 5.
     public void updateArmor(List<Item> items) {
@@ -62,6 +59,10 @@ public class Player extends GameCharacter {
 
     public int getMaxHP() {
         return maxHP;
+    }
+
+    public Inventory getInventory() {
+        return inventory;
     }
 
     // Basic getters and setters all in GameCharacter superclass (eg. getHealth, setDamage, etc.)

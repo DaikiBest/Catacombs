@@ -14,11 +14,6 @@ public class GameCharacter {
         return random.nextInt(19);
     }
 
-    // EFFECTS: attack opponent using this dmg
-    public void attack() {
-        //stub
-    }
-
     // REQUIRES: dmgInflicted >= 0, this hp > 0
     // MODIFIES: this
     // EFFECTS: this loses hp by the amount dmgInflicted
@@ -40,5 +35,10 @@ public class GameCharacter {
 
     public int getHealth() {
         return hp;
+    }
+
+    // allows goblin and orcs to access this when instantiated as Game Characters
+    public int getReward() {
+        return 0;
     }
 }

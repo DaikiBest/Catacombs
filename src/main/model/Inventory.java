@@ -66,6 +66,13 @@ public class Inventory {
         }
     }
 
+    // REQUIRES: newCoins > 0
+    // MODIFIES: this
+    // EFFECTS: add newCoins to current coins
+    public void collectCoins(int newCoins) {
+        coins += newCoins;
+    }
+
     // EFFECTS: get the list of items of inventory
     public List<Item> getItems() {
         return this.items; //stub

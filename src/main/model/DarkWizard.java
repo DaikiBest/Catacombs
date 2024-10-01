@@ -8,11 +8,6 @@ public class DarkWizard extends GameCharacter implements Enemy {
         //stub
     }
 
-    // EFFECTS: attack opponent using this dmg
-    public void attack() {
-        //stub
-    }
-
     // EFFECTS: if the enemy's health drops to 0 or below,
     // the enemy perishes and the enounter is over.
     public void Perish() {
