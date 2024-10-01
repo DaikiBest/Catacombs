@@ -10,7 +10,7 @@ public class Player extends GameCharacter {
     Inventory inventory;
 
     // EFFECTS: create the Player with default inventory (no armor, 
-    // Dagger as weapon, and 5 coins). Set the player hp (hit points) to 5, and dmg (damage) as 1.
+    // Dagger as weapon, and 5 coins). Set the player hp and maxHP (hit points) to 5, and dmg (damage) as 1.
     public Player() {
         maxHP = 5;
         hp = 5;
@@ -51,6 +51,12 @@ public class Player extends GameCharacter {
             }
         }
         this.setMaxHP(maxArmor);
+    }
+
+    @Override
+    // EFFECTS: roll D20 (1-20) dice. ie. return random number between 1 and 20
+    public int rollDice() {
+        return random.nextInt(19) + 1;
     }
 
     public void setMaxHP(int newMaxHP) {

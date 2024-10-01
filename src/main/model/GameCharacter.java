@@ -4,14 +4,16 @@ import java.util.Random;
 
 public class GameCharacter {
 
-    int hp;
-    int dmg;
-    Random random = new Random();
-    
+    public int hp;
+    public int dmg;
+    public int high;
+    public int low;
+    public Random random = new Random();
 
-    // EFFECTS: roll D20 (1-20) dice. ie. return random number between 1 and 20
+    // REQUIRES high >= low
+    // EFFECTS: rolls a D20 but on a given range.
     public int rollDice() {
-        return random.nextInt(19);
+        return low + random.nextInt(high - low + 1);
     }
 
     // REQUIRES: dmgInflicted >= 0, this hp > 0

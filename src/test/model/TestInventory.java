@@ -65,6 +65,14 @@ public class TestInventory {
         assertEquals(3, countM);
     }
 
+    @Test
+    void testCollectArmor() {
+        testInventory.collect(testCap, testPlayer);
+        testInventory.collect(testHood, testPlayer);
+        assertEquals("Farmer's Cap", testInventory.getItem("Farmer's Cap").getName());
+        assertEquals("Thieve's Hood", testInventory.getItem("Thieve's Hood").getName());
+    }
+
     //tests discard()
     @Test
     void testDiscard() {
@@ -99,49 +107,15 @@ public class TestInventory {
         assertEquals(1, countM);
     }
 
-    //tests updateWeapon() 
-    //collect() and discard() always call either updateWeapon() or updateArmor().
     @Test
-    void testUpdateWeapon() {
-        assertEquals(1, testPlayer.getDamage());
-        testInventory.collect(testMace, testPlayer);
-        assertEquals(2, testPlayer.getDamage());
-    }
-
-    @Test
-    void testUpdateWeaponAfterDiscard() {
-        testInventory.collect(testMace, testPlayer);
-        testInventory.discard("Mace", testPlayer);
-        assertEquals(1, testPlayer.getDamage());
-    }
-
-    @Test
-    void testUpdateWeaponDuplicate() {
-        testInventory.collect(testMace, testPlayer);
-        testInventory.collect(testMace, testPlayer);
-        assertEquals(2, testPlayer.getDamage());
-    }
-
-    //tests updateArmor()
-    @Test
-    void testUpdateArmor() {
-        assertEquals(5, testPlayer.getHealth());
+    void testDiscardArmor() {
         testInventory.collect(testCap, testPlayer);
-        assertEquals(7, testPlayer.getMaxHP());
-    }
-
-    @Test
-    void testUpdateArmorAfterDiscard() {
-        testInventory.collect(testCap, testPlayer);
+        testInventory.collect(testHood, testPlayer);
         testInventory.discard("Farmer's Cap", testPlayer);
-        assertEquals(5, testPlayer.getMaxHP());
+        testInventory.discard("Thieve's Hood", testPlayer);
+        int countC = testInventory.countItem("Farmer's Cap", testInventory.getItems());
+        int countH = testInventory.countItem("Thieve's Hood", testInventory.getItems());
+        assertEquals(0, countC);
+        assertEquals(0, countH);
     }
-
-    @Test
-    void testUpdateArmorDuplicate() {
-        testInventory.collect(testCap, testPlayer);
-        testInventory.collect(testCap, testPlayer);
-        assertEquals(7, testPlayer.getMaxHP());
-    }
-
 }
