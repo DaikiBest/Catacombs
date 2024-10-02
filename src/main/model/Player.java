@@ -1,11 +1,13 @@
 package model;
 
 import java.util.List;
+import java.util.Random;
 
 // Represents the Player
 public class Player extends GameCharacter {
     
     int maxHP;
+    private Random random = new Random();
 
     Inventory inventory;
 
@@ -13,7 +15,7 @@ public class Player extends GameCharacter {
     // Dagger as weapon, and 5 coins). Set the player hp and maxHP (hit points) to 5, and dmg (damage) as 1.
     public Player() {
         maxHP = 5;
-        hp = 5;
+        setHealth(5);
         inventory = new Inventory(this);
     }
 
@@ -21,8 +23,8 @@ public class Player extends GameCharacter {
     // MODIFIES: this
     // EFFECTS: heal hp by one. Can only heal up to maxHP
     public void heal() {
-        if (hp < maxHP) {
-            hp++;
+        if (getHealth() < maxHP) {
+            setHealth(getHealth() + 1);
         }
     }
 

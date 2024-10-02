@@ -54,7 +54,6 @@ public class TestPlayer {
         }
     }
 
-
     //tests updateWeapon() 
     @Test
     void testUpdateWeapon() {

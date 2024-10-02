@@ -13,7 +13,7 @@ public class BattleHandler {
     public String diceHandler(GameCharacter player, GameCharacter enemy, int playerRoll, int enemyRoll) {
         if (playerRoll > enemyRoll) {
             enemy.takeDamage(player.getDamage());
-            return "won";
+            return "win";
         } else if (playerRoll < enemyRoll) {
             player.takeDamage(enemy.getDamage());
             return "lose";
@@ -23,9 +23,8 @@ public class BattleHandler {
     }
 
     // MODIFIES: inventory
-    // EFFECTS: player has won. Give player their rewards (coins) and end encounter. 
-    // If enemy defeated was Dark Wizard, end Game.
-    public void endEncounter(Inventory inventory, GameCharacter enemy) {
+    // EFFECTS: player has won. Give player their rewards (coins).
+    public void giveRewards(Inventory inventory, GameCharacter enemy) {
         int reward = enemy.getReward();
         inventory.collectCoins(reward);
     }
