@@ -9,14 +9,12 @@ public class Inventory {
     
     List<Item> items = new ArrayList<>();
     int coins;
+    private ItemHandler itemHandler = new ItemHandler();
 
     // EFFECTS: create an inventory with a dagger, no armor, and 5 coins. 
     public Inventory(Player player) {
-        Weapon dagger = new Weapon("Dagger", 1, 0);
-        Armor cap = new Armor("Farmer's Cap", 7, 2);
+        Item dagger = itemHandler.makeDagger();
         this.collect(dagger, player);
-        this.collect(cap, player);
-        this.discard("Farmer's Cap", player);
         coins = 5;
     }
 
@@ -35,7 +33,8 @@ public class Inventory {
     // REQUIRES: item to be removed is in the inventory
     // MODIFIES: this
     // EFFECTS: discards one copy of the selected item (identified using the item name)
-    // from the inventory. If item is the last weapon in inventory, do not discard.
+    // from the inventory. If item is the last weapon in inventory, do not discard. Also update
+    // either weapon or update armor.
     public void discard(String itemName, Player player) {
         for (Item item : items) {
             if (itemName == item.getName()) {
@@ -51,7 +50,7 @@ public class Inventory {
 
                     if (weaponCount <= 1) { //last weapon in inventory?
                         //will not discard. No weapons left.
-                        break;
+                        continue;
                     } else {
                         items.remove(item);
                         player.updateWeapon(items);
@@ -68,9 +67,16 @@ public class Inventory {
 
     // REQUIRES: newCoins >= 0
     // MODIFIES: this
-    // EFFECTS: add newCoins to current coins
-    public void collectCoins(int newCoins) {
-        coins += newCoins;
+    // EFFECTS: add amount to coins
+    public void collectCoins(int amount) {
+        coins += amount;
+    }
+
+    // REQUIRES: coins >= amount
+    // MODIFIES: this
+    // EFFECTS: deduct coins by amount
+    public void deductCoins(int amount) {
+        coins -= amount;
     }
 
     // EFFECTS: get the list of items of inventory
@@ -95,7 +101,7 @@ public class Inventory {
             if (item.getName().equals(name)) {
                 return item;
             }
-        };
+        }
         return null;
     }
 

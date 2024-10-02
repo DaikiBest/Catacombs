@@ -15,15 +15,16 @@ public class TestInventory {
     private Item testCap;
     private Item testHood;
     private Player testPlayer;
+    private ItemHandler itemHandler = new ItemHandler();
 
     @BeforeEach
     void runBefore() {
         testPlayer = new Player();
-        testInventory = new Inventory(testPlayer);
-        testDagger = new Weapon("Dagger", 1, 0);
-        testMace = new Weapon("Mace", 2, 2);
-        testCap = new Armor("Farmer's Cap", 7, 2);
-        testHood = new Armor("Thieve's Hood", 9, 4);
+        testInventory = testPlayer.getInventory();
+        testDagger = itemHandler.makeDagger();
+        testMace = itemHandler.makeMace();
+        testCap = itemHandler.makeCap();
+        testHood = itemHandler.makeHood();
     }
 
     //test Inventory()
@@ -110,8 +111,8 @@ public class TestInventory {
     void testDiscardArmor() {
         testInventory.collect(testCap, testPlayer);
         testInventory.collect(testHood, testPlayer);
-        testInventory.discard("Farmer's Cap", testPlayer);
         testInventory.discard("Thieve's Hood", testPlayer);
+        testInventory.discard("Farmer's Cap", testPlayer);
         assertEquals(null, testInventory.getItem("Farmer's Cap"));
         assertEquals(null, testInventory.getItem("Thieve's Hood"));
     }

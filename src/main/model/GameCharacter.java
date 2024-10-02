@@ -39,8 +39,8 @@ public class GameCharacter {
         return hp;
     }
 
-    // allows goblin and orcs to access this when instantiated as Game Characters
-    public int getReward() {
-        return 0;
-    }
+    // // allows goblin and orcs to access this when instantiated as Game Characters
+    // public int getReward() {
+    //     return 0;
+    // }
 }

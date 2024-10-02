@@ -14,6 +14,7 @@ public class Weapon implements Item {
         this.value = value;
     }
 
+
     public String getName() {
         return this.name;
     }

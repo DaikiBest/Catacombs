@@ -4,7 +4,9 @@ package model;
 public interface Item {
     
     public String getName();
+
     public int getStat();
+
     public int getValue();
 
 }

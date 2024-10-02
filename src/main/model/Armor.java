@@ -7,6 +7,7 @@ public class Armor implements Item {
     private int stat;
     private int value;
 
+
     // EFFECTS: create an armor with name, hp bonus stat, and value.
     public Armor(String name, int stat, int value) {
         this.name = name;

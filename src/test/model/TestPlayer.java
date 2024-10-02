@@ -1,7 +1,7 @@
 package model;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -10,15 +10,17 @@ public class TestPlayer {
     
     private Player testPlayer;
     private Inventory testInventory;
-    private Weapon testMace;
-    private Armor testCap;
+    private ItemHandler itemHandler;
+    private Item testMace;
+    private Item testCap;
 
     @BeforeEach
     void runBefore() {
         testPlayer = new Player();
+        itemHandler = new ItemHandler();
         testInventory = testPlayer.getInventory();
-        testMace = new Weapon("Mace", 2, 2);
-        testCap = new Armor("Farmer's Cap", 7, 2);
+        testMace = itemHandler.makeMace();
+        testCap = itemHandler.makeCap();
     }
 
     @Test
@@ -42,6 +44,14 @@ public class TestPlayer {
         assertEquals(6, testPlayer.getMaxHP());
         testPlayer.heal();
         assertEquals(6, testPlayer.getHealth());
+    }
+
+    @Test
+    void testRollDice() {
+        for (int i = 0; i < 300 ; i++) {
+            int roll = testPlayer.rollDice();
+            assertTrue(1 <= roll & roll <= 20);
+        }
     }
 
 

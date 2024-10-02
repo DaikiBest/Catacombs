@@ -11,118 +11,143 @@ import org.junit.jupiter.api.Test;
 
 public class TestShopHandler {
 
-    private ShopHandler testShop;
-    private List<Item> testSList;
+    private ShopHandler testShop = new ShopHandler();;
+    private List<String> testSList;
     private List<String> actualSList = new ArrayList<>();
-    private Item testMace;
+    private Item testLongsword;
     private Item testExcalibur;
-    private Item testCap;
+    private Item testCrown;
     private Item testHelmet;
-    private Player testPlayer;
+    private Player testPlayer = new Player();
     private Inventory testInventory;
+    private ItemHandler itemHandler = new ItemHandler();
 
     @BeforeEach
     void runBefore() {
-        testShop = new ShopHandler();
         testSList = testShop.getShopList();
-        testMace = new Weapon("Mace", 2, 2);
-        testExcalibur = new Weapon("Excalibur", 5, 10);
-        testCap = new Armor("Farmer's Cap", 7, 2);
-        testHelmet = new Armor("Knight's helmet", 12, 6);
-        testPlayer = new Player();
+        testLongsword = itemHandler.makeLongsword();
+        testExcalibur = itemHandler.makeExcalibur();
+        testCrown = itemHandler.makeCrown();
+        testHelmet = itemHandler.makeHelmet();
         testInventory = testPlayer.getInventory();
 
         //create the list with all item names to compare
+        actualSList.add("Dagger");
         actualSList.add("Mace");
         actualSList.add("Longsword");
         actualSList.add("Excalibur");
-        actualSList.add("Farmer's cap");
-        actualSList.add("Thieve's hood");
-        actualSList.add("Knight's helmet");
+        actualSList.add("Farmer's Cap");
+        actualSList.add("Thieve's Hood");
+        actualSList.add("Knight's Helmet");
         actualSList.add("Crown");
     }
 
     @Test
     void testConstructor() {
-        List<String> testSListNames = new ArrayList<>();
-        for (Item item : testSList) {
-            testSListNames.add(item.getName());
-        }
-
         // compare both lists with all items names
-        assertEquals(actualSList, testSListNames);
+        assertEquals(actualSList, testSList);
         assertEquals(2, testShop.getHealPrice());
     }
 
     @Test
     void testPurchaseItemSuccess() {
-        testInventory.setCoins(4);
-        assertEquals(null, testInventory.getItem("Mace"));
-        assertTrue(testShop.purchaseItem(testMace, testPlayer));
-        assertEquals("Mace", testInventory.getItem("Mace").getName());
+        testInventory.setCoins(10);
+        assertEquals(null, testInventory.getItem("Longsword"));
+        assertTrue(testShop.purchaseItem(testLongsword, testPlayer));
+        assertEquals("Longsword", testInventory.getItem("Longsword").getName());
         assertEquals(0, testInventory.getCoins());
     }
 
     @Test
     void testPurchaseFail() {
         testInventory.setCoins(3);
-        assertEquals(null, testInventory.getItem("Mace"));
-        assertFalse(testShop.purchaseItem(testMace, testPlayer));
-        assertEquals(null, testInventory.getItem("Mace"));
+        assertEquals(null, testInventory.getItem("Longsword"));
+        assertFalse(testShop.purchaseItem(testLongsword, testPlayer));
+        assertEquals(null, testInventory.getItem("Longsword"));
         assertEquals(3, testInventory.getCoins());
     }
 
     @Test
     void testPurchaseTwoTooExpensive() {
-        testInventory.setCoins(41);
-        assertEquals(null, testInventory.getItem("Mace"));
+        testInventory.setCoins(70);
+        assertEquals(null, testInventory.getItem("Longsword"));
         assertEquals(null, testInventory.getItem("Excalibur"));
-        assertEquals(null, testInventory.getItem("Farmer's Cap"));
+        assertEquals(null, testInventory.getItem("Crown"));
         assertEquals(null, testInventory.getItem("Knight's Helmet"));
 
-        assertTrue(testShop.purchaseItem(testMace, testPlayer));
-        assertTrue(testShop.purchaseItem(testExcalibur, testPlayer));
-        assertTrue(testShop.purchaseItem(testCap, testPlayer));
-        assertTrue(testShop.purchaseItem(testCap, testPlayer));
-        assertFalse(testShop.purchaseItem(testHelmet, testPlayer));
-        assertTrue(testShop.purchaseItem(testMace, testPlayer));
-        assertFalse(testShop.purchaseItem(testExcalibur, testPlayer));
+        assertTrue(testShop.purchaseItem(testLongsword, testPlayer));  //-10
+        assertTrue(testShop.purchaseItem(testExcalibur, testPlayer));  //-20
+        assertTrue(testShop.purchaseItem(testHelmet, testPlayer));     //-12
+        assertTrue(testShop.purchaseItem(testHelmet, testPlayer));     //-12
+        assertFalse(testShop.purchaseItem(testCrown, testPlayer));     //fail
+        assertTrue(testShop.purchaseItem(testLongsword, testPlayer));  //-10
+        assertFalse(testShop.purchaseItem(testExcalibur, testPlayer)); //fail
 
-        int countM = testInventory.countItem("Mace", testInventory.getItems());
+        int countL = testInventory.countItem("Longsword", testInventory.getItems());
         int countE = testInventory.countItem("Excalibur", testInventory.getItems());
-        int countC = testInventory.countItem("Farmer's Cap", testInventory.getItems());
         int countH = testInventory.countItem("Knight's Helmet", testInventory.getItems());
+        int countC = testInventory.countItem("Crown", testInventory.getItems());
 
-        assertEquals(2, countM); //two maces
-        assertEquals(1, countE); //one excalibur
-        assertEquals(2, countC); //two caps
-        assertEquals(0, countH); //no helmets
+        assertEquals(2, countL); //two Longswords
+        assertEquals(1, countE); //one Excalibur
+        assertEquals(2, countH); //two Helmets
+        assertEquals(0, countC); //zero Crowns
 
-        assertEquals(5, testInventory.getCoins());
+        assertEquals(6, testInventory.getCoins());
     }
 
     @Test
     void testPurchaseHealing() {
         //before
         testPlayer.setHealth(1);
-        assertEquals(5, testPlayer.getInventory().getCoins());
-        testShop.purchaseHealing(testPlayer);
+        testInventory.setCoins(2);
+        assertTrue(testShop.purchaseHealing(testPlayer));
         //after
         assertEquals(2, testPlayer.getHealth());
-        assertEquals(3, testPlayer.getInventory().getCoins());
+        assertEquals(0, testInventory.getCoins());
     }
 
-    @Test //TODO
-    void testPurchaseHealingFail() {
-        testPlayer.setHealth(1);
-        assertEquals(5, testPlayer.getInventory().getCoins());
-        testShop.purchaseHealing(testPlayer);
+    @Test
+    void testPurchaseHealingFailFullHP() {
+        //default maxHP and hp are both 5.
+        assertFalse(testShop.purchaseHealing(testPlayer));
+        assertEquals(5, testPlayer.getHealth());
+        assertEquals(5, testInventory.getCoins());
+    }
+
+    @Test
+    void testPurchaseHealingFailPoor() {
+        testPlayer.setHealth(2);
+        testInventory.setCoins(1);
+        assertFalse(testShop.purchaseHealing(testPlayer));
         assertEquals(2, testPlayer.getHealth());
-        assertEquals(3, testPlayer.getInventory().getCoins());
+        assertEquals(1, testInventory.getCoins());
     }
 
-    @Test //sell for half the Price //TODO
-    void testSellItem() {
+    @Test
+    void testSellItemOneCopy() {
+        testInventory.collect(testLongsword, testPlayer);
+        testInventory.collect(testLongsword, testPlayer);
+        testShop.sellItem("Longsword", testPlayer);
+        assertEquals(1, testInventory.countItem("Longsword", testInventory.getItems()));
+        assertEquals(10, testInventory.getCoins());
+    }
 
+    @Test
+    void testSellItemsNotLastWeapon() {
+        testInventory.collect(testLongsword, testPlayer);
+        testInventory.collect(testCrown, testPlayer);
+        testInventory.collect(testCrown, testPlayer);
+        testInventory.collect(testExcalibur, testPlayer);
+        testInventory.collect(testLongsword, testPlayer);
+        testShop.sellItem("Longsword", testPlayer); //+5
+        testShop.sellItem("Crown", testPlayer); //+10
+        testShop.sellItem("Crown", testPlayer); //+10
+        testShop.sellItem("Dagger", testPlayer); //+1
+        testShop.sellItem("Excalibur", testPlayer); //+10
+        testShop.sellItem("Longsword", testPlayer); //no sell.
+        assertEquals(1, testInventory.getItems().size());
+        assertEquals("Longsword", testInventory.getItem("Longsword").getName());
+        assertEquals(41, testInventory.getCoins());
     }
 }

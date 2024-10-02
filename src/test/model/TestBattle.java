@@ -25,18 +25,22 @@ public class TestBattle {
     @Test
     void testDiceHandlerWin() {
         String battleOutcome = testBattle.diceHandler(testPlayer, testGoblin, 8, 7);
+        assertEquals(1, testGoblin.getHealth());
         assertEquals("won", battleOutcome);
     }
 
     @Test
     void testDiceHandlerLose() {
         String battleOutcome = testBattle.diceHandler(testPlayer, testGoblin, 7, 8);
+        assertEquals(4, testPlayer.getHealth());
         assertEquals("lose", battleOutcome);
     }
 
     @Test
     void testDiceHandlerTie() {
         String battleOutcome = testBattle.diceHandler(testPlayer, testGoblin, 7, 7);
+        assertEquals(2, testGoblin.getHealth());
+        assertEquals(5, testPlayer.getHealth());
         assertEquals("tie", battleOutcome);
     }
 
