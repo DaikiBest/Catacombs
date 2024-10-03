@@ -15,7 +15,7 @@ public class Player extends GameCharacter {
     // Dagger as weapon, and 5 coins). Set the player hp and maxHP (hit points) to 5, and dmg (damage) as 1.
     public Player() {
         maxHP = 5;
-        setHealth(5);
+        setHealth(maxHP);
         inventory = new Inventory(this);
     }
 
@@ -35,7 +35,7 @@ public class Player extends GameCharacter {
     public void updateWeapon(List<Item> items) {
         int maxDmg = 0;
         for (Item item : items) {
-            if (item instanceof Weapon & item.getStat() > maxDmg) {
+            if (item instanceof Weapon && item.getStat() > maxDmg) {
                 maxDmg = item.getStat(); //get the weapon with highest stats
             }
         }
@@ -48,7 +48,7 @@ public class Player extends GameCharacter {
     public void updateArmor(List<Item> items) {
         int maxArmor = 5;
         for (Item item : items) {
-            if (item instanceof Armor & item.getStat() > maxArmor) {
+            if (item instanceof Armor && item.getStat() > maxArmor) {
                 maxArmor = item.getStat(); //get the Armor with highest stats
             }
         }

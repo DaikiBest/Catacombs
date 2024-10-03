@@ -31,9 +31,11 @@ public class Game {
         battleHandler = new BattleHandler();
         itemHandler = new ItemHandler();
         
-
+        int roomNumber = 0;//TODO
         while (notOver) {
-            System.out.println(inventory.getCoins());
+            System.out.println("You have " + inventory.getCoins() + " coins. You are in room " + roomNumber++);//TODO
+            System.out.print("A door stands in your way... Do you wish to enter? ");
+            input.nextLine();
             nextEncounter();
         }
 
@@ -47,34 +49,41 @@ public class Game {
 
         int next = random.nextInt(9) + 1;
         if (next <= 4) { //1-4 40%
+            System.out.println("As you enter the next room, a sneaky Goblin lunges at you!");
             GameCharacter goblin = new Goblin();
             enemyEncounter(goblin);
 
-        } else if (next <= 8) { //5-8 40%
+        } else if (next <= 7) { //5-7 30%
+            System.out.println("You enter the next room and hear heavy grunting. An Orc readies his sword.");
             GameCharacter orc = new Orc();
             enemyEncounter(orc);
 
+        } else if (next == 8) { //only 8 10%
+            System.out.println("An ominous chest rests at the center of the room...");
+            lootEncounter();
+
         } else { //9 or 10 20%
+            System.out.println("A man sits cross-legged on the ground. Scraps of Weapons and Armors are laid out neatly for display. 'Welcome traveller!'");
             shopEncounter();
         }
     }
 
-    // EFFECTS: begin battle encounter
+    // EFFECTS: begin battle encounter. Enemy and player roll their dice, and damage is dealt accordingly
     public void enemyEncounter(GameCharacter enemy) {
         boolean inBattle = true;
 
-        while (inBattle) {
+        do {
             System.out.println("HP: " + player.getHealth() + "  DMG: " + player.getDamage() +
                              "      " + enemy.getName() + " HP: " + enemy.getHealth() + "  " 
                              + enemy.getName() + " DMG: " + enemy.getDamage());
 
             //enemy roll
             int enemyRoll = enemy.rollDice();
-            System.out.println("Enemy rolled a " + enemyRoll);
+            System.out.println("Enemy rolled a " + enemyRoll + ". Roll your dice!");
+
 
             //player roll
-            System.out.println("Roll your dice!");
-            input.next();
+            input.nextLine();
             int playerRoll = player.rollDice();
 
             //outcome
@@ -83,7 +92,7 @@ public class Game {
             if (outcome.equals("win")) {
                 System.out.println(" The " + enemy.getName() + " takes a hit.");
                 if (!enemy.getAlive()) {
-                    System.out.println(enemy.getName() + " has fallen... ");
+                    System.out.println(enemy.getName() + " has fallen... You move on...");
                     battleHandler.giveRewards(inventory, enemy);
                     break;
                 }
@@ -99,15 +108,39 @@ public class Game {
             } else {
                 System.out.println(" You tie and your attacks rebound!");
             }
-        }
+        } while(inBattle);
 
     }
 
-    // EFFECTS: end battle encounter
-
     // EFFECTS: enter shop
     public void shopEncounter() {
-        //stub
+        for (int i = 0; i<inventory.getCoins(); i++){//TODO
+            player.heal();
+            inventory.deductCoins(2);
+            if (player.getHealth()==player.getMaxHP()) {
+                break;
+            }
+        }
+    }
+
+    // EFFECTS: find a chest with loot
+    public void lootEncounter() { //TODO
+        Random random = new Random();
+
+        int next = random.nextInt(19) + 1;
+        if (next <= 12) { //1-12 60%
+            System.out.println("You find a bundle of coins. You collect ..." + "coins");
+
+        } else if (next <= 16) { //13-16 20%
+            System.out.println("You find common loot!");
+
+        } else if (next <= 19) { //17-19 15%
+            System.out.println("You find rare loot!!");
+
+        } else { //only 20 5% 
+            System.out.println("You find loot worth a king's ransom!!! You collect ...");
+
+        }
     }
 
 }
