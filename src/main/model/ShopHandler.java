@@ -10,17 +10,18 @@ public class ShopHandler {
     private int healPrice;
     private ItemHandler itemHandler = new ItemHandler();
 
-    // EFFECTS: create a shop with a list of all items and healPrice of 2 coins
+    // EFFECTS: create a shop with a list of all item names and healPrice of 2 coins
     public ShopHandler() {
         shopList = new ArrayList<>();
-        shopList.add("Dagger");
-        shopList.add("Mace");
-        shopList.add("Longsword");
-        shopList.add("Excalibur");
-        shopList.add("Farmer's Cap");
-        shopList.add("Thieve's Hood");
-        shopList.add("Knight's Helmet");
-        shopList.add("Crown");
+        shopList.add("dagger");
+        shopList.add("mace");
+        shopList.add("longsword");
+        shopList.add("excalibur");
+        shopList.add("farmer's cap");
+        shopList.add("thieve's hood");
+        shopList.add("knight's helmet");
+        shopList.add("crown");
+        shopList.add("heal");
         
         healPrice = 2;
     }
@@ -64,7 +65,7 @@ public class ShopHandler {
     // EFFECTS: sell one item for coins from the player's inventory. Removes one copy
     // of the item from the inventory, and adds coins in equivalent value in return.
     // Won't allow to sell last weapon. Items sell for the actual value.
-    public void sellItem(String itemName, Player player) {
+    public boolean sellItem(String itemName, Player player) {
         Inventory inventory = player.getInventory();
         Item item = inventory.getItem(itemName);
 
@@ -76,16 +77,13 @@ public class ShopHandler {
                 }
             }
     
-            if (weaponCount > 1) { //at least more than one weapon in inventory
-                inventory.discard(itemName, player);
-                inventory.collectCoins(item.getValue());
-            } else {
-                // cannot sell last weapon
+            if (weaponCount <= 1) { //at least more than one weapon in inventory
+                return false;
             }
-        } else { //player selling armor
-            inventory.discard(itemName, player);
-            inventory.collectCoins(item.getValue());
         }
+        inventory.discard(itemName, player);
+        inventory.collectCoins(item.getValue());
+        return true;
     }
 
     public List<String> getShopList() {

@@ -82,6 +82,7 @@ public class TestPlayer {
         assertEquals(5, testPlayer.getHealth());
         testInventory.collect(testCap, testPlayer);
         assertEquals(7, testPlayer.getMaxHP());
+        assertEquals(7, testPlayer.getHealth());
     }
 
     @Test
@@ -89,6 +90,16 @@ public class TestPlayer {
         testInventory.collect(testCap, testPlayer);
         testInventory.discard("Farmer's Cap", testPlayer);
         assertEquals(5, testPlayer.getMaxHP());
+        assertEquals(5, testPlayer.getHealth());
+    }
+
+    @Test
+    void testUpdateArmorNotIncreaseHP() {
+        testInventory.collect(testCap, testPlayer);
+        testPlayer.setHealth(1);
+        testInventory.discard("Farmer's Cap", testPlayer);
+        assertEquals(5, testPlayer.getMaxHP());
+        assertEquals(1, testPlayer.getHealth()); //updated, but did not increase
     }
 
     @Test

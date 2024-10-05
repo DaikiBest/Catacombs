@@ -32,14 +32,15 @@ public class TestShopHandler {
         testInventory = testPlayer.getInventory();
 
         //create the list with all item names to compare
-        actualSList.add("Dagger");
-        actualSList.add("Mace");
-        actualSList.add("Longsword");
-        actualSList.add("Excalibur");
-        actualSList.add("Farmer's Cap");
-        actualSList.add("Thieve's Hood");
-        actualSList.add("Knight's Helmet");
-        actualSList.add("Crown");
+        actualSList.add("dagger");
+        actualSList.add("mace");
+        actualSList.add("longsword");
+        actualSList.add("excalibur");
+        actualSList.add("farmer's cap");
+        actualSList.add("thieve's hood");
+        actualSList.add("knight's helmet");
+        actualSList.add("crown");
+        actualSList.add("heal");
     }
 
     @Test
@@ -128,7 +129,7 @@ public class TestShopHandler {
     void testSellItemOneCopy() {
         testInventory.collect(testLongsword, testPlayer);
         testInventory.collect(testLongsword, testPlayer);
-        testShop.sellItem("Longsword", testPlayer);
+        assertTrue(testShop.sellItem("Longsword", testPlayer));
         assertEquals(1, testInventory.countItem("Longsword", testInventory.getItems()));
         assertEquals(10, testInventory.getCoins());
     }
@@ -140,12 +141,12 @@ public class TestShopHandler {
         testInventory.collect(testCrown, testPlayer);
         testInventory.collect(testExcalibur, testPlayer);
         testInventory.collect(testLongsword, testPlayer);
-        testShop.sellItem("Longsword", testPlayer); //+5
-        testShop.sellItem("Crown", testPlayer); //+10
-        testShop.sellItem("Crown", testPlayer); //+10
-        testShop.sellItem("Dagger", testPlayer); //+1
-        testShop.sellItem("Excalibur", testPlayer); //+10
-        testShop.sellItem("Longsword", testPlayer); //no sell.
+        assertTrue(testShop.sellItem("Longsword", testPlayer)); //+5
+        assertTrue(testShop.sellItem("Crown", testPlayer)); //+10
+        assertTrue(testShop.sellItem("Crown", testPlayer)); //+10
+        assertTrue(testShop.sellItem("Dagger", testPlayer)); //+1
+        assertTrue(testShop.sellItem("Excalibur", testPlayer)); //+10
+        assertFalse(testShop.sellItem("Longsword", testPlayer)); //no sell.
         assertEquals(1, testInventory.getItems().size());
         assertEquals("Longsword", testInventory.getItem("Longsword").getName());
         assertEquals(41, testInventory.getCoins());

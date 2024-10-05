@@ -37,7 +37,7 @@ public class Inventory {
     // either weapon or update armor.
     public void discard(String itemName, Player player) {
         for (Item item : items) {
-            if (itemName == item.getName()) {
+            if (item.getName().equalsIgnoreCase(itemName)) {
 
                 if (item instanceof Weapon) { 
 
@@ -50,16 +50,11 @@ public class Inventory {
 
                     if (weaponCount <= 1) { //last weapon in inventory?
                         //will not discard. No weapons left.
-                        continue;
-                    } else {
-                        items.remove(item);
-                        player.updateWeapon(items);
+                        break;
                     }
-
-                } else {
-                    items.remove(item);
-                    player.updateArmor(items);
                 }
+                items.remove(item);
+                player.updateArmor(items);
                 break;
             }
         }
@@ -98,7 +93,7 @@ public class Inventory {
     // EFFECTS: get item according to the name, returns null if not found.
     public Item getItem(String name) {
         for (Item item : items) {
-            if (item.getName().equals(name)) {
+            if (item.getName().equalsIgnoreCase(name)) {
                 return item;
             }
         }

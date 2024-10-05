@@ -46,6 +46,7 @@ public class Player extends GameCharacter {
     // EFFECTS: update the player's health to the highest tier armor in the inventory.
     // If the inventory has no armors left, then MAX player hp goes to the default 5.
     public void updateArmor(List<Item> items) {
+        int prevMax = getMaxHP();
         int maxArmor = 5;
         for (Item item : items) {
             if (item instanceof Armor && item.getStat() > maxArmor) {
@@ -53,12 +54,15 @@ public class Player extends GameCharacter {
             }
         }
         this.setMaxHP(maxArmor);
+        if (prevMax < maxArmor || getHealth() > maxArmor) { //increase hp up to newly updated maxHP
+            this.setHealth(maxArmor);
+        }
     }
 
     @Override
     // EFFECTS: roll D20 (1-20) dice. ie. return random number between 1 and 20
     public int rollDice() {
-        return random.nextInt(19) + 1;
+        return random.nextInt(20) + 1;
     }
 
     public void setMaxHP(int newMaxHP) {
