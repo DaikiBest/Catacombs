@@ -16,5 +16,5 @@ User stories:
 - As a user, I want to be able to combat enemies by rolling a random dice.
 - As a user, I want to be able to view relevant information to the encounter (eg. my and the enemy’s health and damage during a combat encounter).
 - As a user, I want to be able to purchase items using gold accumulated throughout encounters.
-- As a user, I want to be able to restart the game when a game over occurs (either win or loss)
+- As a user, I want to be able to sell items of my choice for gold.
 - As a user, I want the game to end when your health drops to zero, and win when you defeat the final (boss) enemy.
