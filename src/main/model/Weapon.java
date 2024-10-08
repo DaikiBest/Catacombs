@@ -3,9 +3,9 @@ package model;
 // Represents a weapon used to deal damage
 public class Weapon implements Item {
     
-    String name;
-    int stat;
-    int value;
+    private final String name;
+    private final int stat;
+    private final int value;
 
     // EFFECTS: create an armor with name, damage stat, and value.
     public Weapon(String name, int stat, int value) {

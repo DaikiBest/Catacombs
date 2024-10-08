@@ -20,7 +20,7 @@ public class TestShopHandler {
     private Item testHelmet;
     private Player testPlayer = new Player();
     private Inventory testInventory;
-    private ItemHandler itemHandler = new ItemHandler();
+    private ItemFactory itemHandler = new ItemFactory();
 
     @BeforeEach
     void runBefore() {

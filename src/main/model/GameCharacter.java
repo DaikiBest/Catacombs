@@ -10,12 +10,12 @@ public class GameCharacter {
     private int low;
     private int reward;
     private String name;
-    private Random random = new Random();
     private boolean alive = true;
 
     // REQUIRES high >= low
     // EFFECTS: rolls a D20 but on a given range.
-    public int rollDice() {
+    public int rollDice(long seed) {
+        Random random = new Random(seed);
         return low + random.nextInt(high - low + 1);
     }
 

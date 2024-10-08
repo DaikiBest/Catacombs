@@ -24,9 +24,7 @@ public class TestDarkWizard {
 
     @Test
     void testRollDice() {
-        for (int i = 0; i < 300 ; i++) {
-            int roll = testDarkWizard.rollDice();
-            assertTrue(10 <= roll & roll <= 20);
-        }
+        int roll = testDarkWizard.rollDice(1);
+        assertEquals(14, roll);
     }
 }

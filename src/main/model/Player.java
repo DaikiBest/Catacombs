@@ -1,25 +1,23 @@
 package model;
 
 import java.util.List;
-import java.util.Random;
 
 // Represents the Player
 public class Player extends GameCharacter {
     
-    int maxHP;
-    private Random random = new Random();
+    private int maxHP;
+    private Inventory inventory;
 
-    Inventory inventory;
-
-    // EFFECTS: create the Player with default inventory (no armor, 
-    // Dagger as weapon, and 5 coins). Set the player hp and maxHP (hit points) to 5, and dmg (damage) as 1.
+    // EFFECTS: create the Player with default inventory (no armor, Dagger as weapon, and 5 coins). 
+    // Set the player hp and maxHP (hit points) to 5, dmg (damage) as 1, and low and high dice values as 1 and 20.
     public Player() {
         maxHP = 5;
         setHealth(maxHP);
         inventory = new Inventory(this);
+        setLow(1);
+        setHigh(20);
     }
 
-    // REQUIRES: hp <= maxHP
     // MODIFIES: this
     // EFFECTS: heal hp by one. Can only heal up to maxHP
     public void heal() {
@@ -57,12 +55,6 @@ public class Player extends GameCharacter {
         if (prevMax < maxArmor || getHealth() > maxArmor) { //increase hp up to newly updated maxHP
             this.setHealth(maxArmor);
         }
-    }
-
-    @Override
-    // EFFECTS: roll D20 (1-20) dice. ie. return random number between 1 and 20
-    public int rollDice() {
-        return random.nextInt(20) + 1;
     }
 
     public void setMaxHP(int newMaxHP) {

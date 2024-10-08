@@ -8,9 +8,9 @@ public class ShopHandler {
     
     List<String> shopList;
     private int healPrice;
-    private ItemHandler itemHandler = new ItemHandler();
+    private ItemFactory itemHandler = new ItemFactory();
 
-    // EFFECTS: create a shop with a list of all item names and healPrice of 2 coins
+    // EFFECTS: create a shop with a list of all item names and healPrice of 1 coin
     public ShopHandler() {
         shopList = new ArrayList<>();
         shopList.add("dagger");
@@ -23,7 +23,7 @@ public class ShopHandler {
         shopList.add("crown");
         shopList.add("heal");
         
-        healPrice = 2;
+        healPrice = 1;
     }
 
     // MODIFIES: inventory

@@ -15,7 +15,7 @@ public class TestInventory {
     private Item testCap;
     private Item testHood;
     private Player testPlayer;
-    private ItemHandler itemHandler = new ItemHandler();
+    private ItemFactory itemHandler = new ItemFactory();
 
     @BeforeEach
     void runBefore() {
@@ -115,5 +115,10 @@ public class TestInventory {
         testInventory.discard("Farmer's Cap", testPlayer);
         assertEquals(null, testInventory.getItem("Farmer's Cap"));
         assertEquals(null, testInventory.getItem("Thieve's Hood"));
+    }
+
+    @Test
+    void testDiscardFail() {
+        testInventory.discard("mace", testPlayer);
     }
 }

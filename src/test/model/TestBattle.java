@@ -14,7 +14,7 @@ public class TestBattle {
     private Goblin testGoblin;
     private Orc testOrc;
     private Inventory testInventory;
-    private ItemHandler itemHandler = new ItemHandler();
+    private ItemFactory itemHandler = new ItemFactory();
     private Item testExcalibur;
 
     @BeforeEach

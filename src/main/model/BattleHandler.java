@@ -2,10 +2,6 @@ package model;
 
 public class BattleHandler {
 
-    public BattleHandler() {
-        //stub
-    }
-
     // MODIFIES: player, enemy
     // EFFECTS: handle dice. If player rolls higher, return "won" and damage enemy.
     // If enemy rolls higher, return "loss" and damage player. If both rolls are equal,

@@ -9,7 +9,7 @@ public class Inventory {
     
     List<Item> items = new ArrayList<>();
     int coins;
-    private ItemHandler itemHandler = new ItemHandler();
+    private ItemFactory itemHandler = new ItemFactory();
 
     // EFFECTS: create an inventory with a dagger, no armor, and 5 coins. 
     public Inventory(Player player) {
@@ -52,6 +52,9 @@ public class Inventory {
                         //will not discard. No weapons left.
                         break;
                     }
+                    items.remove(item);
+                    player.updateWeapon(items);
+                    break;
                 }
                 items.remove(item);
                 player.updateArmor(items);

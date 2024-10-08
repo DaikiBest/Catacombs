@@ -9,42 +9,47 @@ import model.GameCharacter;
 import model.Goblin;
 import model.Inventory;
 import model.Item;
-import model.ItemHandler;
+import model.ItemFactory;
 import model.Orc;
 import model.Player;
 import model.ShopHandler;
 import model.Weapon;
 
-// Represents a room and its encounters
+// Represents the game; handles the room by room progression and encounters.
 public class Game {
     private Player player;
     private Inventory inventory;
     private String notOver;
     private Scanner input;
 
-    private ItemHandler itemHandler;
+    private ItemFactory itemFactory;
     private BattleHandler battleHandler;
     private ShopHandler shopHandler;
 
     private static final Random RANDOM = new Random();
 
-    // EFFECTS: create a room
+    // EFFECTS: begin the game
     public Game() {
         notOver = "true";
         player = new Player();
         inventory = player.getInventory();
         input = new Scanner(System.in);
 
-        itemHandler = new ItemHandler();
+        itemFactory = new ItemFactory();
         battleHandler = new BattleHandler();
         shopHandler = new ShopHandler();
 
         runGame();
     }
 
-    // runs the game
+    // EEFECTS: run the game. Player progresses encounter by encounter, and every 5 rooms enters a crossroads.
+    // When the loop is broken (notOver not equals the string "true"), then it means that the game must end and
+    // either the player won, or the player died.
     public void runGame() {
         int roomNumber = 0;
+        System.out.println("\nYou enter a mysterious dungeon with only some coins and dagger in hand...");
+        System.out.println("Check your inventory by typing \u001B[1m'inventory'\u001B[0m at any time.");
+
         while (notOver.equals("true")) {
             System.out.println("\nYou are in room " + roomNumber + ".");
             if (roomNumber % 5 == 0 && roomNumber != 0) { // crossroads
@@ -55,8 +60,6 @@ public class Game {
             roomNumber++;
         }
 
-        roomNumber--; // actual conquered roomNumber is one less
-
         if (notOver.equals("victory")) {
             System.out.println("\u001B[1m\nYou are victorious in your quest!");
         }
@@ -64,8 +67,9 @@ public class Game {
         // End Game
     }
 
+    // EFFECTS: move to the next "room" and begin the encounter
     public void regularEncounter() {
-        String command = "inventory";
+        String command = "inventory"; //move to next room, unless player inputs inventory (to check their inventory)
         while (command.equalsIgnoreCase("inventory")) {
             System.out.print("A rusty wooden door stands in your way... Do you wish to enter? ");
             command = input.nextLine();
@@ -74,7 +78,7 @@ public class Game {
         nextEncounter();
     }
 
-    // EFFECTS: determine and begin next encounter
+    // EFFECTS: determine the type of encounter: either a goblin, orc, chest, or shop.
     public void nextEncounter() {
         int next = RANDOM.nextInt(10) + 1;
         if (next <= 4) { // 1-4 40%
@@ -98,6 +102,7 @@ public class Game {
         }
     }
 
+    // EFFECTS: the player chooses between a regular encounter (left), or to confront the final boss (right).
     public void crossRoads() {
         boolean inCrossroads = true;
 
@@ -105,7 +110,7 @@ public class Game {
             System.out.println("You find yourself at a crossroads..."
                     + "\nTo your \u001B[1m'left'\u001B[0m, a familiar wooden door. "
                     + "To your \u001B[1m'right'\u001B[0m, a foreboding magical door oozes with dark, mystical power.");
-            String command = input.nextLine();
+            String command = input.nextLine().trim();
             checkInventory(command);
 
             if (command.equalsIgnoreCase("left")) {
@@ -122,8 +127,8 @@ public class Game {
     }
 
     // MODIFIES: player, enemy, inventory
-    // EFFECTS: begin battle encounter. Enemy and player roll their dice, and damage
-    // is dealt accordingly.
+    // EFFECTS: begin battle encounter. Enemy and player roll their dice, and damage is dealt accordingly. 
+    // The player is also allowed to attempt to avoid the encounter by fleeing, at the risk of taking damage.
     public void enemyEncounter(GameCharacter enemy) {
         boolean inBattle = true;
 
@@ -133,7 +138,7 @@ public class Game {
                     + enemy.getName() + " DMG: " + enemy.getDamage());
 
             // enemy turn
-            int enemyRoll = enemy.rollDice();
+            int enemyRoll = enemy.rollDice(RANDOM.nextLong());
             System.out.print("Enemy rolled a " + enemyRoll + ". Roll your dice "
                     + "or \u001B[1m'flee'\u001B[0m! ");
 
@@ -145,7 +150,7 @@ public class Game {
                 }
 
             } else {
-                int playerRoll = player.rollDice();
+                int playerRoll = player.rollDice(RANDOM.nextLong());
                 String outcome = battleHandler.diceHandler(player, enemy, playerRoll, enemyRoll);
                 System.out.print("You rolled a " + playerRoll + "!");
 
@@ -159,30 +164,30 @@ public class Game {
     }
 
     // MODIFIES: player
-    // EFFECTS: attempt to flee and avoid enemyEncounter
+    // EFFECTS: attempt to flee and avoid enemyEncounter. If successful, player escapes enemy encounter. If
+    // failed, the player takes half the enemy damage and remains at the enemy encounter.
     public boolean flee(GameCharacter enemy) {
-        int rand = RANDOM.nextInt(2) + 1;
-        System.out.println(rand);
+        int rand = RANDOM.nextInt(4) + 1;
 
-        if (rand == 1) { // 50%
+        if (rand <= 3) { // 75%
             System.out.println("\nYou duck and weave past the enemy. You manage to escape into the next room!");
             return true; //end flee action
-        } else { // 50%
+        } else { // 25%
             int hit = enemy.getDamage() / 2;
             hit = ((hit == 0) ? 1 : hit); //take at least 1 damage
 
             player.takeDamage(hit); // take half of enemy damage, rounded down; or 1 if 0.
             System.out.print("\nIn your attempt to flee, the enemy stops you in your tracks. ");
             System.out.print("You take " + hit + " damage.\n");
-            if (checkPlayerState()) { //is the player dead?
-                return true; //end flee action
-            }
-            return false; //stay in combat
+            return checkPlayerState();
         }
     }
 
     // MODIFIES: this
-    // EFFECTS: Determine the outcome of the round of the battle
+    // EFFECTS: Determine the outcome of the round of the battle. Either the player or enemy take damage; if the
+    // damage drops the player's health to zero, then they die, ending the encounter, and eventually ending the game.
+    // If the enemy's health drops to zero, the enemy dies ending the encounter, and the player is rewarded coins.
+    // If the slain enemy was the dark wizard (boss), the game ends with victory.
     public boolean battleOutcome(String outcome, GameCharacter enemy) {
         if (outcome.equals("win")) {
             System.out.println(" The " + enemy.getName() + " takes a hit.");
@@ -218,14 +223,14 @@ public class Game {
         return false;
     }
 
-    // EFFECTS: Handles the shop encounter.
+    // EFFECTS: Handles the shop encounter. Either buy, sell or exit encounter.
     public void shopEncounter() {
         boolean shopping = true;
 
         while (shopping) {
             System.out.print("'Here to \u001B[1m'buy'\u001B[0m or \u001B[1m'sell'\u001B[0m?"
                     + ". Say \u001B[1m'exit'\u001B[0m whenever you are finished here.' ");
-            String command = input.nextLine();
+            String command = input.nextLine().trim();
             checkInventory(command);
 
             if (command.equalsIgnoreCase("buy")) {
@@ -239,6 +244,9 @@ public class Game {
         }
     }
 
+    // MODIFIES: inventory, player
+    // EFFECTS: player gets to choose an item to purchase in exchange for coins collected. Otherwise, player
+    // can go back to choose a different option (buy, sell, exit).
     public void buy() {
         boolean buying = true;
 
@@ -270,23 +278,25 @@ public class Game {
         }
     }
 
+    // MODIFIES: inventory, player
+    // EFFECTS: Purchase item given the player's input
     public boolean handlePurchase(String purchase) {
         if (purchase.equals("dagger")) {
-            return shopHandler.purchaseItem(itemHandler.makeDagger(), player);
+            return shopHandler.purchaseItem(itemFactory.makeDagger(), player);
         } else if (purchase.equals("mace")) {
-            return shopHandler.purchaseItem(itemHandler.makeMace(), player);
+            return shopHandler.purchaseItem(itemFactory.makeMace(), player);
         } else if (purchase.equals("longsword")) {
-            return shopHandler.purchaseItem(itemHandler.makeLongsword(), player);
+            return shopHandler.purchaseItem(itemFactory.makeLongsword(), player);
         } else if (purchase.equals("excalibur")) {
-            return shopHandler.purchaseItem(itemHandler.makeExcalibur(), player);
+            return shopHandler.purchaseItem(itemFactory.makeExcalibur(), player);
         } else if (purchase.equals("farmer's cap")) {
-            return shopHandler.purchaseItem(itemHandler.makeCap(), player);
+            return shopHandler.purchaseItem(itemFactory.makeCap(), player);
         } else if (purchase.equals("thieve's hood")) {
-            return shopHandler.purchaseItem(itemHandler.makeHood(), player);
+            return shopHandler.purchaseItem(itemFactory.makeHood(), player);
         } else if (purchase.equals("knight's helmet")) {
-            return shopHandler.purchaseItem(itemHandler.makeHelmet(), player);
+            return shopHandler.purchaseItem(itemFactory.makeHelmet(), player);
         } else if (purchase.equals("crown")) {
-            return shopHandler.purchaseItem(itemHandler.makeCrown(), player);
+            return shopHandler.purchaseItem(itemFactory.makeCrown(), player);
         } else if (purchase.equals("heal")) {
             return shopHandler.purchaseHealing(player);
         } else {
@@ -294,6 +304,9 @@ public class Game {
         }
     }
 
+    // MODIFIES: inventory, player
+    // EFFECTS: player gets to choose to sell an item they have in their inventory for coins.
+    // They can sell any item they have, except their last weapon.
     public void sell() {
         boolean selling = true;
 
@@ -324,10 +337,11 @@ public class Game {
         }
     }
 
+    // EFFECTS: display all items and healing for sale and some player details such as coin count.
     public void printShopData() {
         System.out.println("\nCoins: " + inventory.getCoins() + "    HP: " + player.getHealth()
                 + "    MaxHP: " + player.getMaxHP() + "    Damage: " + player.getDamage());
-        System.out.println("\n\t\t\t   \u001B[1m'Heal'\u001B[0m 1 hp: 2 coins\n"
+        System.out.println("\n\t\t\t   \u001B[1m'Heal'\u001B[0m 1 hp: 1 coin\n"
                 + "\u001B[1m'Dagger'\u001B[0m 1 dmg: 2 coins\t\t\t\t"
                 + "\u001B[1m'Farmer's Cap'\u001B[0m 7 MaxHP: 4 coins"
                 + "\n\u001B[1m'Mace'\u001B[0m 2 dmg: 4 coins\t\t\t\t"
@@ -338,7 +352,7 @@ public class Game {
                 + "\u001B[1m'Crown'\u001B[0m 15 MaxHP: 20 coins\n");
     }
 
-    // EFFECTS: find a chest with loot
+    // EFFECTS: find a chest with randomized loot (either coins or a random item of different "rarity")
     public void lootEncounter() {
         System.out.print("Open chest? ");
         input.nextLine();
@@ -360,56 +374,59 @@ public class Game {
         }
     }
 
+    // EFFECTS: collect common loot. One of mace, cap, or hood.
     public void commonLoot() {
         System.out.println("You found common loot!");
 
         int rand = RANDOM.nextInt(3) + 1;
         if (rand == 1) {
-            inventory.collect(itemHandler.makeMace(), player);
+            inventory.collect(itemFactory.makeMace(), player);
             System.out.println("You obtained a Mace!");
         } else if (rand == 2) {
-            inventory.collect(itemHandler.makeCap(), player);
+            inventory.collect(itemFactory.makeCap(), player);
             System.out.println("You obtained a Farmer's Cap!");
         } else {
-            inventory.collect(itemHandler.makeHood(), player);
+            inventory.collect(itemFactory.makeHood(), player);
             System.out.println("You obtained a Thieve's Hood!");
         }
     }
 
+    // EFFECTS: collect rare loot. One of longsword or helmet.
     public void rareLoot() {
         System.out.println("You found rare loot!!");
 
         int rand = RANDOM.nextInt(2) + 1;
         if (rand == 1) {
-            inventory.collect(itemHandler.makeLongsword(), player);
+            inventory.collect(itemFactory.makeLongsword(), player);
             System.out.println("You obtained a Longsword!");
         } else {
-            inventory.collect(itemHandler.makeHelmet(), player);
+            inventory.collect(itemFactory.makeHelmet(), player);
             System.out.println("You obtained a Knight's Helmet!");
         }
     }
 
+    // EFFECTS: collect "king" loot. One of excalibur or crown.
     public void kingLoot() {
         System.out.println("You find loot worth a king's ransom!!!");
 
         int rand = RANDOM.nextInt(2) + 1;
         if (rand == 1) {
-            inventory.collect(itemHandler.makeExcalibur(), player);
+            inventory.collect(itemFactory.makeExcalibur(), player);
             System.out.println("You obtained the Excalibur!");
         } else {
-            inventory.collect(itemHandler.makeCrown(), player);
+            inventory.collect(itemFactory.makeCrown(), player);
             System.out.println("You obtained the Crown!");
         }
     }
 
+    // EFFECTS: display the players inventory if the user input is "inventory". Show player stats, coins and items.
     public void checkInventory(String command) {
         if (command.equals("inventory")) {
             System.out.println("\nCoins: " + inventory.getCoins() + "    HP: " + player.getHealth()
                     + "    MaxHP: " + player.getMaxHP() + "    Damage: " + player.getDamage());
 
-            String stat;
             for (Item item : inventory.getItems()) {
-                stat = ((item instanceof Weapon) ? " dmg" : " MaxHP");
+                String stat = ((item instanceof Weapon) ? " dmg" : " MaxHP");
 
                 if (item.getName().length() < 7) {
                     System.out.print(item.getName() + "\t\t" + item.getStat());

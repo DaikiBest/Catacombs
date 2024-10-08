@@ -10,14 +10,14 @@ public class TestPlayer {
     
     private Player testPlayer;
     private Inventory testInventory;
-    private ItemHandler itemHandler;
+    private ItemFactory itemHandler;
     private Item testMace;
     private Item testCap;
 
     @BeforeEach
     void runBefore() {
         testPlayer = new Player();
-        itemHandler = new ItemHandler();
+        itemHandler = new ItemFactory();
         testInventory = testPlayer.getInventory();
         testMace = itemHandler.makeMace();
         testCap = itemHandler.makeCap();
@@ -48,10 +48,8 @@ public class TestPlayer {
 
     @Test
     void testRollDice() {
-        for (int i = 0; i < 300 ; i++) {
-            int roll = testPlayer.rollDice();
-            assertTrue(1 <= roll & roll <= 20);
-        }
+        int roll = testPlayer.rollDice(1);
+        assertEquals(6, roll);
     }
 
     //tests updateWeapon() 
@@ -108,5 +106,4 @@ public class TestPlayer {
         testInventory.collect(testCap, testPlayer);
         assertEquals(7, testPlayer.getMaxHP());
     }
-
 }
