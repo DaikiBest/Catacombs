@@ -3,20 +3,11 @@ package ui;
 import java.util.Random;
 import java.util.Scanner;
 
-import model.BattleHandler;
-import model.DarkWizard;
-import model.GameCharacter;
-import model.Goblin;
-import model.Inventory;
-import model.Item;
-import model.ItemFactory;
-import model.Orc;
-import model.Player;
-import model.ShopHandler;
-import model.Weapon;
+import persistence.Writable;
+import model.*;
 
 // Represents the game; handles the room by room progression and encounters.
-public class Game {
+public class Game implements Writable {
     private Player player;
     private Inventory inventory;
     private String notOver;
@@ -25,6 +16,7 @@ public class Game {
     private ItemFactory itemFactory;
     private BattleHandler battleHandler;
     private ShopHandler shopHandler;
+    private Rest restSpot;
 
     private static final Random RANDOM = new Random();
 
@@ -34,11 +26,11 @@ public class Game {
         player = new Player();
         inventory = player.getInventory();
         input = new Scanner(System.in);
-
+        
         itemFactory = new ItemFactory();
         battleHandler = new BattleHandler();
         shopHandler = new ShopHandler();
-
+        restSpot = new Rest();
         runGame();
     }
 
@@ -48,7 +40,10 @@ public class Game {
     public void runGame() {
         int roomNumber = 0;
         System.out.println("\nYou enter a mysterious dungeon with only some coins and dagger in hand...");
-        System.out.println("Check your inventory by typing \u001B[1m'inventory'\u001B[0m at any time.");
+        System.out.println("    | - - - - - - - - - - - - - - - - - - - - - - - - - |"
+                        + "\n\tCheck your inventory by typing \u001B[1m'i'\u001B[0m at any time. "
+                        + "\n\tAccepted inputs are marked in \u001B[1m'bold'\u001B[0m."
+                        + "\n    | - - - - - - - - - - - - - - - - - - - - - - - - - |");
 
         while (notOver.equals("true")) {
             System.out.println("\nYou are in room " + roomNumber + ".");
@@ -64,16 +59,17 @@ public class Game {
             System.out.println("\u001B[1m\nYou are victorious in your quest!");
         }
         System.out.println("\nGame Over");
-        // End Game
     }
 
     // EFFECTS: move to the next "room" and begin the encounter
     public void regularEncounter() {
-        String command = "inventory"; //move to next room, unless player inputs inventory (to check their inventory)
-        while (command.equalsIgnoreCase("inventory")) {
-            System.out.print("A rusty wooden door stands in your way... Do you wish to enter? ");
+        String command = "i"; //move to next room, unless player inputs i (to check their inventory)
+        while (command.equalsIgnoreCase("i")) {
+            System.out.print("A rusty wooden door stands in your way... Type to enter, or " 
+                            + "\u001B[1m'rest'\u001B[0m (save/load game). ");
             command = input.nextLine();
             checkInventory(command);
+            checkRest(command);
         }
         nextEncounter();
     }
@@ -420,8 +416,9 @@ public class Game {
     }
 
     // EFFECTS: display the players inventory if the user input is "inventory". Show player stats, coins and items.
+    // All of this method's complexity is pretty formatting.
     public void checkInventory(String command) {
-        if (command.equals("inventory")) {
+        if (command.equalsIgnoreCase("i")) {
             System.out.println("\nCoins: " + inventory.getCoins() + "    HP: " + player.getHealth()
                     + "    MaxHP: " + player.getMaxHP() + "    Damage: " + player.getDamage());
 
@@ -442,6 +439,13 @@ public class Game {
             }
             System.out.print("Type to exit: ");
             input.nextLine();
+            System.out.println("");
+        }
+    }
+
+    public void checkRest(String command) {
+        if (command.equalsIgnoreCase("rest")) {
+            restSpot.rest();
         }
     }
 }

@@ -8,7 +8,6 @@ public class ShopHandler {
     
     List<String> shopList;
     private int healPrice;
-    private ItemFactory itemHandler = new ItemFactory();
 
     // EFFECTS: create a shop with a list of all item names and healPrice of 1 coin
     public ShopHandler() {
@@ -44,8 +43,8 @@ public class ShopHandler {
     }
 
     // MODIFIES: inventory, player
-    // EFFECTS: use 2 coins (deduct from inventory) to heal 1 hp. Purchase is successful if
-    // player has more or equal to 2 coins, returning true. Fails purchase if player does not
+    // EFFECTS: use 1 coin (deduct from inventory) to heal 1 hp. Purchase is successful if
+    // player has more or equal to 1 coin, returning true. Fails purchase if player does not
     // have enough coins or player is at full hp, returning false.
     public boolean purchaseHealing(Player player) {
         Inventory inventory = player.getInventory();

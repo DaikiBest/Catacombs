@@ -1,11 +1,11 @@
 package model;
 
-
+import persistence.Writable;
 import java.util.ArrayList;
 import java.util.List;
 
 // Represents the Player's inventory
-public class Inventory {
+public class Inventory implements Writable {
     
     List<Item> items = new ArrayList<>();
     int coins;

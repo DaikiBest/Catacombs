@@ -47,7 +47,7 @@ public class TestShopHandler {
     void testConstructor() {
         // compare both lists with all items names
         assertEquals(actualSList, testSList);
-        assertEquals(2, testShop.getHealPrice());
+        assertEquals(1, testShop.getHealPrice());
     }
 
     @Test
@@ -105,7 +105,7 @@ public class TestShopHandler {
         assertTrue(testShop.purchaseHealing(testPlayer));
         //after
         assertEquals(2, testPlayer.getHealth());
-        assertEquals(0, testInventory.getCoins());
+        assertEquals(1, testInventory.getCoins());
     }
 
     @Test
@@ -119,10 +119,10 @@ public class TestShopHandler {
     @Test
     void testPurchaseHealingFailPoor() {
         testPlayer.setHealth(2);
-        testInventory.setCoins(1);
+        testInventory.setCoins(0);
         assertFalse(testShop.purchaseHealing(testPlayer));
         assertEquals(2, testPlayer.getHealth());
-        assertEquals(1, testInventory.getCoins());
+        assertEquals(0, testInventory.getCoins());
     }
 
     @Test

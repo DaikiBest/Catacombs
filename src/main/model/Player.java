@@ -1,9 +1,10 @@
 package model;
 
+import persistence.Writable;
 import java.util.List;
 
 // Represents the Player
-public class Player extends GameCharacter {
+public class Player extends GameCharacter implements Writable {
     
     private int maxHP;
     private Inventory inventory;

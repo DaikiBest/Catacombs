@@ -1,5 +1,6 @@
 package model;
 
+// handles a battle encounter
 public class BattleHandler {
 
     // MODIFIES: player, enemy
