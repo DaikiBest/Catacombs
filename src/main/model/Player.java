@@ -62,6 +62,10 @@ public class Player extends GameCharacter implements Writable {
         maxHP = newMaxHP;
     }
 
+    public void setInventory(Inventory inventory) {
+        this.inventory = inventory;
+    }
+
     public int getMaxHP() {
         return maxHP;
     }

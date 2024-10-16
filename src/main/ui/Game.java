@@ -1,8 +1,11 @@
 package ui;
 
+import java.io.FileNotFoundException;
 import java.util.Random;
 import java.util.Scanner;
 
+import persistence.JsonReader;
+import persistence.JsonWriter;
 import persistence.Writable;
 import model.*;
 
@@ -10,41 +13,52 @@ import model.*;
 public class Game implements Writable {
     private Player player;
     private Inventory inventory;
+    private int roomNumber;
     private String notOver;
     private Scanner input;
 
     private ItemFactory itemFactory;
     private BattleHandler battleHandler;
     private ShopHandler shopHandler;
-    private Rest restSpot;
+
+    private static final String JSON_STORE = "./data/workroom.json";
+    private JsonWriter jsonWriter;
+    private JsonReader jsonReader;
 
     private static final Random RANDOM = new Random();
 
     // EFFECTS: begin the game
     public Game() {
-        notOver = "true";
         player = new Player();
         inventory = player.getInventory();
+        roomNumber = 0;
+        notOver = "true";
         input = new Scanner(System.in);
         
         itemFactory = new ItemFactory();
         battleHandler = new BattleHandler();
         shopHandler = new ShopHandler();
-        restSpot = new Rest();
+
+        jsonWriter = new JsonWriter(JSON_STORE);
+        jsonReader = new JsonReader(JSON_STORE);
+
+        tutorial();
         runGame();
+    }
+
+    // EFFECTS: display the beginning exposition and tutorial (inventory and inputs).
+    private void tutorial() {
+        System.out.println("\nYou enter a mysterious dungeon with only some coins and dagger in hand...");
+        System.out.println("    | - - - - - - - - - - - - - - - - - - - - - - - - - |"
+                        + "\n\tCheck your inventory by typing \u001B[1m'i'\u001B[0m at any time. "
+                        + "\n\tAccepted inputs are marked in \u001B[1m'bold'\u001B[0m."
+                        + "\n    | - - - - - - - - - - - - - - - - - - - - - - - - - |");
     }
 
     // EEFECTS: run the game. Player progresses encounter by encounter, and every 5 rooms enters a crossroads.
     // When the loop is broken (notOver not equals the string "true"), then it means that the game must end and
     // either the player won, or the player died.
     public void runGame() {
-        int roomNumber = 0;
-        System.out.println("\nYou enter a mysterious dungeon with only some coins and dagger in hand...");
-        System.out.println("    | - - - - - - - - - - - - - - - - - - - - - - - - - |"
-                        + "\n\tCheck your inventory by typing \u001B[1m'i'\u001B[0m at any time. "
-                        + "\n\tAccepted inputs are marked in \u001B[1m'bold'\u001B[0m."
-                        + "\n    | - - - - - - - - - - - - - - - - - - - - - - - - - |");
-
         while (notOver.equals("true")) {
             System.out.println("\nYou are in room " + roomNumber + ".");
             if (roomNumber % 5 == 0 && roomNumber != 0) { // crossroads
@@ -62,7 +76,7 @@ public class Game implements Writable {
     }
 
     // EFFECTS: move to the next "room" and begin the encounter
-    public void regularEncounter() {
+    private void regularEncounter() {
         String command = "i"; //move to next room, unless player inputs i (to check their inventory)
         while (command.equalsIgnoreCase("i")) {
             System.out.print("A rusty wooden door stands in your way... Type to enter, or " 
@@ -75,7 +89,7 @@ public class Game implements Writable {
     }
 
     // EFFECTS: determine the type of encounter: either a goblin, orc, chest, or shop.
-    public void nextEncounter() {
+    private void nextEncounter() {
         int next = RANDOM.nextInt(10) + 1;
         if (next <= 4) { // 1-4 40%
             System.out.println("\nAs you enter the next room, a sneaky Goblin lunges at you!");
@@ -99,7 +113,7 @@ public class Game implements Writable {
     }
 
     // EFFECTS: the player chooses between a regular encounter (left), or to confront the final boss (right).
-    public void crossRoads() {
+    private void crossRoads() {
         boolean inCrossroads = true;
 
         while (inCrossroads) {
@@ -125,7 +139,7 @@ public class Game implements Writable {
     // MODIFIES: player, enemy, inventory
     // EFFECTS: begin battle encounter. Enemy and player roll their dice, and damage is dealt accordingly. 
     // The player is also allowed to attempt to avoid the encounter by fleeing, at the risk of taking damage.
-    public void enemyEncounter(GameCharacter enemy) {
+    private void enemyEncounter(GameCharacter enemy) {
         boolean inBattle = true;
 
         do {
@@ -162,7 +176,7 @@ public class Game implements Writable {
     // MODIFIES: player
     // EFFECTS: attempt to flee and avoid enemyEncounter. If successful, player escapes enemy encounter. If
     // failed, the player takes half the enemy damage and remains at the enemy encounter.
-    public boolean flee(GameCharacter enemy) {
+    private boolean flee(GameCharacter enemy) {
         int rand = RANDOM.nextInt(4) + 1;
 
         if (rand <= 3) { // 75%
@@ -184,7 +198,7 @@ public class Game implements Writable {
     // damage drops the player's health to zero, then they die, ending the encounter, and eventually ending the game.
     // If the enemy's health drops to zero, the enemy dies ending the encounter, and the player is rewarded coins.
     // If the slain enemy was the dark wizard (boss), the game ends with victory.
-    public boolean battleOutcome(String outcome, GameCharacter enemy) {
+    private boolean battleOutcome(String outcome, GameCharacter enemy) {
         if (outcome.equals("win")) {
             System.out.println(" The " + enemy.getName() + " takes a hit.");
 
@@ -210,7 +224,7 @@ public class Game implements Writable {
     }
 
     // EFFECTS: checks player state. Returns true if dead, false if still alive.
-    public boolean checkPlayerState() {
+    private boolean checkPlayerState() {
         if (!player.getAlive()) {
             System.out.println("You have fallen in battle... ");
             notOver = "defeat";
@@ -220,7 +234,7 @@ public class Game implements Writable {
     }
 
     // EFFECTS: Handles the shop encounter. Either buy, sell or exit encounter.
-    public void shopEncounter() {
+    private void shopEncounter() {
         boolean shopping = true;
 
         while (shopping) {
@@ -243,7 +257,7 @@ public class Game implements Writable {
     // MODIFIES: inventory, player
     // EFFECTS: player gets to choose an item to purchase in exchange for coins collected. Otherwise, player
     // can go back to choose a different option (buy, sell, exit).
-    public void buy() {
+    private void buy() {
         boolean buying = true;
 
         while (buying) {
@@ -276,7 +290,7 @@ public class Game implements Writable {
 
     // MODIFIES: inventory, player
     // EFFECTS: Purchase item given the player's input
-    public boolean handlePurchase(String purchase) {
+    private boolean handlePurchase(String purchase) {
         if (purchase.equals("dagger")) {
             return shopHandler.purchaseItem(itemFactory.makeDagger(), player);
         } else if (purchase.equals("mace")) {
@@ -303,7 +317,7 @@ public class Game implements Writable {
     // MODIFIES: inventory, player
     // EFFECTS: player gets to choose to sell an item they have in their inventory for coins.
     // They can sell any item they have, except their last weapon.
-    public void sell() {
+    private void sell() {
         boolean selling = true;
 
         while (selling) {
@@ -334,7 +348,7 @@ public class Game implements Writable {
     }
 
     // EFFECTS: display all items and healing for sale and some player details such as coin count.
-    public void printShopData() {
+    private void printShopData() {
         System.out.println("\nCoins: " + inventory.getCoins() + "    HP: " + player.getHealth()
                 + "    MaxHP: " + player.getMaxHP() + "    Damage: " + player.getDamage());
         System.out.println("\n\t\t\t   \u001B[1m'Heal'\u001B[0m 1 hp: 1 coin\n"
@@ -349,7 +363,7 @@ public class Game implements Writable {
     }
 
     // EFFECTS: find a chest with randomized loot (either coins or a random item of different "rarity")
-    public void lootEncounter() {
+    private void lootEncounter() {
         System.out.print("Open chest? ");
         input.nextLine();
 
@@ -371,7 +385,7 @@ public class Game implements Writable {
     }
 
     // EFFECTS: collect common loot. One of mace, cap, or hood.
-    public void commonLoot() {
+    private void commonLoot() {
         System.out.println("You found common loot!");
 
         int rand = RANDOM.nextInt(3) + 1;
@@ -388,7 +402,7 @@ public class Game implements Writable {
     }
 
     // EFFECTS: collect rare loot. One of longsword or helmet.
-    public void rareLoot() {
+    private void rareLoot() {
         System.out.println("You found rare loot!!");
 
         int rand = RANDOM.nextInt(2) + 1;
@@ -402,7 +416,7 @@ public class Game implements Writable {
     }
 
     // EFFECTS: collect "king" loot. One of excalibur or crown.
-    public void kingLoot() {
+    private void kingLoot() {
         System.out.println("You find loot worth a king's ransom!!!");
 
         int rand = RANDOM.nextInt(2) + 1;
@@ -417,7 +431,7 @@ public class Game implements Writable {
 
     // EFFECTS: display the players inventory if the user input is "inventory". Show player stats, coins and items.
     // All of this method's complexity is pretty formatting.
-    public void checkInventory(String command) {
+    private void checkInventory(String command) {
         if (command.equalsIgnoreCase("i")) {
             System.out.println("\nCoins: " + inventory.getCoins() + "    HP: " + player.getHealth()
                     + "    MaxHP: " + player.getMaxHP() + "    Damage: " + player.getDamage());
@@ -443,9 +457,35 @@ public class Game implements Writable {
         }
     }
 
-    public void checkRest(String command) {
+    // EFFECTS: if input is "rest", choose betwen saving or loading
+    private void checkRest(String command) {
         if (command.equalsIgnoreCase("rest")) {
-            restSpot.rest();
+            System.out.print("\nDo you wish to \u001B[1m'save'\u001B[0m or \u001B[1m'load'\u001B[0m? ");
+            command = input.nextLine();
+            if (command.equalsIgnoreCase("save")) {
+                saveGame();
+            } else if (command.equalsIgnoreCase("load")) {
+                loadGame();
+            } else {
+                runGame();
+            }
         }
+    }
+
+    // EFFECTS: save the game to a file
+    private void saveGame() {
+        //stub
+        runGame();
+    }
+
+    // MODIFIES: this, player, inventory
+    // EFFECTS: load the game from a file
+    private void loadGame() {
+        //stub
+        // player = new Player();
+        // jsonReader.read();
+        // inventory = ... a new Inventory. Might need to add method setInventory in Player
+        // roomNumber = 
+        runGame();
     }
 }
