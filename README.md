@@ -18,3 +18,5 @@ User stories:
 - As a user, I want to be able to purchase items using gold accumulated throughout encounters.
 - As a user, I want to be able to sell items of my choice for gold.
 - As a user, I want the game to end when your health drops to zero, and win when you defeat the final (boss) enemy.
+- As a user, I want to be able to have the option save my current game (reminder) when quitting the app.
+- As a user, I want to be able to load my game from a file, in order to continue the game where I left off last time.
