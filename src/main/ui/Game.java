@@ -21,7 +21,7 @@ public class Game implements Writable {
     private BattleHandler battleHandler;
     private ShopHandler shopHandler;
 
-    private static final String JSON_STORE = "./data/workroom.json";
+    private static final String JSON_STORE = "./data/catacombs.json";
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
 
