@@ -4,6 +4,8 @@ import java.io.FileNotFoundException;
 import java.util.Random;
 import java.util.Scanner;
 
+import org.json.JSONObject;
+
 import persistence.JsonReader;
 import persistence.JsonWriter;
 import persistence.Writable;
@@ -291,27 +293,14 @@ public class Game implements Writable {
     // MODIFIES: inventory, player
     // EFFECTS: Purchase item given the player's input
     private boolean handlePurchase(String purchase) {
-        if (purchase.equals("dagger")) {
-            return shopHandler.purchaseItem(itemFactory.makeDagger(), player);
-        } else if (purchase.equals("mace")) {
-            return shopHandler.purchaseItem(itemFactory.makeMace(), player);
-        } else if (purchase.equals("longsword")) {
-            return shopHandler.purchaseItem(itemFactory.makeLongsword(), player);
-        } else if (purchase.equals("excalibur")) {
-            return shopHandler.purchaseItem(itemFactory.makeExcalibur(), player);
-        } else if (purchase.equals("farmer's cap")) {
-            return shopHandler.purchaseItem(itemFactory.makeCap(), player);
-        } else if (purchase.equals("thieve's hood")) {
-            return shopHandler.purchaseItem(itemFactory.makeHood(), player);
-        } else if (purchase.equals("knight's helmet")) {
-            return shopHandler.purchaseItem(itemFactory.makeHelmet(), player);
-        } else if (purchase.equals("crown")) {
-            return shopHandler.purchaseItem(itemFactory.makeCrown(), player);
+
+        Item item = itemFactory.selectItem(purchase);
+        if (item != null) {
+            return shopHandler.purchaseItem(item, player);
         } else if (purchase.equals("heal")) {
             return shopHandler.purchaseHealing(player);
-        } else {
-            return false;
         }
+        return false;
     }
 
     // MODIFIES: inventory, player
@@ -467,15 +456,27 @@ public class Game implements Writable {
             } else if (command.equalsIgnoreCase("load")) {
                 loadGame();
             } else {
-                runGame();
+                // do something?
             }
         }
     }
 
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("roomNumber", roomNumber);
+        return json;
+    }
+
     // EFFECTS: save the game to a file
     private void saveGame() {
-        //stub
-        runGame();
+        try {
+            jsonWriter.open();
+            jsonWriter.write(inventory, player, this);
+            jsonWriter.close();
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
     }
 
     // MODIFIES: this, player, inventory
@@ -486,6 +487,5 @@ public class Game implements Writable {
         // jsonReader.read();
         // inventory = ... a new Inventory. Might need to add method setInventory in Player
         // roomNumber = 
-        runGame();
     }
 }

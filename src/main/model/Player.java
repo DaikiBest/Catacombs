@@ -3,6 +3,8 @@ package model;
 import persistence.Writable;
 import java.util.List;
 
+import org.json.JSONObject;
+
 // Represents the Player
 public class Player extends GameCharacter implements Writable {
     
@@ -72,6 +74,13 @@ public class Player extends GameCharacter implements Writable {
 
     public Inventory getInventory() {
         return inventory;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("Health", getHealth());
+        return json;
     }
 
     // Basic getters and setters all in GameCharacter superclass (eg. getHealth, setDamage, etc.)

@@ -3,6 +3,29 @@ package model;
 // Handles the making of weapons and armors
 public class ItemFactory {
 
+    // EFFECTS: create an item given string. If invalid string, return null.
+    public Item selectItem(String item) {
+        if (item.equals("dagger")) {
+            return makeDagger();
+        } else if (item.equals("mace")) {
+            return makeMace();
+        } else if (item.equals("longsword")) {
+            return makeLongsword();
+        } else if (item.equals("excalibur")) {
+            return makeExcalibur();
+        } else if (item.equals("farmer's cap")) {
+            return makeCap();
+        } else if (item.equals("thieve's hood")) {
+            return makeHood();
+        } else if (item.equals("knight's helmet")) {
+            return makeHelmet();
+        } else if (item.equals("crown")) {
+            return makeCrown();
+        }   else {
+            return null;
+        }
+    }
+
     // MAKE WEAPONS
     // EFFECTS: makes a Dagger with 1dmg and 1 value.
     public Item makeDagger() {

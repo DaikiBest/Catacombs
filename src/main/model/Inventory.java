@@ -4,6 +4,9 @@ import persistence.Writable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 // Represents the Player's inventory
 public class Inventory implements Writable {
     
@@ -110,6 +113,37 @@ public class Inventory implements Writable {
 
     public int getCoins() {
         return this.coins;
+    }
+
+    public JSONObject coinsToJson() {
+        JSONObject json = new JSONObject();
+        json.put("coins", coins);
+        return json;
+    }
+
+    @Override
+    public JSONObject toJson() {
+        JSONObject json = new JSONObject();
+        json.put("items", itemsToJson());
+        return json;
+    }
+
+    // EFFECTS: returns the list of items as a jsonarray
+    private JSONArray itemsToJson() {
+        JSONArray itemsJson = new JSONArray();
+
+        for (Item item : items) {
+            itemsJson.put(itemToJson(item));
+        }
+
+        return itemsJson;
+    }
+
+    // EFFECTS: return a single item (its name) as a jsonobject
+    private JSONObject itemToJson(Item item) {
+        JSONObject json = new JSONObject();
+        json.put("name", item.getName());
+        return json;
     }
 
 }
