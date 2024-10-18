@@ -1,10 +1,10 @@
-package model.persistence;
+package persistence;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import org.junit.Test;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 
@@ -13,8 +13,6 @@ import model.RoomHandler;
 import model.Inventory;
 import model.ItemFactory;
 import model.Item;
-import persistence.JsonReader;
-import persistence.JsonWriter;
 
 public class testJsonWritter {
     
@@ -28,12 +26,13 @@ public class testJsonWritter {
         testRoom = new RoomHandler();
         testPlayer = new Player();
         itemFactory = new ItemFactory();
+        testInventory = testPlayer.getInventory();
     }
 
     @Test
     void testWriterWrongFile() {
         try {
-            JsonWriter writer = new JsonWriter("./data/wrong.json");
+            JsonWriter writer = new JsonWriter("./data/my\0illegal:fileName.json");
             writer.open();
             fail("IOException was expected");
         } catch (IOException e) {
@@ -45,7 +44,6 @@ public class testJsonWritter {
     void testWriterOneItem() {
         try {
             // Set the state to be recorded
-            testInventory = testPlayer.getInventory();
             Item excalibur = itemFactory.makeExcalibur();
             testPlayer.setHealth(3);
             testInventory.collect(excalibur, testPlayer);
@@ -53,7 +51,7 @@ public class testJsonWritter {
             testRoom.setRoomNum(6);
 
             // Write
-            JsonWriter writer = new JsonWriter("./data/testWriterEmptyWorkroom.json");
+            JsonWriter writer = new JsonWriter("./data/testWriterOneItem.json");
             writer.open();
             writer.write(testPlayer, testRoom);
             writer.close();
@@ -64,7 +62,7 @@ public class testJsonWritter {
             testInventory.setCoins(5);
             testRoom.setRoomNum(0);
 
-            JsonReader reader = new JsonReader("./data/testWriterEmptyWorkroom.json");
+            JsonReader reader = new JsonReader("./data/testWriterOneItem.json");
             reader.read(); //updated player, inventory, and roomNum
             assertEquals(3, testPlayer.getHealth());
             assertEquals(excalibur, testInventory.getItem("excalibur"));
@@ -76,10 +74,9 @@ public class testJsonWritter {
     }
 
     @Test
-    void testWriterManyItemsNoDagger() {
+    void testWriterManyItems() {
         try {
             // Set the state to be recorded
-            testInventory = testPlayer.getInventory();
             Item sword = itemFactory.makeLongsword();
             Item mace = itemFactory.makeMace();
             Item cap = itemFactory.makeCap();
@@ -94,7 +91,7 @@ public class testJsonWritter {
             testRoom.setRoomNum(1);
 
             // Write
-            JsonWriter writer = new JsonWriter("./data/testWriterEmptyWorkroom.json");
+            JsonWriter writer = new JsonWriter("./data/testWriterManyItems.json");
             writer.open();
             writer.write(testPlayer, testRoom);
             writer.close();
@@ -110,7 +107,7 @@ public class testJsonWritter {
             testInventory.setCoins(99);
             testRoom.setRoomNum(24);
 
-            JsonReader reader = new JsonReader("./data/testWriterEmptyWorkroom.json");
+            JsonReader reader = new JsonReader("./data/testWriterManyItems.json");
             reader.read(); //updated player, inventory, and roomNum
             assertEquals(9, testPlayer.getHealth());
             assertEquals(sword, testInventory.getItem("longsword"));

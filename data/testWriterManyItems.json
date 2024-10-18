@@ -1,0 +1,11 @@
+{"game": [
+    {"items": [
+        {"name": "Longsword"},
+        {"name": "Mace"},
+        {"name": "Farmer's Cap"},
+        {"name": "Thieve's Hood"}
+    ]},
+    {"coins": 0},
+    {"Health": 9},
+    {"roomNumber": 1}
+]}
