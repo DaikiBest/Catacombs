@@ -5,21 +5,21 @@ public class ItemFactory {
 
     // EFFECTS: create an item given string. If invalid string, return null.
     public Item selectItem(String item) {
-        if (item.equals("dagger")) {
+        if (item.equalsIgnoreCase("dagger")) {
             return makeDagger();
-        } else if (item.equals("mace")) {
+        } else if (item.equalsIgnoreCase("mace")) {
             return makeMace();
-        } else if (item.equals("longsword")) {
+        } else if (item.equalsIgnoreCase("longsword")) {
             return makeLongsword();
-        } else if (item.equals("excalibur")) {
+        } else if (item.equalsIgnoreCase("excalibur")) {
             return makeExcalibur();
-        } else if (item.equals("farmer's cap")) {
+        } else if (item.equalsIgnoreCase("farmer's cap")) {
             return makeCap();
-        } else if (item.equals("thieve's hood")) {
+        } else if (item.equalsIgnoreCase("thieve's hood")) {
             return makeHood();
-        } else if (item.equals("knight's helmet")) {
+        } else if (item.equalsIgnoreCase("knight's helmet")) {
             return makeHelmet();
-        } else if (item.equals("crown")) {
+        } else if (item.equalsIgnoreCase("crown")) {
             return makeCrown();
         }   else {
             return null;

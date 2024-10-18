@@ -10,6 +10,7 @@ import org.json.JSONObject;
 import model.Inventory;
 import model.Item;
 import model.Player;
+import model.RoomHandler;
 import ui.Game;
 
 // Represents a writer that writes the game's state to a JSON file
@@ -31,11 +32,12 @@ public class JsonWriter {
 
     // MODIFIES: this
     // EFFECTS: writes the game state into a JSON file
-    public void write(Inventory inventory, Player player, Game game) {
+    public void write(Player player, RoomHandler roomHandler) {
+        Inventory inventory = player.getInventory();
         JSONObject jsonInventory = inventory.toJson();
         JSONObject jsonCoins = inventory.coinsToJson();
         JSONObject jsonPHealth = player.toJson();
-        JSONObject jsonRoomNum = game.toJson();
+        JSONObject jsonRoomNum = roomHandler.toJson();
 
         JSONArray gameJsonArr = new JSONArray();
         gameJsonArr.put(jsonInventory);

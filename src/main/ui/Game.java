@@ -4,21 +4,18 @@ import java.io.FileNotFoundException;
 import java.util.Random;
 import java.util.Scanner;
 
-import org.json.JSONObject;
-
 import persistence.JsonReader;
 import persistence.JsonWriter;
-import persistence.Writable;
 import model.*;
 
 // Represents the game; handles the room by room progression and encounters.
-public class Game implements Writable {
+public class Game {
     private Player player;
     private Inventory inventory;
-    private int roomNumber;
     private String notOver;
     private Scanner input;
 
+    private RoomHandler roomHandler;
     private ItemFactory itemFactory;
     private BattleHandler battleHandler;
     private ShopHandler shopHandler;
@@ -31,15 +28,15 @@ public class Game implements Writable {
 
     // EFFECTS: begin the game
     public Game() {
-        player = new Player();
-        inventory = player.getInventory();
-        roomNumber = 0;
-        notOver = "true";
-        input = new Scanner(System.in);
-        
+        roomHandler = new RoomHandler();
         itemFactory = new ItemFactory();
         battleHandler = new BattleHandler();
         shopHandler = new ShopHandler();
+
+        player = new Player();
+        inventory = player.getInventory();
+        notOver = "true";
+        input = new Scanner(System.in);
 
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
@@ -62,13 +59,14 @@ public class Game implements Writable {
     // either the player won, or the player died.
     public void runGame() {
         while (notOver.equals("true")) {
+            int roomNumber = roomHandler.getRoomNum();
             System.out.println("\nYou are in room " + roomNumber + ".");
             if (roomNumber % 5 == 0 && roomNumber != 0) { // crossroads
                 crossRoads();
             } else {
                 regularEncounter();
             }
-            roomNumber++;
+            roomHandler.increaseRoomNum();
         }
 
         if (notOver.equals("victory")) {
@@ -461,21 +459,15 @@ public class Game implements Writable {
         }
     }
 
-    @Override
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        json.put("roomNumber", roomNumber);
-        return json;
-    }
-
     // EFFECTS: save the game to a file
     private void saveGame() {
         try {
             jsonWriter.open();
-            jsonWriter.write(inventory, player, this);
+            jsonWriter.write(player, roomHandler);
             jsonWriter.close();
-        } catch (Exception e) {
-            // TODO: handle exception
+            System.out.println("Succesfully saved the game to " + JSON_STORE);
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
         }
     }
 
