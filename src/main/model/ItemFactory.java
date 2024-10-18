@@ -4,7 +4,7 @@ package model;
 public class ItemFactory {
 
     // EFFECTS: create an item given string. If invalid string, return null.
-    public Item selectItem(String item) {
+    public Item makeItem(String item) {
         if (item.equalsIgnoreCase("dagger")) {
             return makeDagger();
         } else if (item.equalsIgnoreCase("mace")) {

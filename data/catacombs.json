@@ -1,6 +1,10 @@
-{"game": [
-    {"items": [{"name": "Dagger"}]},
-    {"coins": 7},
-    {"Health": 5},
-    {"roomNumber": 4}
-]}
+{
+    "roomNumber": 5,
+    "coins": 2,
+    "health": 9,
+    "items": [
+        {"name": "Dagger"},
+        {"name": "Mace"},
+        {"name": "Thieve's Hood"}
+    ]
+}

@@ -10,17 +10,19 @@ public class TestPlayer {
     
     private Player testPlayer;
     private Inventory testInventory;
-    private ItemFactory itemHandler;
+    private ItemFactory itemFactory;
     private Item testMace;
     private Item testCap;
 
     @BeforeEach
     void runBefore() {
         testPlayer = new Player();
-        itemHandler = new ItemFactory();
+        itemFactory = new ItemFactory();
         testInventory = testPlayer.getInventory();
-        testMace = itemHandler.makeMace();
-        testCap = itemHandler.makeCap();
+        testMace = itemFactory.makeMace();
+        testCap = itemFactory.makeCap();
+
+        testInventory.collect(itemFactory.makeDagger(), testPlayer);
     }
 
     @Test

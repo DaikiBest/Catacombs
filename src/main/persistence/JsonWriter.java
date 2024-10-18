@@ -8,10 +8,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import model.Inventory;
-import model.Item;
 import model.Player;
 import model.RoomHandler;
-import ui.Game;
 
 // Represents a writer that writes the game's state to a JSON file
 public class JsonWriter {
@@ -34,19 +32,16 @@ public class JsonWriter {
     // EFFECTS: writes the game state into a JSON file
     public void write(Player player, RoomHandler roomHandler) {
         Inventory inventory = player.getInventory();
-        JSONObject jsonInventory = inventory.toJson();
-        JSONObject jsonCoins = inventory.coinsToJson();
-        JSONObject jsonPHealth = player.toJson();
-        JSONObject jsonRoomNum = roomHandler.toJson();
-
-        JSONArray gameJsonArr = new JSONArray();
-        gameJsonArr.put(jsonInventory);
-        gameJsonArr.put(jsonCoins);
-        gameJsonArr.put(jsonPHealth);
-        gameJsonArr.put(jsonRoomNum);
+        JSONArray jsonInventory = inventory.itemsToJson();
+        int coins = inventory.getCoins();
+        int health = player.getHealth();
+        int roomNumber = roomHandler.getRoomNum();
 
         JSONObject gameJson = new JSONObject();
-        gameJson.put("game", gameJsonArr);
+        gameJson.put("items", jsonInventory);
+        gameJson.put("coins", coins);
+        gameJson.put("health", health);
+        gameJson.put("roomNumber", roomNumber);
 
         saveToFile(gameJson.toString(TAB));
     }

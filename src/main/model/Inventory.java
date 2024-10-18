@@ -1,6 +1,5 @@
 package model;
 
-import persistence.Writable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,16 +7,14 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 // Represents the Player's inventory
-public class Inventory implements Writable {
+public class Inventory {
     
-    List<Item> items = new ArrayList<>();
-    int coins;
-    private ItemFactory itemHandler = new ItemFactory();
+    private List<Item> items;
+    private int coins;
 
-    // EFFECTS: create an inventory with a dagger, no armor, and 5 coins. 
+    // EFFECTS: create an inventory with no items and 5 coins. 
     public Inventory(Player player) {
-        Item dagger = itemHandler.makeDagger();
-        this.collect(dagger, player);
+        items = new ArrayList<>();
         coins = 5;
     }
 
@@ -115,21 +112,8 @@ public class Inventory implements Writable {
         return this.coins;
     }
 
-    public JSONObject coinsToJson() {
-        JSONObject json = new JSONObject();
-        json.put("coins", coins);
-        return json;
-    }
-
-    @Override
-    public JSONObject toJson() {
-        JSONObject json = new JSONObject();
-        json.put("items", itemsToJson());
-        return json;
-    }
-
     // EFFECTS: returns the list of items as a jsonarray
-    private JSONArray itemsToJson() {
+    public JSONArray itemsToJson() {
         JSONArray itemsJson = new JSONArray();
 
         for (Item item : items) {

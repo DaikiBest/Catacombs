@@ -14,7 +14,7 @@ public class TestBattle {
     private Goblin testGoblin;
     private Orc testOrc;
     private Inventory testInventory;
-    private ItemFactory itemHandler = new ItemFactory();
+    private ItemFactory itemFactory = new ItemFactory();
     private Item testExcalibur;
 
     @BeforeEach
@@ -24,7 +24,9 @@ public class TestBattle {
         testGoblin = new Goblin();
         testOrc = new Orc();
         testInventory = testPlayer.getInventory();
-        testExcalibur = itemHandler.makeExcalibur();
+        testExcalibur = itemFactory.makeExcalibur();
+
+        testInventory.collect(itemFactory.makeDagger(), testPlayer);
     }
 
     @Test

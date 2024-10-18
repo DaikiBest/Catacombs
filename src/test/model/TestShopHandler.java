@@ -18,17 +18,19 @@ public class TestShopHandler {
     private Item testExcalibur;
     private Item testCrown;
     private Item testHelmet;
+    private Item testInvalidItem;
     private Player testPlayer = new Player();
     private Inventory testInventory;
-    private ItemFactory itemHandler = new ItemFactory();
+    private ItemFactory itemFactory = new ItemFactory();
 
     @BeforeEach
     void runBefore() {
         testSList = testShop.getShopList();
-        testLongsword = itemHandler.makeLongsword();
-        testExcalibur = itemHandler.makeExcalibur();
-        testCrown = itemHandler.makeCrown();
-        testHelmet = itemHandler.makeHelmet();
+        testLongsword = itemFactory.makeItem("longsword");
+        testExcalibur = itemFactory.makeItem("excalibur");
+        testCrown = itemFactory.makeItem("crown");
+        testHelmet = itemFactory.makeItem("knight's helmet");
+        testInvalidItem = itemFactory.makeItem("invalid item"); //null
         testInventory = testPlayer.getInventory();
 
         //create the list with all item names to compare
@@ -41,6 +43,8 @@ public class TestShopHandler {
         actualSList.add("knight's helmet");
         actualSList.add("crown");
         actualSList.add("heal");
+
+        testInventory.collect(itemFactory.makeDagger(), testPlayer);
     }
 
     @Test
@@ -150,5 +154,10 @@ public class TestShopHandler {
         assertEquals(1, testInventory.getItems().size());
         assertEquals("Longsword", testInventory.getItem("Longsword").getName());
         assertEquals(41, testInventory.getCoins());
+    }
+
+    @Test
+    void testInvalidItem() {
+        assertEquals(null, testInvalidItem);
     }
 }

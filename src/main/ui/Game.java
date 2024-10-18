@@ -1,6 +1,7 @@
 package ui;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -35,6 +36,7 @@ public class Game {
 
         player = new Player();
         inventory = player.getInventory();
+        inventory.collect(itemFactory.makeDagger(), player); //start with a dagger
         notOver = "true";
         input = new Scanner(System.in);
 
@@ -78,7 +80,7 @@ public class Game {
     // EFFECTS: move to the next "room" and begin the encounter
     private void regularEncounter() {
         String command = "i"; //move to next room, unless player inputs i (to check their inventory)
-        while (command.equalsIgnoreCase("i")) {
+        while (command.equalsIgnoreCase("i") | command.equalsIgnoreCase("rest")) {
             System.out.print("A rusty wooden door stands in your way... Type to enter, or " 
                             + "\u001B[1m'rest'\u001B[0m (save/load game). ");
             command = input.nextLine();
@@ -292,7 +294,7 @@ public class Game {
     // EFFECTS: Purchase item given the player's input
     private boolean handlePurchase(String purchase) {
 
-        Item item = itemFactory.selectItem(purchase);
+        Item item = itemFactory.makeItem(purchase);
         if (item != null) {
             return shopHandler.purchaseItem(item, player);
         } else if (purchase.equals("heal")) {
@@ -465,7 +467,7 @@ public class Game {
             jsonWriter.open();
             jsonWriter.write(player, roomHandler);
             jsonWriter.close();
-            System.out.println("Succesfully saved the game to " + JSON_STORE);
+            System.out.println("Succesfully saved the game to " + JSON_STORE + "\n");
         } catch (FileNotFoundException e) {
             System.out.println("Unable to write to file: " + JSON_STORE);
         }
@@ -474,10 +476,14 @@ public class Game {
     // MODIFIES: this, player, inventory
     // EFFECTS: load the game from a file
     private void loadGame() {
-        //stub
-        player = new Player();
-        inventory = player.getInventory();
-        jsonReader.read(player, inventory, roomHandler);
-        roomNumber = 
+        try {
+            player = new Player();
+            inventory = player.getInventory();
+            jsonReader.read(player, inventory, roomHandler);
+            System.out.println("Succesfully loaded the game from " + JSON_STORE + "\n");
+        } catch (IOException e) {
+            System.out.println("Unable to read file from: " + JSON_STORE);
+        }
+
     }
 }

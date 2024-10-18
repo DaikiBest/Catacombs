@@ -49,6 +49,7 @@ public class testJsonWritter {
             testInventory.collect(excalibur, testPlayer);
             testInventory.setCoins(9);
             testRoom.setRoomNum(6);
+            testRoom.increaseRoomNum(); //roomNum is 7
 
             // Write
             JsonWriter writer = new JsonWriter("./data/testWriterOneItem.json");
@@ -63,11 +64,14 @@ public class testJsonWritter {
             testRoom.setRoomNum(0);
 
             JsonReader reader = new JsonReader("./data/testWriterOneItem.json");
-            reader.read(); //updated player, inventory, and roomNum
+            testPlayer = new Player();
+            testInventory = testPlayer.getInventory();
+            reader.read(testPlayer, testInventory, testRoom); //updated player, inventory, and roomNum
             assertEquals(3, testPlayer.getHealth());
-            assertEquals(excalibur, testInventory.getItem("excalibur"));
+            assertEquals("Excalibur", testInventory.getItem("excalibur").getName());
+            assertEquals(1, testInventory.getItems().size());
             assertEquals(9, testInventory.getCoins());
-            assertEquals(6, testRoom.getRoomNum());
+            assertEquals(7, testRoom.getRoomNum());
         } catch (IOException e) {
             fail("Couldn't read from file");
         }
@@ -108,12 +112,15 @@ public class testJsonWritter {
             testRoom.setRoomNum(24);
 
             JsonReader reader = new JsonReader("./data/testWriterManyItems.json");
-            reader.read(); //updated player, inventory, and roomNum
+            testPlayer = new Player();
+            testInventory = testPlayer.getInventory();
+            reader.read(testPlayer, testInventory, testRoom); //updated player, inventory, and roomNum
             assertEquals(9, testPlayer.getHealth());
-            assertEquals(sword, testInventory.getItem("longsword"));
-            assertEquals(mace, testInventory.getItem("mace"));
-            assertEquals(cap, testInventory.getItem("farmer's cap"));
-            assertEquals(hood, testInventory.getItem("thieve's hood"));
+            assertEquals("Longsword", testInventory.getItem("longsword").getName());
+            assertEquals("Mace", testInventory.getItem("mace").getName());
+            assertEquals("Farmer's Cap", testInventory.getItem("farmer's cap").getName());
+            assertEquals("Thieve's Hood", testInventory.getItem("thieve's hood").getName());
+            assertEquals(4, testInventory.getItems().size());
             assertEquals(0, testInventory.getCoins());
             assertEquals(1, testRoom.getRoomNum());
         } catch (IOException e) {
