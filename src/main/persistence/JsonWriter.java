@@ -39,7 +39,7 @@ public class JsonWriter {
 
         JSONObject gameJson = new JSONObject();
         gameJson.put("items", jsonInventory);
-        gameJson.put("coins", coins);
+        gameJson.put("coins", coins); 
         gameJson.put("health", health);
         gameJson.put("roomNumber", roomNumber);
 

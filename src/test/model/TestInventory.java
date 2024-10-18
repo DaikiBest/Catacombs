@@ -21,10 +21,10 @@ public class TestInventory {
     void runBefore() {
         testPlayer = new Player();
         testInventory = testPlayer.getInventory();
-        testDagger = itemFactory.makeDagger();
-        testMace = itemFactory.makeMace();
-        testCap = itemFactory.makeCap();
-        testHood = itemFactory.makeHood();
+        testDagger = itemFactory.makeItem("dagger");
+        testMace = itemFactory.makeItem("mace");
+        testCap = itemFactory.makeItem("farmer's cap");
+        testHood = itemFactory.makeItem("thieve's hood");
 
         testInventory.collect(itemFactory.makeItem("Dagger"), testPlayer);
     }
@@ -35,7 +35,7 @@ public class TestInventory {
         assertEquals("Dagger", testInventory.getItem("Dagger").getName());
         for (Item item : testInventory.getItems()) {
             assertFalse(item instanceof Armor); 
-            }; //check if items of type Armor are in inventory
+        } //check if items of type Armor are in inventory
         assertEquals(5, testInventory.getCoins());
     }
 

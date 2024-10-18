@@ -1,9 +1,0 @@
-{"game": [
-    {"items": [
-        {"name": "Dagger"},
-        {"name": "Excalibur"}
-    ]},
-    {"coins": 9},
-    {"Health": 3},
-    {"roomNumber": 6}
-]}

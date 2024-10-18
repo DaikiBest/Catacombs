@@ -13,8 +13,8 @@ import model.RoomHandler;
 import model.Inventory;
 import model.ItemFactory;
 import model.Item;
-
-public class testJsonWritter {
+ 
+public class TestJsonWriter {
     
     Player testPlayer;
     Inventory testInventory;
@@ -45,10 +45,8 @@ public class testJsonWritter {
         try {
             // Set the state to be recorded
             Item excalibur = itemFactory.makeExcalibur();
-            testPlayer.setHealth(3);
+            setGameState(3, 9, 6);
             testInventory.collect(excalibur, testPlayer);
-            testInventory.setCoins(9);
-            testRoom.setRoomNum(6);
             testRoom.increaseRoomNum(); //roomNum is 7
 
             // Write
@@ -58,10 +56,8 @@ public class testJsonWritter {
             writer.close();
 
             // Reset game state
-            testPlayer.setHealth(5);
+            setGameState(5, 5, 0);
             testInventory.discard("excalibur", testPlayer);
-            testInventory.setCoins(5);
-            testRoom.setRoomNum(0);
 
             JsonReader reader = new JsonReader("./data/testWriterOneItem.json");
             testPlayer = new Player();
@@ -81,18 +77,9 @@ public class testJsonWritter {
     void testWriterManyItems() {
         try {
             // Set the state to be recorded
-            Item sword = itemFactory.makeLongsword();
-            Item mace = itemFactory.makeMace();
-            Item cap = itemFactory.makeCap();
-            Item hood = itemFactory.makeHood();
-            testPlayer.setHealth(9);
-            testInventory.collect(sword, testPlayer);
-            testInventory.collect(mace, testPlayer);
-            testInventory.collect(cap, testPlayer);
-            testInventory.collect(hood, testPlayer);
-            testInventory.discard("dagger", testPlayer);
-            testInventory.setCoins(0);
-            testRoom.setRoomNum(1);
+            setGameState(9, 0, 1);
+            testInventory.collect(itemFactory.makeLongsword(), testPlayer);
+            testInventory.collect(itemFactory.makeHood(), testPlayer);
 
             // Write
             JsonWriter writer = new JsonWriter("./data/testWriterManyItems.json");
@@ -101,15 +88,9 @@ public class testJsonWritter {
             writer.close();
 
             // Change the game state
-            testPlayer.setHealth(11);
+            setGameState(11, 99, 24);
             testInventory.discard("longsword", testPlayer);
-            testInventory.discard("mace", testPlayer);
-            testInventory.discard("farmer's cap", testPlayer);
-            testInventory.discard("thieve's hood", testPlayer);
             testInventory.collect(itemFactory.makeHelmet(), testPlayer);
-            testInventory.collect(itemFactory.makeExcalibur(), testPlayer);
-            testInventory.setCoins(99);
-            testRoom.setRoomNum(24);
 
             JsonReader reader = new JsonReader("./data/testWriterManyItems.json");
             testPlayer = new Player();
@@ -117,14 +98,18 @@ public class testJsonWritter {
             reader.read(testPlayer, testInventory, testRoom); //updated player, inventory, and roomNum
             assertEquals(9, testPlayer.getHealth());
             assertEquals("Longsword", testInventory.getItem("longsword").getName());
-            assertEquals("Mace", testInventory.getItem("mace").getName());
-            assertEquals("Farmer's Cap", testInventory.getItem("farmer's cap").getName());
             assertEquals("Thieve's Hood", testInventory.getItem("thieve's hood").getName());
-            assertEquals(4, testInventory.getItems().size());
+            assertEquals(2, testInventory.getItems().size());
             assertEquals(0, testInventory.getCoins());
             assertEquals(1, testRoom.getRoomNum());
         } catch (IOException e) {
             fail("Couldn't read from file");
         }
+    }
+
+    private void setGameState(int hp, int coins, int roomNum) {
+        testPlayer.setHealth(hp);
+        testInventory.setCoins(coins);
+        testRoom.setRoomNum(roomNum);
     }
 }

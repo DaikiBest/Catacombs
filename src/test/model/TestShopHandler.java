@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 
 public class TestShopHandler {
 
-    private ShopHandler testShop = new ShopHandler();;
+    private ShopHandler testShop = new ShopHandler();
     private List<String> testSList;
     private List<String> actualSList = new ArrayList<>();
     private Item testLongsword;

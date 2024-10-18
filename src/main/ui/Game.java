@@ -22,7 +22,7 @@ public class Game {
     private ShopHandler shopHandler;
 
     private static final String JSON_STORE = "./data/catacombs.json";
-    private JsonWriter jsonWriter;
+    private JsonWriter jsonWriter; 
     private JsonReader jsonReader;
 
     private static final Random RANDOM = new Random();

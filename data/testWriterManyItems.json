@@ -4,8 +4,6 @@
     "health": 9,
     "items": [
         {"name": "Longsword"},
-        {"name": "Mace"},
-        {"name": "Farmer's Cap"},
         {"name": "Thieve's Hood"}
     ]
 }

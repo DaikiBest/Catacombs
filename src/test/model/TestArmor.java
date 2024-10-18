@@ -7,13 +7,13 @@ import org.junit.jupiter.api.Test;
 
 public class TestArmor {
     
-    Armor testCap;
-    Armor TestHood;
+    private Armor testCap;
+    private Armor testHood;
 
     @BeforeEach
     void runBefore() {
         testCap = new Armor("Farmer's Cap", 7, 2);
-        TestHood = new Armor("Thieve's Hood", 9, 4);
+        testHood = new Armor("Thieve's Hood", 9, 4);
     }
 
     @Test
@@ -25,8 +25,8 @@ public class TestArmor {
 
     @Test
     void testConstructorHood() {
-        assertEquals("Thieve's Hood", TestHood.getName());
-        assertEquals(9, TestHood.getStat());
-        assertEquals(4, TestHood.getValue());
+        assertEquals("Thieve's Hood", testHood.getName());
+        assertEquals(9, testHood.getStat());
+        assertEquals(4, testHood.getValue());
     }
 }
