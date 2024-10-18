@@ -475,9 +475,9 @@ public class Game {
     // EFFECTS: load the game from a file
     private void loadGame() {
         //stub
-        // player = new Player();
-        // jsonReader.read();
-        // inventory = ... a new Inventory. Might need to add method setInventory in Player
-        // roomNumber = 
+        player = new Player();
+        inventory = player.getInventory();
+        jsonReader.read(player, inventory, roomHandler);
+        roomNumber = 
     }
 }
