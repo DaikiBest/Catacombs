@@ -20,3 +20,6 @@ User stories:
 - As a user, I want the game to end when your health drops to zero, and win when you defeat the final (boss) enemy.
 - As a user, I want to be able to have the option to save my game when I reach a "rest spot" (ie. in-between encounters).
 - As a user, I want to be able to load my game from a file, in order to continue the game where I left off last time (also at a "rest spot").
+
+Citation (for JSON reading and writing):
+  UBC Computer Science (2020) JsonSerializationDemo[Source Code]. https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo.
