@@ -1,0 +1,15 @@
+{
+    "roomNumber": 16,
+    "coins": 33,
+    "health": 8,
+    "items": [
+        {"name": "Mace-3"},
+        {"name": "Thieve's Hood-3"},
+        {"name": "Longsword-2"},
+        {"name": "Thieve's Hood-2"},
+        {"name": "Crown-0"},
+        {"name": "Crown-1"},
+        {"name": "Longsword-1"},
+        {"name": "Longsword-2"}
+    ]
+}

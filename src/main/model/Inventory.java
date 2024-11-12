@@ -103,6 +103,42 @@ public class Inventory {
         return null;
     }
 
+    // REQUIRES: items.size() > 0, at least one weapon in inventory
+    // EFFECTS: get the highest tier weapon (hence the equipped weapon). Due to the requires clause,
+    // should never return null.
+    public Item getEquippedWeapon() {
+        int maxDmg = 0;
+        Item weapon = null;
+        Item prev = null;
+        for (Item item : items) {
+            if (item instanceof Weapon && item.getStat() >= maxDmg) {
+                maxDmg = item.getStat(); //get the weapon with damage
+                prev = ((prev == null) ? item : prev);
+                prev = ((prev.getName() != item.getName()) ? item : prev); // upgraded the weapon?
+                weapon = ((item.getRefine() > prev.getRefine()) ? item : prev); //get that Weapon with highest refine
+                prev = item;
+            }
+        }
+        return weapon;
+    }
+
+    // EFFECTS: get the highest tier armor (hence the equipped armor). Will return null if no armor.
+    public Item getEquippedArmor() {
+        int maxArmor = 5;
+        Item armor = null;
+        Item prev = null;
+        for (Item item : items) {
+            if (item instanceof Armor && item.getStat() >= maxArmor) {
+                maxArmor = item.getStat(); //get the Armor with highest hpStat)
+                prev = ((prev == null) ? item : prev);
+                prev = ((prev.getName() != item.getName()) ? item : prev); //upgraded armor?
+                armor = ((item.getRefine() > prev.getRefine()) ? item : prev); //get that Armor with highest refine
+                prev = item;
+            }
+        }
+        return armor;
+    }
+
     // REQUIRES: new coins amount >= 0.
     public void setCoins(int coins) {
         this.coins = coins;
@@ -126,7 +162,7 @@ public class Inventory {
     // EFFECTS: return a single item (its name) as a jsonobject
     private JSONObject itemToJson(Item item) {
         JSONObject json = new JSONObject();
-        json.put("name", item.getName());
+        json.put("name", item.getName() + "-" + item.getRefine());
         return json;
     }
 

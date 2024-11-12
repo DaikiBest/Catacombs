@@ -1,0 +1,15 @@
+{
+    "roomNumber": 99,
+    "coins": 99,
+    "health": 15,
+    "items": [
+        {"name": "Dagger-20"},
+        {"name": "Mace-3"},
+        {"name": "Longsword-3"},
+        {"name": "Excalibur-3"},
+        {"name": "Farmer's Cap-3"},
+        {"name": "Thieve's Hood-3"},
+        {"name": "Knight's Helmet-3"},
+        {"name": "Crown-3"}
+    ]
+}

@@ -8,8 +8,9 @@ public class ShopHandler {
     
     List<String> shopList;
     private int healPrice;
+    private int refinePrice;
 
-    // EFFECTS: create a shop with a list of all item names and healPrice of 1 coin
+    // EFFECTS: create a shop with a list of all item names, healPrice (1 coin), and refinePrice (4 coins)
     public ShopHandler() {
         shopList = new ArrayList<>();
         shopList.add("dagger");
@@ -23,6 +24,7 @@ public class ShopHandler {
         shopList.add("heal");
         
         healPrice = 1;
+        refinePrice = 4;
     }
 
     // MODIFIES: inventory
@@ -82,7 +84,22 @@ public class ShopHandler {
         }
         inventory.discard(itemName, player);
         inventory.collectCoins(item.getValue());
+        inventory.collectCoins(item.getRefine() * refinePrice / 2);
         return true;
+    }
+
+    // MODIFIES: item, inventory
+    // EFFECTS: refine an item in your inventory for refinePrice. Will return true if successful,
+    // false if fails (either not enough coins or item is max refined).
+    public boolean purchaseRefine(Item item, Inventory inventory) {
+        if (inventory.getCoins() >= refinePrice & item.getRefine() < 3) {
+            item.refine();
+            inventory.deductCoins(refinePrice);
+            return true;
+        } else {
+            // can't afford or item is max refined
+            return false;
+        }
     }
 
     public List<String> getShopList() {

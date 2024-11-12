@@ -1,30 +1,12 @@
 package model;
 
 // Represents a weapon used to deal damage
-public class Weapon implements Item {
-    
-    private final String name;
-    private final int stat;
-    private final int value;
+public class Weapon extends Item {
 
-    // EFFECTS: create an armor with name, damage stat, and value.
+    // EFFECTS: create an armor with name, damage stat, value, zero refine, and a maxRefine.
+    // Each refine level increases your dice roll by 1, and can be increased up to maxRefine
     public Weapon(String name, int stat, int value) {
-        this.name = name;
-        this.stat = stat;
-        this.value = value;
+        super(name, stat, value);
     }
 
-
-    public String getName() {
-        return this.name;
-    }
-
-    public int getStat() {
-        return this.stat;
-    }
-
-    public int getValue() {
-        return this.value;
-    }
-    
 }

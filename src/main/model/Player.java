@@ -26,17 +26,11 @@ public class Player extends GameCharacter {
         }
     }
 
-    // REQUIRES: inventory is not empty, inventory must have at least one weapon
     // MODIFIES: this
     // EFFECTS: update the player's damage to the highest tier weapon in
     // the inventory.
     public void updateWeapon(List<Item> items) {
-        int maxDmg = 0;
-        for (Item item : items) {
-            if (item instanceof Weapon && item.getStat() > maxDmg) {
-                maxDmg = item.getStat(); //get the weapon with highest stats
-            }
-        }
+        int maxDmg = inventory.getEquippedWeapon().getStat();
         this.setDamage(maxDmg);
     }
 
@@ -45,12 +39,9 @@ public class Player extends GameCharacter {
     // If the inventory has no armors left, then MAX player hp goes to the default 5.
     public void updateArmor(List<Item> items) {
         int prevMax = getMaxHP();
-        int maxArmor = 5;
-        for (Item item : items) {
-            if (item instanceof Armor && item.getStat() > maxArmor) {
-                maxArmor = item.getStat(); //get the Armor with highest stats
-            }
-        }
+        Item equippedArmor = inventory.getEquippedArmor();
+        int maxArmor = ((equippedArmor == null) ? 5 : equippedArmor.getStat());
+
         this.setMaxHP(maxArmor);
         if (prevMax < maxArmor || getHealth() > maxArmor) { //increase hp up to newly updated maxHP
             this.setHealth(maxArmor);
@@ -70,5 +61,4 @@ public class Player extends GameCharacter {
     }
 
     // Basic getters and setters all in GameCharacter superclass (eg. getHealth, setDamage, etc.)
-
 }

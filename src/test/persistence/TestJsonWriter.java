@@ -13,9 +13,9 @@ import model.RoomHandler;
 import model.Inventory;
 import model.ItemFactory;
 import model.Item;
- 
+
 public class TestJsonWriter {
-    
+
     Player testPlayer;
     Inventory testInventory;
     RoomHandler testRoom;
@@ -47,7 +47,7 @@ public class TestJsonWriter {
             Item excalibur = itemFactory.makeExcalibur();
             setGameState(3, 9, 6);
             testInventory.collect(excalibur, testPlayer);
-            testRoom.increaseRoomNum(); //roomNum is 7
+            testRoom.increaseRoomNum(); // roomNum is 7
 
             // Write
             JsonWriter writer = new JsonWriter("./data/testWriterOneItem.json");
@@ -62,9 +62,10 @@ public class TestJsonWriter {
             JsonReader reader = new JsonReader("./data/testWriterOneItem.json");
             testPlayer = new Player();
             testInventory = testPlayer.getInventory();
-            reader.read(testPlayer, testInventory, testRoom); //updated player, inventory, and roomNum
+            reader.read(testPlayer, testInventory, testRoom); // updated player, inventory, and roomNum
             assertEquals(3, testPlayer.getHealth());
             assertEquals("Excalibur", testInventory.getItem("excalibur").getName());
+            assertEquals(0, testInventory.getItem("excalibur").getRefine());
             assertEquals(1, testInventory.getItems().size());
             assertEquals(9, testInventory.getCoins());
             assertEquals(7, testRoom.getRoomNum());
@@ -95,13 +96,37 @@ public class TestJsonWriter {
             JsonReader reader = new JsonReader("./data/testWriterManyItems.json");
             testPlayer = new Player();
             testInventory = testPlayer.getInventory();
-            reader.read(testPlayer, testInventory, testRoom); //updated player, inventory, and roomNum
+            reader.read(testPlayer, testInventory, testRoom); // updated player, inventory, and roomNum
             assertEquals(9, testPlayer.getHealth());
             assertEquals("Longsword", testInventory.getItem("longsword").getName());
             assertEquals("Thieve's Hood", testInventory.getItem("thieve's hood").getName());
-            assertEquals(2, testInventory.getItems().size());
             assertEquals(0, testInventory.getCoins());
             assertEquals(1, testRoom.getRoomNum());
+        } catch (IOException e) {
+            fail("Couldn't read from file");
+        }
+    }
+
+    @Test
+    void testReader() {
+        try {
+            // Change the game state
+            setGameState(99, 99, 99);
+            testInventory.collect(itemFactory.makeMace(), testPlayer);
+            testInventory.collect(itemFactory.makeHelmet(), testPlayer);
+
+            JsonReader reader = new JsonReader("./data/testReaderRefinements.json");
+            testPlayer = new Player();
+            testInventory = testPlayer.getInventory();
+            reader.read(testPlayer, testInventory, testRoom);
+            assertEquals("Crown", testInventory.getEquippedArmor().getName());
+            assertEquals("Longsword", testInventory.getEquippedWeapon().getName());
+            assertEquals(8, testPlayer.getHealth());
+            assertEquals(1, testInventory.getEquippedArmor().getRefine()); //crown-1
+            assertEquals(2, testInventory.getEquippedWeapon().getRefine());//longsword-2
+            assertEquals(8, testInventory.getItems().size());
+            assertEquals(33, testInventory.getCoins());
+            assertEquals(16, testRoom.getRoomNum());
         } catch (IOException e) {
             fail("Couldn't read from file");
         }

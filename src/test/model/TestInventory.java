@@ -123,4 +123,53 @@ public class TestInventory {
     void testDiscardFail() {
         testInventory.discard("mace", testPlayer);
     }
+
+    @Test
+    void testGetEquippedWeapon() {
+        Item testMace2 = itemFactory.makeItem("mace");
+        Item testMace3 = itemFactory.makeItem("mace");
+        testInventory.collect(testMace, testPlayer);
+        testInventory.collect(testMace2, testPlayer);
+        testInventory.collect(testMace3, testPlayer);
+        testMace.refine();
+        testMace2.refine();
+        testMace2.refine();
+        testMace2.refine();
+        testMace2.refine();
+        testMace3.refine();
+        testMace3.refine();
+        assertEquals(testMace2, testInventory.getEquippedWeapon());
+        assertEquals(3, testMace2.getRefine());
+    }
+
+    @Test
+    void testGetEquippedArmor() {
+        Item testCap2 = itemFactory.makeItem("farmer's cap");
+        Item testCap3 = itemFactory.makeItem("farmer's cap");
+        testInventory.collect(testCap, testPlayer);
+        testInventory.collect(testCap2, testPlayer);
+        testInventory.collect(testCap3, testPlayer);
+        testCap.refine();
+        testCap2.refine();
+        testCap3.refine();
+        testCap3.refine();
+        assertEquals(2, testCap3.getRefine());
+        assertEquals(testCap3, testInventory.getEquippedArmor());
+    }
+
+    @Test
+    void testGetEquippedArmorEdgeCases() {
+        assertEquals(null, testInventory.getEquippedArmor());
+        testInventory.collect(testCap, testPlayer);
+        assertEquals(testCap, testInventory.getEquippedArmor());
+        testInventory.collect(testHood, testPlayer);
+        testInventory.collect(testCap, testPlayer);
+        assertEquals(testHood, testInventory.getEquippedArmor());
+    }
+
+    @Test
+    void testGetEquippedWeaponEdgeCases() {
+        testInventory.collect(testMace, testPlayer);
+        assertEquals(testMace, testInventory.getEquippedWeapon());
+    }
 }

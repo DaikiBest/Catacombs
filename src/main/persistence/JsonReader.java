@@ -11,6 +11,7 @@ import org.json.JSONObject;
 
 import model.Inventory;
 import model.ItemFactory;
+import model.Item;
 import model.Player;
 import model.RoomHandler;
 
@@ -70,8 +71,12 @@ public class JsonReader {
     // EFFECTS: parse and adds individual item to player inventory from JSON
     private void addItem(JSONObject jsonObject, Inventory inventory, Player player) {
         ItemFactory itemFactory = new ItemFactory();
-        String name = jsonObject.getString("name");
-        inventory.collect(itemFactory.makeItem(name), player);
+        String[] partsNameRefine = jsonObject.getString("name").split("-");
+        String name = partsNameRefine[0];
+        int refine = Integer.valueOf(partsNameRefine[1]);
+        Item item = itemFactory.makeItem(name);
+        inventory.collect(item, player);
+        item.setRefine(refine);
     }
 
 }

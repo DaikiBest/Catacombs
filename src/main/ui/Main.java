@@ -2,7 +2,9 @@ package ui;
 
 // start the program
 public class Main {
-    public static void main(String[] args) throws Exception {
-        new Game();
+    // EFFECTS: start game
+    public static void main(String[] args) {
+        new GameGUI();
+        //new Game();
     }
 }

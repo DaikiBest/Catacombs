@@ -1,31 +1,11 @@
 package model;
 
 // Represents Armor used to boost Player's hp.
-public class Armor implements Item {
+public class Armor extends Item {
     
-    private String name;
-    private int stat;
-    private int value;
-
-
-    // EFFECTS: create an armor with name, hp bonus stat, and value.
+    // EFFECTS: create an armor with name, damage stat, value, zero refine, and a maxRefine.
+    // Each refine level increases your dice roll by 1, and can be increased up to maxRefine
     public Armor(String name, int stat, int value) {
-        this.name = name;
-        this.stat = stat;
-        this.value = value;
+        super(name, stat, value);
     }
-
-    public String getName() {
-        return this.name;
-    }
-
-    public int getStat() {
-        return this.stat;
-    }
-
-    public int getValue() {
-        return this.value;
-    }
-    
-
 }
