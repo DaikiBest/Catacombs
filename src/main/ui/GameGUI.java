@@ -102,7 +102,7 @@ public class GameGUI {
     private void lootEncounter() {
         room.beginLoot();
     }
-
+    
     private void shopEncounter() {
         room.beginShop();
     }

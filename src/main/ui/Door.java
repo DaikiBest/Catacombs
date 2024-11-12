@@ -92,10 +92,6 @@ public class Door extends RoomPanel {
         }
     }
 
-    public void begin() {
-        panel.setVisible(true);
-    }
-
     public void end() {
         panel.setVisible(false);
     }

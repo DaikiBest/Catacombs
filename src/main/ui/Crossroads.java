@@ -29,10 +29,6 @@ public class Crossroads extends RoomPanel {
         return button;
     }
 
-    public void begin() {
-        panel.setVisible(true);
-    }
-
     public void end() {
         panel.setVisible(false);
     }

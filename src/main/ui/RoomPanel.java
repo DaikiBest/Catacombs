@@ -3,6 +3,7 @@ package ui;
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
+// Represents an abstract class for all rooms
 abstract class RoomPanel {
     protected JPanel panel;
     
@@ -13,7 +14,12 @@ abstract class RoomPanel {
         panel.setVisible(false);
     }
 
-    // abstract void begin();
+    public void begin() {
+        panel.setVisible(true);
+    }
 
-    // abstract void end();
+    public void end(GameGUI game) {
+        panel.setVisible(false);
+        game.runGame();
+    }
 }

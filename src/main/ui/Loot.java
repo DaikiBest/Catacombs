@@ -133,13 +133,4 @@ public class Loot extends RoomPanel {
             return "Crown";
         }
     }
-
-    public void begin() {
-        panel.setVisible(true);
-    }
-
-    public void end(GameGUI game) {
-        panel.setVisible(false);
-        game.runGame();
-    }
 }
