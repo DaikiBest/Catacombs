@@ -1,13 +1,13 @@
 package ui;
 
 import model.Player;
+import model.RoomHandler;
 
 import javax.swing.*;
 import javax.swing.border.Border;
 
 import java.awt.Image;
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Font;
 
 //Represents the rooms where the game takes place
@@ -27,12 +27,13 @@ public class Room extends JFrame {
 
     private static final int WIDTH = 900;
     private static final int HEIGHT = 700;
+    private static final String tab = "       ";
     
     // private Shop shop;
     // private Encounter encounter;
 
     // EFFECTS: Creates the room JFrame
-    public Room(Player player, int roomNum, GameGUI game) {
+    public Room(Player player, GameGUI game, RoomHandler roomHandler) {
         frame = new JFrame();
         frame.setDefaultCloseOperation(Room.EXIT_ON_CLOSE);
         frame.setSize(WIDTH, HEIGHT);
@@ -43,8 +44,8 @@ public class Room extends JFrame {
         roomsLayered = new JLayeredPane();
         frame.add(roomsLayered);
         
-        addHud(player, roomNum);
-        setupRooms(game);
+        addHud(player, roomHandler.getRoomNum());
+        setupRooms(game, player, roomHandler);
         
         frame.setVisible(true);
     }
@@ -62,13 +63,20 @@ public class Room extends JFrame {
         addInventoryButton();
     }
 
-    // EFFECTS: 
+    // MODIFIES: this
+    // EFFECTS: adds the player data (a label) to the hud
     private void addPlayerData(Player player, int roomNum) {
-        String tab = "       ";
         playerInfo = new JLabel("Room Number: " + roomNum + tab + "Health: " + player.getHealth()
                 + tab + "Damage: " + player.getDamage());
         playerInfo.setFont(new Font("Arial", Font.PLAIN, 18));
         hudPanel.add(playerInfo, BorderLayout.WEST);
+    }
+
+    // MODIFIES: this
+    // EFFECTS: updates the player data
+    public void updatePlayerData(Player player, int roomNum) {
+        playerInfo.setText("Room Number: " + roomNum + tab + "Health: " + player.getHealth()
+                + tab + "Damage: " + player.getDamage());
     }
 
     // MODIFIES: this
@@ -79,7 +87,7 @@ public class Room extends JFrame {
         inventoryButton.setBorder(BorderFactory.createEmptyBorder());
 
         Image originalImage = new ImageIcon("./images/backpack.png").getImage();
-        Image scaledInv = originalImage.getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+        Image scaledInv = originalImage.getScaledInstance(60, 60, Image.SCALE_SMOOTH);
         ImageIcon inventory = new ImageIcon(scaledInv);
 
         inventoryButton.setIcon(inventory);
@@ -87,12 +95,12 @@ public class Room extends JFrame {
     }
 
     // EFFECTS: create all rooms
-    public void setupRooms(GameGUI game) {
+    public void setupRooms(GameGUI game, Player player, RoomHandler roomHandler) {
         door = new Door(roomsLayered, game);
         crossroads = new Crossroads(roomsLayered, game);
         encounter = new Encounter(roomsLayered);
         shop = new Shop(roomsLayered);
-        loot = new Loot(roomsLayered);
+        loot = new Loot(roomsLayered, player, game, frame);
     }
 
     public void toDoor() {

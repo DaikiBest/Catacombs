@@ -1,7 +1,11 @@
 package ui;
 
 import model.*;
-import persistence.*;
+import persistence.JsonReader;
+import persistence.JsonWriter;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.Random;
 
 //Represents the game's GUI
@@ -10,6 +14,7 @@ public class GameGUI {
 
     private Player player;
     private Inventory inventory;
+    private int roomNum;
     private String notOver;
 
     private RoomHandler roomHandler;
@@ -38,7 +43,7 @@ public class GameGUI {
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
 
-        room = new Room(player, roomHandler.getRoomNum(), this);
+        room = new Room(player, this, roomHandler);
         runGame();
     }
 
@@ -48,19 +53,18 @@ public class GameGUI {
     // that the game must end and
     // either the player won, or the player died.
     public void runGame() {
-        while (notOver.equals("true")) {
-            int roomNumber = roomHandler.getRoomNum();
-            if (roomNumber % 5 == 0 && roomNumber != 0) { // crossroads
-                room.toCrossroads();
-            } else {
-                room.toDoor();
-            }
+        room.updatePlayerData(player, roomHandler.getRoomNum());
+        roomNum = roomHandler.getRoomNum();
+        if (roomNum % 5 == 0 && roomNum != 0) { // crossroads
+            room.toCrossroads();
+        } else {
+            room.toDoor();
         }
 
         if (notOver.equals("victory")) {
             // WIN
             System.out.println("\u001B[1m\nYou are victorious in your quest!");
-        } else {
+        } else if (notOver.equals("loss")) {
             // GAME OVER
             System.out.println("\nGame Over");
         }
@@ -68,11 +72,13 @@ public class GameGUI {
 
     // EFFECTS: determine the type of encounter: either a goblin, orc, chest, or shop.
     public void nextEncounter() {
-        // int next = RANDOM.nextInt(10) + 1;
-        int next = 8;
         roomHandler.increaseRoomNum();
+        room.updatePlayerData(player, roomHandler.getRoomNum());
         room.exitDoor();
         room.exitCrossroads();
+        
+        int next = RANDOM.nextInt(10) + 1;
+        // next = 8;
         if (next <= 4) { // 1-4 40%
             GameCharacter goblin = new Goblin();
             enemyEncounter(goblin);
@@ -82,7 +88,6 @@ public class GameGUI {
             enemyEncounter(orc);
 
         } else if (next == 8) { // only 8: 10%
-            System.out.println("Loot!");
             lootEncounter();
 
         } else { // 9-10 20%
@@ -100,5 +105,29 @@ public class GameGUI {
 
     private void shopEncounter() {
         room.beginShop();
+    }
+
+    public void save() {
+        try {
+            jsonWriter.open();
+            jsonWriter.write(player, roomNum);
+            jsonWriter.close();
+            System.out.println("Succesfully saved the game to " + JSON_STORE + "\n");
+        } catch (FileNotFoundException e) {
+            System.out.println("Unable to write to file: " + JSON_STORE);
+        }
+    }
+
+    public void load() {
+        try {
+            player = new Player();
+            Inventory inventory = player.getInventory();
+            inventory = player.getInventory();
+            jsonReader.read(player, inventory, roomHandler);
+            System.out.println("Succesfully loaded the game from " + JSON_STORE + "\n");
+            room.updatePlayerData(player, roomHandler.getRoomNum());
+        } catch (IOException e) {
+            System.out.println("Unable to read file from: " + JSON_STORE);
+        }
     }
 }

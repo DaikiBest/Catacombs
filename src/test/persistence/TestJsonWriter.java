@@ -52,7 +52,7 @@ public class TestJsonWriter {
             // Write
             JsonWriter writer = new JsonWriter("./data/testWriterOneItem.json");
             writer.open();
-            writer.write(testPlayer, testRoom);
+            writer.write(testPlayer, testRoom.getRoomNum());
             writer.close();
 
             // Reset game state
@@ -85,7 +85,7 @@ public class TestJsonWriter {
             // Write
             JsonWriter writer = new JsonWriter("./data/testWriterManyItems.json");
             writer.open();
-            writer.write(testPlayer, testRoom);
+            writer.write(testPlayer, testRoom.getRoomNum());
             writer.close();
 
             // Change the game state

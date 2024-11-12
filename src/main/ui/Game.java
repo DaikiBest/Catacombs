@@ -528,7 +528,7 @@ public class Game {
     private void saveGame() {
         try {
             jsonWriter.open();
-            jsonWriter.write(player, roomHandler);
+            jsonWriter.write(player, roomHandler.getRoomNum());
             jsonWriter.close();
             System.out.println("Succesfully saved the game to " + JSON_STORE + "\n");
         } catch (FileNotFoundException e) {

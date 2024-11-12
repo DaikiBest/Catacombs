@@ -30,18 +30,17 @@ public class JsonWriter {
 
     // MODIFIES: this
     // EFFECTS: writes the game state into a JSON file
-    public void write(Player player, RoomHandler roomHandler) {
+    public void write(Player player, int roomNum) {
         Inventory inventory = player.getInventory();
         JSONArray jsonInventory = inventory.itemsToJson();
         int coins = inventory.getCoins();
         int health = player.getHealth();
-        int roomNumber = roomHandler.getRoomNum();
 
         JSONObject gameJson = new JSONObject();
         gameJson.put("items", jsonInventory);
         gameJson.put("coins", coins); 
         gameJson.put("health", health);
-        gameJson.put("roomNumber", roomNumber);
+        gameJson.put("roomNumber", roomNum);
 
         saveToFile(gameJson.toString(TAB));
     }
