@@ -23,6 +23,7 @@ public class GameGUI {
     private ShopHandler shopHandler;
 
     private static final String JSON_STORE = "./data/catacombs.json";
+    private static final String CHEATS = "./data/catacombsCheat.json";
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
 
@@ -53,6 +54,7 @@ public class GameGUI {
     // that the game must end and
     // either the player won, or the player died.
     public void runGame() {
+        roomHandler.increaseRoomNum();
         room.updatePlayerData(player, roomHandler.getRoomNum());
         roomNum = roomHandler.getRoomNum();
         if (roomNum % 5 == 0 && roomNum != 0) { // crossroads
@@ -72,13 +74,12 @@ public class GameGUI {
 
     // EFFECTS: determine the type of encounter: either a goblin, orc, chest, or shop.
     public void nextEncounter() {
-        roomHandler.increaseRoomNum();
         room.updatePlayerData(player, roomHandler.getRoomNum());
         room.exitDoor();
         room.exitCrossroads();
         
         int next = RANDOM.nextInt(10) + 1;
-        // next = 8;
+        next = 9;
         if (next <= 4) { // 1-4 40%
             GameCharacter goblin = new Goblin();
             enemyEncounter(goblin);
@@ -102,11 +103,12 @@ public class GameGUI {
     private void lootEncounter() {
         room.beginLoot();
     }
-    
+
     private void shopEncounter() {
         room.beginShop();
     }
 
+    // EFFECTS: save the game to a file
     public void save() {
         try {
             jsonWriter.open();
@@ -118,13 +120,15 @@ public class GameGUI {
         }
     }
 
+    // MODIFIES: this, player, inventory
+    // EFFECTS: load the game from a file
     public void load() {
         try {
             player = new Player();
-            Inventory inventory = player.getInventory();
             inventory = player.getInventory();
             jsonReader.read(player, inventory, roomHandler);
             System.out.println("Succesfully loaded the game from " + JSON_STORE + "\n");
+            room = room.resetRooms(player, this, roomHandler);
             room.updatePlayerData(player, roomHandler.getRoomNum());
         } catch (IOException e) {
             System.out.println("Unable to read file from: " + JSON_STORE);

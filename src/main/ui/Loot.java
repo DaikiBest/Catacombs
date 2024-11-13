@@ -24,16 +24,12 @@ public class Loot extends RoomPanel {
     private JLabel chest;
     private JButton button;
 
-    private Player player;
-    private Inventory inventory;
     private ItemFactory itemFactory = new ItemFactory();
 
     private static final Random RANDOM = new Random();
     
     public Loot(JLayeredPane roomsLayered, Player player, GameGUI game, JFrame frame) {
         super(roomsLayered);
-        this.player = player;
-        inventory = player.getInventory();
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
@@ -51,22 +47,22 @@ public class Loot extends RoomPanel {
         panel.add(Box.createVerticalStrut(20));
 
         //creates open button
-        button = createButton(game, frame);
+        button = createButton(game, frame, player);
         panel.add(button);
         button.setMargin(new Insets(5, 10, 5, 10));
         button.setFont(new Font("Arial", Font.PLAIN, 16));
 
-        chest.setAlignmentX(panel.CENTER_ALIGNMENT);
-        button.setAlignmentX(panel.CENTER_ALIGNMENT);
+        chest.setAlignmentX((float)0.5);
+        button.setAlignmentX((float)0.5);
     }
 
-    private JButton createButton(GameGUI game, JFrame frame) {
+    private JButton createButton(GameGUI game, JFrame frame, Player player) {
         button = new JButton("Inspect");
 
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String item = openChest();
+                String item = openChest(player, player.getInventory());
                 JOptionPane.showMessageDialog(frame, "You obtained " + item + "!");
                 end(game);
             }
@@ -77,7 +73,7 @@ public class Loot extends RoomPanel {
 
     // EFFECTS: open chest with randomized loot (either coins or a random item of
     // different "rarity")
-    private String openChest() {
+    private String openChest(Player player, Inventory inventory) {
         int randomLoot = RANDOM.nextInt(20) + 1;
         if (randomLoot <= 10) { // 1-10 50%
             int coins = 3 + RANDOM.nextInt(8 - 3 + 1);
@@ -85,18 +81,18 @@ public class Loot extends RoomPanel {
             return coins + " coins";
 
         } else if (randomLoot <= 16) { // 11-16 30%
-            return commonLoot();
+            return commonLoot(player, inventory);
 
         } else if (randomLoot <= 19) { // 17-19 15%
-            return rareLoot();
+            return rareLoot(player, inventory);
 
         } else { // only 20 5%
-            return kingLoot();
+            return kingLoot(player, inventory);
         }
     }
 
     // EFFECTS: collect common loot. One of mace, cap, or hood.
-    private String commonLoot() {
+    private String commonLoot(Player player, Inventory inventory) {
         int rand = RANDOM.nextInt(3) + 1;
         if (rand == 1) {
             inventory.collect(itemFactory.makeMace(), player);
@@ -111,7 +107,7 @@ public class Loot extends RoomPanel {
     }
 
     // EFFECTS: collect rare loot. One of longsword or helmet.
-    private String rareLoot() {
+    private String rareLoot(Player player, Inventory inventory) {
         int rand = RANDOM.nextInt(2) + 1;
         if (rand == 1) {
             inventory.collect(itemFactory.makeLongsword(), player);
@@ -123,7 +119,7 @@ public class Loot extends RoomPanel {
     }
 
     // EFFECTS: collect "king" loot. One of excalibur or crown.
-    private String kingLoot() {
+    private String kingLoot(Player player, Inventory inventory) {
         int rand = RANDOM.nextInt(2) + 1;
         if (rand == 1) {
             inventory.collect(itemFactory.makeExcalibur(), player);

@@ -1,5 +1,6 @@
 package ui;
 
+import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,6 +18,10 @@ public class Door extends RoomPanel {
     private JLabel fireplace;
     private JButton restButton;
 
+    private static final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 18);
+    private static final int BUTTON_WIDTH = 120;
+    private static final int BUTTON_HEIGHT = 50;
+
     public Door(JLayeredPane roomsLayered, GameGUI game) {
         super(roomsLayered);
 
@@ -28,7 +33,8 @@ public class Door extends RoomPanel {
 
         enterButton = createEnterButton(game);
         panel.add(enterButton);
-        enterButton.setBounds(190, 390, 90, 30);
+        enterButton.setBounds(180, 390, BUTTON_WIDTH, BUTTON_HEIGHT);
+        enterButton.setFont(BUTTON_FONT);
 
         createFireplace();
         panel.add(fireplace);
@@ -36,7 +42,8 @@ public class Door extends RoomPanel {
 
         restButton = createRestButton(game);
         panel.add(restButton);
-        restButton.setBounds(610, 390, 90, 30);
+        restButton.setBounds(600, 390, BUTTON_WIDTH, BUTTON_HEIGHT);
+        restButton.setFont(BUTTON_FONT);
     }
 
     private void createDoor() {
@@ -82,10 +89,10 @@ public class Door extends RoomPanel {
     }
 
     private void restPopup(GameGUI game) {
-        Object[] options = {"Save", "Load", "Cancel"};
+        Object[] options = {"Cancel", "Load", "Save"};
         int result = JOptionPane.showOptionDialog(panel, "Would you like to save or load?", "Rest",
-                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[2]);
-        if (result == 0) {
+                JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        if (result == 2) {
             game.save();
         } else if (result == 1) {
             game.load();
