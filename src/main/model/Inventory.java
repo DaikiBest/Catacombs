@@ -93,7 +93,7 @@ public class Inventory {
         return count;
     }
 
-    // EFFECTS: get item according to the name, returns null if not found.
+    // EFFECTS: get item according to the name, returns null if not found. Returns the first instance of the item.
     public Item getItem(String name) {
         for (Item item : items) {
             if (item.getName().equalsIgnoreCase(name)) {

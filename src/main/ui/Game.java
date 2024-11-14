@@ -291,13 +291,12 @@ public class Game {
 
             System.out.print("Enter your purchase; otherwise, say \u001B[1m'back'\u001B[0m: ");
             String purchase = input.nextLine();
-            purchase = purchase.toLowerCase().trim();
             checkInventory(purchase);
 
             if (purchase.equalsIgnoreCase("back")) {
                 buying = false;
                 break;
-            } else if (shopHandler.getShopList().contains(purchase.toLowerCase())) {
+            } else if (shopHandler.getShopList().stream().anyMatch(purchase::equalsIgnoreCase)) {
                 boolean boughtItem = handlePurchase(purchase);
 
                 if (boughtItem) {

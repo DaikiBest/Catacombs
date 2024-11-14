@@ -11,6 +11,7 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -53,10 +54,12 @@ public class Shop extends RoomPanel implements ActionListener {
 
     private Player player;
     private Inventory inventory;
-    private ShopHandler shopHandler;
+    private ShopHandler shopHandler = new ShopHandler();
+    private ItemFactory itemFactory = new ItemFactory();
     private Room room;
     private int roomNum;
 
+    private static final String TAB = "       ";
     private static final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 18);
     private static final int BUTTON_WIDTH = 120;
     private static final int BUTTON_HEIGHT = 50;
@@ -64,10 +67,10 @@ public class Shop extends RoomPanel implements ActionListener {
     private static final int SHOP_MENU_HEIGHT = 400;
     private static final int SHOP_BUTTON_HEIGHT = 35;
 
-    // EFFECTS: Create a shop with the open and exit buttons, as well as the shop image and menu
+    // EFFECTS: Create a shop with the open and exit buttons, as well as the shop
+    // image and menu
     public Shop(JLayeredPane roomsLayered, GameGUI game, Player player, Room room, RoomHandler roomHandler) {
         super(roomsLayered);
-        shopHandler = new ShopHandler();
         this.player = player;
         inventory = player.getInventory();
         this.room = room;
@@ -75,25 +78,25 @@ public class Shop extends RoomPanel implements ActionListener {
 
         panel.setLayout(null);
 
-        //create the shop menu
+        // create the shop menu
         shopPanel = new JPanel();
         shopPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         shopPanel.setLayout(new BorderLayout());
         shopPanel.setBounds(200, 150, SHOP_MENU_WIDTH, SHOP_MENU_HEIGHT);
         createMenu();
-        
+
         panel.add(shopPanel);
 
-        //create the image of the shopkeeper
+        // create the image of the shopkeeper
         createShopkeep();
         panel.add(shopkeeper);
         shopkeeper.setBounds(190, 40, 540, 400);
 
-        //create the openShop button
+        // create the openShop button
         openButton = createOpenButton(game);
         panel.add(openButton);
 
-        //create the exit button
+        // create the exit button
         exitButton = createExitButton(game);
         panel.add(exitButton);
 
@@ -166,11 +169,9 @@ public class Shop extends RoomPanel implements ActionListener {
         JScrollPane sellSP = new JScrollPane(sellPanel);
         JScrollPane refineSP = new JScrollPane(refinePanel);
 
-
         shopMenu.add(buySP, "buy");
         shopMenu.add(sellSP, "sell");
         shopMenu.add(refineSP, "refine");
-
 
         shopPanel.add(shopMenu);
         shopPanel.add(shopButtonsPanel, BorderLayout.NORTH);
@@ -180,10 +181,15 @@ public class Shop extends RoomPanel implements ActionListener {
         buyPanel = new JPanel();
         buyPanel.setBackground(new Color(51, 51, 51));
         buyPanel.setLayout(new BoxLayout(buyPanel, BoxLayout.Y_AXIS));
-        
+
         for (String itemName : shopHandler.getShopList()) {
-            itemButton = createShopButton(itemName);
-            itemButton.setName("b" + itemName); //starts with a b to classify button
+            if (itemName.equalsIgnoreCase("Heal")) {
+                itemButton = createShopButton(itemName + TAB + shopHandler.getHealPrice() + " coins");
+            } else {
+                Item item = itemFactory.makeItem(itemName);
+                itemButton = createShopButton(itemName + TAB + item.getValue() * 2 + " coins");
+            }
+            itemButton.setName("b" + itemName); // starts with a b to classify button
             buyPanel.add(itemButton);
         }
         buyPanel.add(Box.createVerticalGlue());
@@ -196,8 +202,8 @@ public class Shop extends RoomPanel implements ActionListener {
         sellPanel.setAlignmentY(Component.TOP_ALIGNMENT);
 
         for (Item item : inventory.getItems()) {
-            createShopButton(item.getName());
-            itemButton.setName("s" + item.getName()); //starts with an s to classify button
+            itemButton = createShopButton(item.getName() + TAB + item.getValue() + " coins");
+            itemButton.setName("s" + item.getName()); // starts with an s to classify button
             sellPanel.add(itemButton);
         }
         sellPanel.add(Box.createVerticalGlue());
@@ -207,17 +213,22 @@ public class Shop extends RoomPanel implements ActionListener {
         refinePanel = new JPanel();
         refinePanel.setBackground(new Color(51, 51, 51));
         refinePanel.setLayout(new BoxLayout(refinePanel, BoxLayout.Y_AXIS));
-        
+
+        ArrayList<String> itemList = new ArrayList<>();
         for (Item item : inventory.getItems()) {
-            createShopButton(item.getName());
-            itemButton.setName("r" + item.getName()); //starts with an r to classify button
-            refinePanel.add(itemButton);
+            if (!itemList.contains(item.getName())) {
+                itemButton = createShopButton(item.getName() + TAB + item.getRefine() + " lvl"
+                        + TAB + shopHandler.getRefinePrice() + " coins");
+                itemButton.setName("r" + item.getName()); // starts with an r to classify button
+                refinePanel.add(itemButton);
+            }
+            itemList.add(item.getName());
         }
         refinePanel.add(Box.createVerticalGlue());
     }
 
-    private JButton createShopButton(String itemName) {
-        itemButton = new JButton(itemName);
+    private JButton createShopButton(String buttonLabel) {
+        itemButton = new JButton(buttonLabel);
         itemButton.addActionListener(this);
         itemButton.setFont(new Font("Arial", Font.PLAIN, 15));
         itemButton.setMaximumSize(new Dimension(SHOP_MENU_WIDTH, 1000));
@@ -226,11 +237,10 @@ public class Shop extends RoomPanel implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-        JButton buttonE = (JButton)e.getSource();
+        JButton buttonE = (JButton) e.getSource();
         String buttonName = buttonE.getName();
         char classifier = buttonName.charAt(0);
         String itemName = buttonName.substring(1);
-
 
         if (classifier == 'b') {
             buyItem(itemName);
@@ -245,43 +255,73 @@ public class Shop extends RoomPanel implements ActionListener {
 
     private void buyItem(String itemName) {
         Boolean status;
-        ItemFactory itemFactory = new ItemFactory();
         if (itemName.equals("Heal")) {
             status = shopHandler.purchaseHealing(player);
+            if (status) {
+                JOptionPane.showMessageDialog(panel, "You purchased a" + itemName + "!",
+                        "Purchase succesful", JOptionPane.INFORMATION_MESSAGE);
+                resetShopContents("buy");
+            } else {
+                JOptionPane.showMessageDialog(panel, "You cannot afford the heal or you're already fully healed",
+                        "Failed to buy", JOptionPane.INFORMATION_MESSAGE);
+            }
         } else {
             status = shopHandler.purchaseItem(itemFactory.makeItem(itemName), player);
-        }
-
-        if (status) {
-            JOptionPane.showMessageDialog(panel, "Successfully purchased " + itemName + "!");
-        } else {
-            JOptionPane.showMessageDialog(panel, "Purchase unsuccessful.");
+            if (status) {
+                JOptionPane.showMessageDialog(panel, "You purchased " + itemName + "!",
+                        "Purchase succesful", JOptionPane.INFORMATION_MESSAGE);
+                resetShopContents("buy");
+            } else {
+                JOptionPane.showMessageDialog(panel, "You cannot afford this item.",
+                        "Failed to buy", JOptionPane.INFORMATION_MESSAGE);
+            }
         }
     }
 
     private void sellItem(String itemName) {
         Boolean status;
+        Item item = inventory.getItem(itemName);
         status = shopHandler.sellItem(itemName, player);
         if (status) {
-            JOptionPane.showMessageDialog(panel, "Successfully sold " + itemName + "!");
-            resetShopContents();
+            JOptionPane.showMessageDialog(panel, "Successfully sold your " + itemName + "!",
+                    "Sell succesful", JOptionPane.INFORMATION_MESSAGE);
+            resetShopContents("sell");
         } else {
-            JOptionPane.showMessageDialog(panel, "You can't sell your last weapon.");
+            JOptionPane.showMessageDialog(panel, "You can't sell your last weapon.",
+                    "Failed to sell", JOptionPane.INFORMATION_MESSAGE);
         }
     }
 
     private void refineItem(String itemName) {
-        
+        Boolean status;
+        Item item = inventory.getItem(itemName);
+        status = shopHandler.purchaseRefine(item, inventory);
+        if (status) {
+            JOptionPane.showMessageDialog(panel, "Your " + itemName + " is now refine level"
+                    + item.getRefine() + "!", "Refinement succesful", JOptionPane.INFORMATION_MESSAGE);
+            resetShopContents("refine");
+        } else {
+            JOptionPane.showMessageDialog(panel, "You could not afford the refinement or "
+                    + itemName + " is at max refine level.", "Failed to refine",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+        }
     }
 
-    private void resetShopContents() {
+    private void resetShopContents(String str) {
         shopPanel.removeAll();
         panel.repaint();
         shopPanel.setBorder(BorderFactory.createLineBorder(Color.black));
         shopPanel.setLayout(new BorderLayout());
         shopPanel.setBounds(200, 150, SHOP_MENU_WIDTH, SHOP_MENU_HEIGHT);
         createMenu();
-        cl.show(shopMenu, "sell");
+        if (str.equals("buy")) {
+            cl.show(shopMenu, "buy");
+        } else if (str.equals("sell")) {
+            cl.show(shopMenu, "sell");
+        } else if (str.equals("refine")) {
+            cl.show(shopMenu, "refine");
+        }
     }
 
     private void createBuyButton() {
@@ -346,6 +386,6 @@ public class Shop extends RoomPanel implements ActionListener {
         panel.setVisible(true);
         openButton.setVisible(true);
         shopPanel.setVisible(false);
-        // resetShopContents();
+        resetShopContents("buy");
     }
 }
