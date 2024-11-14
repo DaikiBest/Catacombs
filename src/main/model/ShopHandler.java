@@ -13,15 +13,15 @@ public class ShopHandler {
     // EFFECTS: create a shop with a list of all item names, healPrice (1 coin), and refinePrice (4 coins)
     public ShopHandler() {
         shopList = new ArrayList<>();
-        shopList.add("dagger");
-        shopList.add("mace");
-        shopList.add("longsword");
-        shopList.add("excalibur");
-        shopList.add("farmer's cap");
-        shopList.add("thieve's hood");
-        shopList.add("knight's helmet");
-        shopList.add("crown");
-        shopList.add("heal");
+        shopList.add("Dagger");
+        shopList.add("Mace");
+        shopList.add("Longsword");
+        shopList.add("Excalibur");
+        shopList.add("Farmer's Cap");
+        shopList.add("Thieve's Hood");
+        shopList.add("Knight's Helmet");
+        shopList.add("Crown");
+        shopList.add("Heal");
         
         healPrice = 1;
         refinePrice = 4;
@@ -108,5 +108,9 @@ public class ShopHandler {
 
     public int getHealPrice() {
         return healPrice;
+    }
+
+    public int getRefinePrice() {
+        return refinePrice;
     }
 }

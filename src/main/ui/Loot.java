@@ -11,7 +11,6 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
@@ -28,7 +27,7 @@ public class Loot extends RoomPanel {
 
     private static final Random RANDOM = new Random();
     
-    public Loot(JLayeredPane roomsLayered, Player player, GameGUI game, JFrame frame) {
+    public Loot(JLayeredPane roomsLayered, Player player, GameGUI game) {
         super(roomsLayered);
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
@@ -47,7 +46,7 @@ public class Loot extends RoomPanel {
         panel.add(Box.createVerticalStrut(20));
 
         //creates open button
-        button = createButton(game, frame, player);
+        button = createButton(game, player);
         panel.add(button);
         button.setMargin(new Insets(5, 10, 5, 10));
         button.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -56,14 +55,14 @@ public class Loot extends RoomPanel {
         button.setAlignmentX((float)0.5);
     }
 
-    private JButton createButton(GameGUI game, JFrame frame, Player player) {
+    private JButton createButton(GameGUI game, Player player) {
         button = new JButton("Inspect");
 
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String item = openChest(player, player.getInventory());
-                JOptionPane.showMessageDialog(frame, "You obtained " + item + "!");
+                JOptionPane.showMessageDialog(panel, "You obtained " + item + "!");
                 end(game);
             }
         });

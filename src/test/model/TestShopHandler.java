@@ -34,15 +34,15 @@ public class TestShopHandler {
         testInventory = testPlayer.getInventory();
 
         //create the list with all item names to compare
-        actualSList.add("dagger");
-        actualSList.add("mace");
-        actualSList.add("longsword");
-        actualSList.add("excalibur");
-        actualSList.add("farmer's cap");
-        actualSList.add("thieve's hood");
-        actualSList.add("knight's helmet");
-        actualSList.add("crown");
-        actualSList.add("heal");
+        actualSList.add("Dagger");
+        actualSList.add("Mace");
+        actualSList.add("Longsword");
+        actualSList.add("Excalibur");
+        actualSList.add("Farmer's Cap");
+        actualSList.add("Thieve's Hood");
+        actualSList.add("Knight's Helmet");
+        actualSList.add("Crown");
+        actualSList.add("Heal");
 
         testInventory.collect(itemFactory.makeDagger(), testPlayer);
     }
@@ -159,5 +159,68 @@ public class TestShopHandler {
     @Test
     void testInvalidItem() {
         assertEquals(null, testInvalidItem);
+    }
+
+    @Test
+    void testPurchaseRefine() {
+        testInventory.collect(testLongsword, testPlayer);
+        assertEquals(0, testLongsword.getRefine());
+
+        assertEquals(5, testInventory.getCoins());
+        assertTrue(testShop.purchaseRefine(testLongsword, testInventory));
+        assertEquals(1, testInventory.getCoins());
+        assertEquals(1, testLongsword.getRefine());
+    }
+
+    @Test
+    void testPurchaseRefineNotEnoughCoins() {
+        testInventory.collect(testHelmet, testPlayer);
+        testInventory.setCoins(testShop.getRefinePrice()-1);
+
+        assertEquals(3, testInventory.getCoins());
+        assertFalse(testShop.purchaseRefine(testHelmet, testInventory));
+        assertEquals(3, testInventory.getCoins());
+        assertEquals(0, testHelmet.getRefine());
+    }
+
+    @Test
+    void testPurchaseRefineTooRefined() {
+        testInventory.collect(testCrown, testPlayer);
+        testInventory.setCoins(100);
+
+        testCrown.setRefine(2);
+        assertTrue(testShop.purchaseRefine(testCrown, testInventory));
+        assertEquals(96, testInventory.getCoins());
+        assertEquals(3, testCrown.getRefine());
+
+        assertFalse(testShop.purchaseRefine(testCrown, testInventory));
+        assertEquals(96, testInventory.getCoins());
+        assertEquals(3, testCrown.getRefine());
+    }
+
+    @Test
+    void testPurchaseRefineBothFail() {
+        testInventory.collect(testCrown, testPlayer);
+        testInventory.setCoins(testShop.getRefinePrice()-1);
+
+        testCrown.setRefine(3);
+        assertFalse(testShop.purchaseRefine(testCrown, testInventory));
+        assertEquals(3, testInventory.getCoins());
+        assertEquals(3, testCrown.getRefine());
+    }
+
+    @Test
+    void testPurchaseRefineSameButDiffItem() {
+        Item testCrown2 = itemFactory.makeCrown();
+        testInventory.collect(testCrown, testPlayer);
+        testInventory.collect(testCrown2, testPlayer);
+        testInventory.setCoins(100);
+
+        assertTrue(testShop.purchaseRefine(testCrown, testInventory));
+        assertTrue(testShop.purchaseRefine(testCrown2, testInventory));
+        assertTrue(testShop.purchaseRefine(testCrown2, testInventory));
+        assertEquals(88, testInventory.getCoins());
+        assertEquals(1, testCrown.getRefine());
+        assertEquals(2, testCrown2.getRefine());
     }
 }

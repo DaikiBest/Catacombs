@@ -196,8 +196,8 @@ public class Room extends JFrame {
         door = new Door(roomsLayered, game);
         crossroads = new Crossroads(roomsLayered, game);
         encounter = new Encounter(roomsLayered);
-        shop = new Shop(roomsLayered, game, player);
-        loot = new Loot(roomsLayered, player, game, frame);
+        shop = new Shop(roomsLayered, game, player, this, roomHandler);
+        loot = new Loot(roomsLayered, player, game);
     }
 
     public void toDoor() {
