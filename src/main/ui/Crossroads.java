@@ -1,32 +1,89 @@
 package ui;
 
+import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 
+// Represents the crossroads
 public class Crossroads extends RoomPanel {
-    private JButton button;
+    private JLabel door;
+    private JButton enterRegButton;
+    private JLabel wizDoor;
+    private JButton enterWizButton;
+
+    private static final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 18);
+    private static final int BUTTON_WIDTH = 120;
+    private static final int BUTTON_HEIGHT = 50;
     
+    // 
     public Crossroads(JLayeredPane roomsLayered, GameGUI game) {
         super(roomsLayered);
 
-        button = createButton(game);
-        panel.add(button);
+        panel.setLayout(null);
+
+        createDoor();
+        panel.add(door);
+        door.setBounds(110, 100, 250, 300);
+
+        createEnterButton(game);
+        panel.add(enterRegButton);
+        enterRegButton.setBounds(180, 430, BUTTON_WIDTH, BUTTON_HEIGHT);
+        enterRegButton.setFont(BUTTON_FONT);
+
+        createWizDoor();
+        panel.add(wizDoor);
+        wizDoor.setBounds(530, 50, 240, 370);
+
+        createWizButton(game);
+        panel.add(enterWizButton);
+        enterWizButton.setBounds(600, 430, BUTTON_WIDTH, BUTTON_HEIGHT);
+        enterWizButton.setFont(BUTTON_FONT);
     }
 
-    private JButton createButton(GameGUI game) {
-        JButton button = new JButton("This is crossroads");
+    // MODIFIES: this
+    // EFFECTS: creates the door image.
+    private void createDoor() {
+        Image originalImage = new ImageIcon("./images/door.png").getImage();
+        Image scaledImg = originalImage.getScaledInstance(250, 300, Image.SCALE_SMOOTH);
+        ImageIcon doorImage = new ImageIcon(scaledImg);
 
-        button.addActionListener(new ActionListener() {
+        door = new JLabel(doorImage);
+    }
+
+    private void createEnterButton(GameGUI game) {
+        enterRegButton = new JButton("Enter");
+
+        enterRegButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                game.nextEncounter();
+                game.nextEncounter("regular");
             }
         });
-        
-        return button;
+    }
+
+    private void createWizDoor() {
+        Image originalImage = new ImageIcon("./images/wizardDoor.png").getImage();
+        Image scaledImg = originalImage.getScaledInstance(240, 370, Image.SCALE_SMOOTH);
+        ImageIcon wizDoorImage = new ImageIcon(scaledImg);
+
+        wizDoor = new JLabel(wizDoorImage);
+    }
+
+    private void createWizButton(GameGUI game) {
+        enterWizButton = new JButton("Enter...?");
+
+        enterWizButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.nextEncounter("darkWizard");
+            }
+        });
     }
 
     public void end() {

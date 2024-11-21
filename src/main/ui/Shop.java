@@ -30,12 +30,13 @@ import model.ItemFactory;
 import model.Player;
 import model.RoomHandler;
 import model.ShopHandler;
+import model.Weapon;
 
 // Represents a shop encounter
 public class Shop extends RoomPanel implements ActionListener {
     private JButton exitButton;
     private JButton openButton;
-    private JLabel shopkeeper;
+    private JLabel gary;
 
     private JPanel shopPanel;
     private JButton buyButton;
@@ -64,7 +65,7 @@ public class Shop extends RoomPanel implements ActionListener {
     private static final int BUTTON_WIDTH = 120;
     private static final int BUTTON_HEIGHT = 50;
     private static final int SHOP_MENU_WIDTH = 500;
-    private static final int SHOP_MENU_HEIGHT = 400;
+    private static final int SHOP_MENU_HEIGHT = 410;
     private static final int SHOP_BUTTON_HEIGHT = 35;
 
     // EFFECTS: Create a shop with the open and exit buttons, as well as the shop
@@ -89,8 +90,8 @@ public class Shop extends RoomPanel implements ActionListener {
 
         // create the image of the shopkeeper
         createShopkeep();
-        panel.add(shopkeeper);
-        shopkeeper.setBounds(190, 40, 540, 400);
+        panel.add(gary);
+        gary.setBounds(190, 40, 540, 400);
 
         // create the openShop button
         openButton = createOpenButton(game);
@@ -111,7 +112,7 @@ public class Shop extends RoomPanel implements ActionListener {
         Image scaledImg = originalImage.getScaledInstance(540, 400, Image.SCALE_SMOOTH);
         ImageIcon shopKeep = new ImageIcon(scaledImg);
 
-        shopkeeper = new JLabel(shopKeep);
+        gary = new JLabel(shopKeep);
     }
 
     // MODIFIES: this
@@ -177,17 +178,25 @@ public class Shop extends RoomPanel implements ActionListener {
         shopPanel.add(shopButtonsPanel, BorderLayout.NORTH);
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates the buying menu
     private void createBuyMenu() {
         buyPanel = new JPanel();
         buyPanel.setBackground(new Color(51, 51, 51));
         buyPanel.setLayout(new BoxLayout(buyPanel, BoxLayout.Y_AXIS));
 
         for (String itemName : shopHandler.getShopList()) {
-            if (itemName.equalsIgnoreCase("Heal")) {
+            if (itemName.equalsIgnoreCase("Heal")) { // Heal
                 itemButton = createShopButton(itemName + TAB + shopHandler.getHealPrice() + " coins");
             } else {
                 Item item = itemFactory.makeItem(itemName);
-                itemButton = createShopButton(itemName + TAB + item.getValue() * 2 + " coins");
+                if (item instanceof Weapon) { // Weapon
+                    itemButton = createShopButton(itemName + TAB + item.getStat() + " DMG" + TAB
+                            + item.getValue() * 2 + " coins");
+                } else { // Armor
+                    itemButton = createShopButton(itemName + TAB + item.getStat() + " MaxHP" + TAB
+                            + item.getValue() * 2 + " coins");
+                }
             }
             itemButton.setName("b" + itemName); // starts with a b to classify button
             buyPanel.add(itemButton);
@@ -195,6 +204,8 @@ public class Shop extends RoomPanel implements ActionListener {
         buyPanel.add(Box.createVerticalGlue());
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates the selling menu
     private void createSellMenu() {
         sellPanel = new JPanel();
         sellPanel.setBackground(new Color(51, 51, 51));
@@ -209,6 +220,8 @@ public class Shop extends RoomPanel implements ActionListener {
         sellPanel.add(Box.createVerticalGlue());
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates the refining menu
     private void createRefineMenu() {
         refinePanel = new JPanel();
         refinePanel.setBackground(new Color(51, 51, 51));
@@ -227,15 +240,20 @@ public class Shop extends RoomPanel implements ActionListener {
         refinePanel.add(Box.createVerticalGlue());
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates a shop button with given buttonLabel as the text displayed
+    // in the button.
     private JButton createShopButton(String buttonLabel) {
         itemButton = new JButton(buttonLabel);
         itemButton.addActionListener(this);
         itemButton.setFont(new Font("Arial", Font.PLAIN, 15));
-        itemButton.setMaximumSize(new Dimension(SHOP_MENU_WIDTH, 1000));
-        itemButton.setMargin(new Insets(8, 0, 8, 0));
+        itemButton.setMaximumSize(new Dimension(SHOP_MENU_WIDTH, 0));
+        itemButton.setMargin(new Insets(7, 0, 7, 0));
         return itemButton;
     }
 
+    // MODIFIES: this
+    // EFFECTS: handles the button actions of the shop menu
     public void actionPerformed(ActionEvent e) {
         JButton buttonE = (JButton) e.getSource();
         String buttonName = buttonE.getName();
@@ -253,12 +271,14 @@ public class Shop extends RoomPanel implements ActionListener {
         room.updatePlayerData(player, roomNum);
     }
 
+    // MODIFIES: this, player, inventory
+    // EFFECTS: handles item purchase
     private void buyItem(String itemName) {
         Boolean status;
         if (itemName.equals("Heal")) {
             status = shopHandler.purchaseHealing(player);
             if (status) {
-                JOptionPane.showMessageDialog(panel, "You purchased a" + itemName + "!",
+                JOptionPane.showMessageDialog(panel, "You purchased a " + itemName + "!",
                         "Purchase succesful", JOptionPane.INFORMATION_MESSAGE);
                 resetShopContents("buy");
             } else {
@@ -278,6 +298,8 @@ public class Shop extends RoomPanel implements ActionListener {
         }
     }
 
+    // MODIFIES: this, player, inventory
+    // EFFECTS: handles selling an item
     private void sellItem(String itemName) {
         Boolean status;
         Item item = inventory.getItem(itemName);
@@ -292,6 +314,8 @@ public class Shop extends RoomPanel implements ActionListener {
         }
     }
 
+    // MODIFIES: this, player, inventory
+    // EFFECTS: handles refining an item
     private void refineItem(String itemName) {
         Boolean status;
         Item item = inventory.getItem(itemName);
@@ -308,6 +332,9 @@ public class Shop extends RoomPanel implements ActionListener {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: resets shop contents, updating them according to the player's new
+    // inventory
     private void resetShopContents(String str) {
         shopPanel.removeAll();
         panel.repaint();
@@ -324,6 +351,9 @@ public class Shop extends RoomPanel implements ActionListener {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates buy button displayed at the top of the shop menu. On press,
+    // will switch to buy panel.
     private void createBuyButton() {
         buyButton = new JButton("Buy");
         buyButton.setFont(BUTTON_FONT);
@@ -338,6 +368,9 @@ public class Shop extends RoomPanel implements ActionListener {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates sell button displayed at the top of the shop menu. On press,
+    // will switch to sell panel.
     private void createSellButton() {
         sellButton = new JButton("Sell");
         sellButton.setFont(BUTTON_FONT);
@@ -352,6 +385,9 @@ public class Shop extends RoomPanel implements ActionListener {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates refine button displayed at the top of the shop menu. On
+    // press, will switch to refine panel.
     private void createRefineButton() {
         refineButton = new JButton("Refine");
         refineButton.setFont(BUTTON_FONT);
@@ -366,6 +402,9 @@ public class Shop extends RoomPanel implements ActionListener {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates back button displayed at the top of the shop menu. On press,
+    // exits the shop menu.
     private void createBackButton() {
         backButton = new JButton("Back");
         backButton.setFont(BUTTON_FONT);
@@ -381,6 +420,8 @@ public class Shop extends RoomPanel implements ActionListener {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: begins the shop encounter.
     @Override
     public void begin() {
         panel.setVisible(true);

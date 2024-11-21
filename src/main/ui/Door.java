@@ -11,7 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
 
-// Represents a 
+// Represents the "in-between" room with a door and a rest spot
 public class Door extends RoomPanel {
     private JLabel door;
     private JButton enterButton;
@@ -22,6 +22,7 @@ public class Door extends RoomPanel {
     private static final int BUTTON_WIDTH = 120;
     private static final int BUTTON_HEIGHT = 50;
 
+    // EFFECTS: creates the door.
     public Door(JLayeredPane roomsLayered, GameGUI game) {
         super(roomsLayered);
 
@@ -46,6 +47,8 @@ public class Door extends RoomPanel {
         restButton.setFont(BUTTON_FONT);
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates the door image.
     private void createDoor() {
         Image originalImage = new ImageIcon("./images/door.png").getImage();
         Image scaledImg = originalImage.getScaledInstance(250, 300, Image.SCALE_SMOOTH);
@@ -54,19 +57,23 @@ public class Door extends RoomPanel {
         door = new JLabel(doorImage);
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates the enter door button. On press, will quit current "door room" and begin an encounter
     private JButton createEnterButton(GameGUI game) {
         enterButton = new JButton("Enter");
 
         enterButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                game.nextEncounter();
+                game.nextEncounter("regular");
             }
         });
 
         return enterButton;
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates the fireplace image.
     private void createFireplace() {
         Image originalImage = new ImageIcon("./images/fireplace.png").getImage();
         Image scaledImg = originalImage.getScaledInstance(200, 250, Image.SCALE_SMOOTH);
@@ -75,6 +82,8 @@ public class Door extends RoomPanel {
         fireplace = new JLabel(fireplaceImage);
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates rest button, which opens the rest popup to save or load.
     private JButton createRestButton(GameGUI game) {
         enterButton = new JButton("Rest");
 
@@ -88,6 +97,8 @@ public class Door extends RoomPanel {
         return enterButton;
     }
 
+    // MODIFIES: this
+    // EFFECTS: opens popup to choose to save, load, or cancel.
     private void restPopup(GameGUI game) {
         Object[] options = {"Cancel", "Load", "Save"};
         int result = JOptionPane.showOptionDialog(panel, "Would you like to save or load?", "Rest",
@@ -99,6 +110,8 @@ public class Door extends RoomPanel {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: end door room
     public void end() {
         panel.setVisible(false);
     }

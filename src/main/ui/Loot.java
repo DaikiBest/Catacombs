@@ -25,6 +25,7 @@ public class Loot extends RoomPanel {
 
     private ItemFactory itemFactory = new ItemFactory();
 
+    private static final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 18);
     private static final Random RANDOM = new Random();
     
     public Loot(JLayeredPane roomsLayered, Player player, GameGUI game) {
@@ -33,11 +34,11 @@ public class Loot extends RoomPanel {
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
 
         //add spacing above chest
-        panel.add(Box.createVerticalStrut(50));
+        panel.add(Box.createVerticalStrut(60));
 
         //creates chest image
         Image originalImage = new ImageIcon("./images/chest.png").getImage();
-        Image scaledImg = originalImage.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
+        Image scaledImg = originalImage.getScaledInstance(350, 350, Image.SCALE_SMOOTH);
         ImageIcon chestImage = new ImageIcon(scaledImg);
         chest = new JLabel(chestImage);
         panel.add(chest);
@@ -48,8 +49,6 @@ public class Loot extends RoomPanel {
         //creates open button
         button = createButton(game, player);
         panel.add(button);
-        button.setMargin(new Insets(5, 10, 5, 10));
-        button.setFont(new Font("Arial", Font.PLAIN, 16));
 
         chest.setAlignmentX((float)0.5);
         button.setAlignmentX((float)0.5);
@@ -57,6 +56,8 @@ public class Loot extends RoomPanel {
 
     private JButton createButton(GameGUI game, Player player) {
         button = new JButton("Inspect");
+        button.setFont(BUTTON_FONT);
+        button.setMargin(new Insets(12, 18, 12, 18));
 
         button.addActionListener(new ActionListener() {
             @Override

@@ -73,14 +73,17 @@ public class GameGUI {
     }
 
     // EFFECTS: determine the type of encounter: either a goblin, orc, chest, or shop.
-    public void nextEncounter() {
+    public void nextEncounter(String type) {
         room.updatePlayerData(player, roomHandler.getRoomNum());
         room.exitDoor();
         room.exitCrossroads();
-        
+
         int next = RANDOM.nextInt(10) + 1;
-        next = 9;
-        if (next <= 4) { // 1-4 40%
+        // next = 8;
+        if (type.equals("darkWizard")) {
+            GameCharacter darkWizard = new DarkWizard();
+            enemyEncounter(darkWizard);
+        } else if (next <= 4) { // 1-4 40%
             GameCharacter goblin = new Goblin();
             enemyEncounter(goblin);
 
@@ -96,14 +99,17 @@ public class GameGUI {
         }
     }
 
+    // EFFECTS: begin enemy encounter
     private void enemyEncounter(GameCharacter enemy) {
-        room.beginEncounter();
+        room.beginEncounter(player, enemy);
     }
 
+    // EFFECTS: begin loot encounter
     private void lootEncounter() {
         room.beginLoot();
     }
 
+    // EFFECTS: begin shop encounter
     private void shopEncounter() {
         room.beginShop();
     }

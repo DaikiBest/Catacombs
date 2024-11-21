@@ -9,12 +9,8 @@ public class BattleHandler {
     // return "tie" and no one gets damaged.
     public String diceHandler(GameCharacter playerChar, GameCharacter enemy, int playerRoll, int enemyRoll) {
         Player player = (Player) playerChar; //cast it to a player, so it can access the inventory
-        Inventory inventory = player.getInventory();
-        int weaponBoost = inventory.getEquippedWeapon().getRefine();
-        int armorBoost = ((inventory.getEquippedArmor() == null) ? 0 : inventory.getEquippedArmor().getRefine());
-
-        playerRoll = ((playerRoll + weaponBoost > 20) ? 20 : playerRoll + weaponBoost);
-        enemyRoll = ((enemyRoll - armorBoost < 0) ? 0 : enemyRoll - armorBoost);
+        playerRoll = playerDiceRefined(playerRoll, player.getInventory());
+        enemyRoll = enemyDiceRefined(enemyRoll, player.getInventory());
 
         if (playerRoll > enemyRoll) {
             enemy.takeDamage(player.getDamage());
@@ -25,6 +21,18 @@ public class BattleHandler {
         } else {
             return "tie";
         }
+    }
+
+    public int playerDiceRefined(int playerRoll, Inventory inventory) {
+        int weaponBoost = inventory.getEquippedWeapon().getRefine();
+        playerRoll = ((playerRoll + weaponBoost > 20) ? 20 : playerRoll + weaponBoost);
+        return playerRoll;
+    }
+
+    public int enemyDiceRefined(int enemyRoll, Inventory inventory) {
+        int armorBoost = ((inventory.getEquippedArmor() == null) ? 0 : inventory.getEquippedArmor().getRefine());
+        enemyRoll = ((enemyRoll - armorBoost < 0) ? 0 : enemyRoll - armorBoost);
+        return enemyRoll;
     }
 
     // MODIFIES: inventory

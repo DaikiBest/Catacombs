@@ -1,5 +1,6 @@
 package ui;
 
+import model.GameCharacter;
 import model.Inventory;
 import model.Item;
 import model.Player;
@@ -42,15 +43,13 @@ public class Room extends JFrame {
     private static final Color GRAY = new Color(153, 153, 153);
     private static final Font FONT = new Font("Arial", Font.PLAIN, 18);
 
-    // private Shop shop;
-    // private Encounter encounter;
-
     // EFFECTS: Creates the room JFrame
     public Room(Player player, GameGUI game, RoomHandler roomHandler) {
         createRoom(player, game, roomHandler);
     }
 
-    // EFFECTS: creates the room and
+    // MODIFIES: this, door, loot, shop, crossroads, encounter
+    // EFFECTS: creates the room frame and sets up all other rooms
     private void createRoom(Player player, GameGUI game, RoomHandler roomHandler) {
         frame = new JFrame();
         frame.setDefaultCloseOperation(Room.EXIT_ON_CLOSE);
@@ -191,39 +190,47 @@ public class Room extends JFrame {
         }
     }
 
+    // MODIFIES: door, loot, shop, crossroads, encounter
     // EFFECTS: create all rooms
     private void setupRooms(GameGUI game, Player player, RoomHandler roomHandler) {
         door = new Door(roomsLayered, game);
         crossroads = new Crossroads(roomsLayered, game);
-        encounter = new Encounter(roomsLayered);
+        encounter = new Encounter(roomsLayered, game, this, roomHandler);
         shop = new Shop(roomsLayered, game, player, this, roomHandler);
         loot = new Loot(roomsLayered, player, game);
     }
 
+    // EFFECTS: go to door room
     public void toDoor() {
         door.begin();
     }
 
+    // EFFECTS: exit door
     public void exitDoor() {
         door.end();
     }
 
+    // EFFECTS: go to crossroads
     public void toCrossroads() {
         crossroads.begin();
     }
 
+    // EFFECTS: exit crossroads
     public void exitCrossroads() {
         crossroads.end();
     }
 
-    public void beginEncounter() {
-        encounter.begin();
+    // EFFECTS: begin encounter vs enemy
+    public void beginEncounter(Player player, GameCharacter enemy) {
+        encounter.begin(player, enemy);
     }
 
+    // EFFECTS: begin shop encounter
     public void beginShop() {
         shop.begin();
     }
 
+    // EFFECTS: begin loot (chest) encounter
     public void beginLoot() {
         loot.begin();
     }
