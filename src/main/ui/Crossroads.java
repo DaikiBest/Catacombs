@@ -21,7 +21,7 @@ public class Crossroads extends RoomPanel {
     private static final int BUTTON_WIDTH = 120;
     private static final int BUTTON_HEIGHT = 50;
     
-    // 
+    // EFFECTS: creates the crossroads (a door and a wizdoor)
     public Crossroads(JLayeredPane roomsLayered, GameGUI game) {
         super(roomsLayered);
 
@@ -56,6 +56,8 @@ public class Crossroads extends RoomPanel {
         door = new JLabel(doorImage);
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates the enter (regular door) button
     private void createEnterButton(GameGUI game) {
         enterRegButton = new JButton("Enter");
 
@@ -67,6 +69,8 @@ public class Crossroads extends RoomPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates the wizard door image
     private void createWizDoor() {
         Image originalImage = new ImageIcon("./images/wizardDoor.png").getImage();
         Image scaledImg = originalImage.getScaledInstance(240, 370, Image.SCALE_SMOOTH);
@@ -75,6 +79,8 @@ public class Crossroads extends RoomPanel {
         wizDoor = new JLabel(wizDoorImage);
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates the enter (wizard door) button
     private void createWizButton(GameGUI game) {
         enterWizButton = new JButton("Enter...?");
 
@@ -86,6 +92,8 @@ public class Crossroads extends RoomPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: ends the crossroads room (hides the panel)
     public void end() {
         panel.setVisible(false);
     }

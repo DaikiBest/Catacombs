@@ -46,6 +46,7 @@ public class Encounter extends RoomPanel {
     private static final int BUTTON_HEIGHT = 70;
     private static final Random RANDOM = new Random();
 
+    // EFFECTS: creates an enemy encounter
     public Encounter(JLayeredPane roomsLayered, GameGUI game, Room room, RoomHandler roomHandler) {
         super(roomsLayered);
         panel.setLayout(null);
@@ -83,8 +84,7 @@ public class Encounter extends RoomPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: creates the enemy panel with the stats, portrait, and the feedback
-    // label
+    // EFFECTS: creates the enemy panel with the stats, portrait, and the feedback label
     private void createEncounter() {
         enemyStats = new JLabel();
         enemyStats.setFont(BUTTON_FONT);
@@ -126,6 +126,8 @@ public class Encounter extends RoomPanel {
                 + enemy.getHealth() + "&ensp; Damage: " + enemy.getDamage() + "</body></html>");
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates the attack button
     private void createAttackButton(GameGUI game, Room room, RoomHandler roomHandler) {
         attackButton = new JButton("Attack");
         attackButton.setFont(BUTTON_FONT);
@@ -139,6 +141,8 @@ public class Encounter extends RoomPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: begins the attack "round", where the and enemy roll their dice, and hit each other.
     private void attack(GameGUI game, Room room, RoomHandler roomHandler) {
         attackButton.setEnabled(false);
         fleeButton.setEnabled(false);
@@ -153,7 +157,8 @@ public class Encounter extends RoomPanel {
         displayDice(playerRoll, enemyRoll, refinedPlayerRoll, refinedEnemyRoll, outcome, game, room, roomHandler);
     }
 
-    // !!!
+    // MODIFIES: this
+    // EFFECTS: displays the enemy and player's unrefined dice rolls
     private void displayDice(int playerRoll, int enemyRoll, int refinedPlayerRoll, int refinedEnemyRoll,
             String outcome, GameGUI game, Room room, RoomHandler roomHandler) {
         playerDice.setText(String.valueOf(playerRoll));
@@ -171,6 +176,8 @@ public class Encounter extends RoomPanel {
         timer.start();
     }
 
+    // MODIFIES: this
+    // EFFECTS: displays the enemy and player's refined dice rolls
     private void refineDice(int newPRoll, int newERoll, String outcome, GameGUI game, Room room,
             RoomHandler roomHandler) {
         playerDice.setText(String.valueOf(newPRoll));
@@ -189,6 +196,9 @@ public class Encounter extends RoomPanel {
         timer.start();
     }
 
+    // MODIFIES: this
+    // EFFECTS: displays the battle feedback depending on the outcome of the dice rolls. "Ouch" if enemy wins,
+    // "Pow" if player wins, "Clash" if they tie.
     private void battleFeedback(int playerRoll, int enemyRoll) {
         String feedback = ((playerRoll > enemyRoll) ? "Pow!" : (playerRoll < enemyRoll) ? "Ouch!" : "Clash");
         feedbackLabel.setText(feedback);
@@ -204,6 +214,8 @@ public class Encounter extends RoomPanel {
         timer.start();
     }
 
+    // MODIFIES: this
+    // EFFECTS: the battle outcome of the round, checking if the enemy or the player have died.
     private void battleOutcome(String outcome, GameGUI game, Room room, RoomHandler roomHandler) {
         updateEncounter(room, roomHandler);
 
@@ -226,6 +238,8 @@ public class Encounter extends RoomPanel {
         fleeButton.setEnabled(true);
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates the flee button
     private void createFleeButton(GameGUI game, Room room, RoomHandler roomHandler) {
         fleeButton = new JButton("Flee");
         fleeButton.setFont(BUTTON_FONT);
@@ -239,6 +253,9 @@ public class Encounter extends RoomPanel {
         });
     }
 
+    // MODIFIES: this
+    // EFFECTS: the player attempts to flee the encounter, with a 75% to succeed and end the encounter,
+    // and 25% chance to take damage.
     private void flee(GameGUI game, Room room, RoomHandler roomHandler) {
         int rand = RANDOM.nextInt(4) + 1;
 
@@ -257,13 +274,14 @@ public class Encounter extends RoomPanel {
         }
     }
 
-    // EFFECTS: checks player state.
+    // EFFECTS: checks player state. If dead, finish game.
     private void checkPlayerState() {
         if (!player.getAlive()) {
             gameOver(false);
         }
     }
 
+    // MODIFIES: this, room
     // EFFECTS: Game Over. Finish the game, either win or lose
     private void gameOver(boolean hasWon) {
         if (hasWon) { // win

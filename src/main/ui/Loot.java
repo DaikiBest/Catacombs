@@ -19,6 +19,7 @@ import model.Inventory;
 import model.ItemFactory;
 import model.Player;
 
+// Represents a loot encounter
 public class Loot extends RoomPanel {
     private JLabel chest;
     private JButton button;
@@ -28,6 +29,7 @@ public class Loot extends RoomPanel {
     private static final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 18);
     private static final Random RANDOM = new Random();
     
+    // EFFECTS: creates the loot encounter
     public Loot(JLayeredPane roomsLayered, Player player, GameGUI game) {
         super(roomsLayered);
 
@@ -54,6 +56,8 @@ public class Loot extends RoomPanel {
         button.setAlignmentX((float)0.5);
     }
 
+    // MODIFIES: this
+    // EFFECTS: creates the "inspect" button
     private JButton createButton(GameGUI game, Player player) {
         button = new JButton("Inspect");
         button.setFont(BUTTON_FONT);
@@ -91,6 +95,7 @@ public class Loot extends RoomPanel {
         }
     }
 
+    // MODIFIES: this, player, inventory
     // EFFECTS: collect common loot. One of mace, cap, or hood.
     private String commonLoot(Player player, Inventory inventory) {
         int rand = RANDOM.nextInt(3) + 1;
@@ -106,6 +111,7 @@ public class Loot extends RoomPanel {
         }
     }
 
+    // MODIFIES: this, player, inventory
     // EFFECTS: collect rare loot. One of longsword or helmet.
     private String rareLoot(Player player, Inventory inventory) {
         int rand = RANDOM.nextInt(2) + 1;
@@ -118,6 +124,7 @@ public class Loot extends RoomPanel {
         }
     }
 
+    // MODIFIES: this, player, inventory
     // EFFECTS: collect "king" loot. One of excalibur or crown.
     private String kingLoot(Player player, Inventory inventory) {
         int rand = RANDOM.nextInt(2) + 1;
