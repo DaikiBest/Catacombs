@@ -185,7 +185,9 @@ public class Shop extends RoomPanel implements ActionListener {
         buyPanel.setBackground(new Color(51, 51, 51));
         buyPanel.setLayout(new BoxLayout(buyPanel, BoxLayout.Y_AXIS));
 
-        for (String itemName : shopHandler.getShopList()) {
+        for (int i = 0; i < shopHandler.getShopList().size(); i++) {
+            String itemName = shopHandler.getShopList().get(i);
+
             if (itemName.equalsIgnoreCase("Heal")) { // Heal
                 itemButton = createShopButton(itemName + TAB + shopHandler.getHealPrice() + " coins");
             } else {
@@ -198,7 +200,7 @@ public class Shop extends RoomPanel implements ActionListener {
                             + item.getValue() * 2 + " coins");
                 }
             }
-            itemButton.setName("b" + itemName); // starts with a b to classify button
+            itemButton.setName("b" + i); // b is classifier (buy), i specifies the item index in shoplist
             buyPanel.add(itemButton);
         }
         buyPanel.add(Box.createVerticalGlue());
@@ -212,9 +214,10 @@ public class Shop extends RoomPanel implements ActionListener {
         sellPanel.setLayout(new BoxLayout(sellPanel, BoxLayout.Y_AXIS));
         sellPanel.setAlignmentY(Component.TOP_ALIGNMENT);
 
-        for (Item item : inventory.getItems()) {
-            itemButton = createShopButton(item.getName() + TAB + item.getValue() + " coins");
-            itemButton.setName("s" + item.getName()); // starts with an s to classify button
+        for (int i = 0; i < inventory.getItems().size(); i++) {
+            Item item = inventory.getItems().get(i);
+            itemButton = createShopButton(item.getName() + TAB + (item.getValue() + item.getRefine() * 2) + " coins");
+            itemButton.setName("s" + i); // s is classifier (sell), i specifies the item index in inventory list
             sellPanel.add(itemButton);
         }
         sellPanel.add(Box.createVerticalGlue());
@@ -227,15 +230,12 @@ public class Shop extends RoomPanel implements ActionListener {
         refinePanel.setBackground(new Color(51, 51, 51));
         refinePanel.setLayout(new BoxLayout(refinePanel, BoxLayout.Y_AXIS));
 
-        ArrayList<String> itemList = new ArrayList<>();
-        for (Item item : inventory.getItems()) {
-            if (!itemList.contains(item.getName())) {
-                itemButton = createShopButton(item.getName() + TAB + item.getRefine() + " lvl"
-                        + TAB + shopHandler.getRefinePrice() + " coins");
-                itemButton.setName("r" + item.getName()); // starts with an r to classify button
-                refinePanel.add(itemButton);
-            }
-            itemList.add(item.getName());
+        for (int i = 0; i < inventory.getItems().size(); i++) {            
+            Item item = inventory.getItems().get(i);
+            itemButton = createShopButton(item.getName() + TAB + item.getRefine() + " lvl"
+                    + TAB + shopHandler.getRefinePrice() + " coins");
+            itemButton.setName("r" + i); // r is classifier (refine), i specifies the item index in inventory list
+            refinePanel.add(itemButton);
         }
         refinePanel.add(Box.createVerticalGlue());
     }
@@ -258,14 +258,14 @@ public class Shop extends RoomPanel implements ActionListener {
         JButton buttonE = (JButton) e.getSource();
         String buttonName = buttonE.getName();
         char classifier = buttonName.charAt(0);
-        String itemName = buttonName.substring(1);
+        int itemIndex = Integer.parseInt(buttonName.substring(1));
 
         if (classifier == 'b') {
-            buyItem(itemName);
+            buyItem(itemIndex);
         } else if (classifier == 's') {
-            sellItem(itemName);
+            sellItem(itemIndex);
         } else if (classifier == 'r') {
-            refineItem(itemName);
+            refineItem(itemIndex);
         }
 
         room.updatePlayerData(player, roomNum);
@@ -273,12 +273,12 @@ public class Shop extends RoomPanel implements ActionListener {
 
     // MODIFIES: this, player, inventory
     // EFFECTS: handles item purchase
-    private void buyItem(String itemName) {
+    private void buyItem(int itemIndex) {
         Boolean status;
-        if (itemName.equals("Heal")) {
+        if (itemIndex == shopHandler.getShopList().size() - 1) { //the last item, aka the heal.
             status = shopHandler.purchaseHealing(player);
             if (status) {
-                JOptionPane.showMessageDialog(panel, "You purchased a " + itemName + "!",
+                JOptionPane.showMessageDialog(panel, "You purchased a Heal!",
                         "Purchase succesful", JOptionPane.INFORMATION_MESSAGE);
                 resetShopContents("buy");
             } else {
@@ -286,7 +286,8 @@ public class Shop extends RoomPanel implements ActionListener {
                         "Failed to buy", JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
-            status = shopHandler.purchaseItem(itemFactory.makeItem(itemName), player);
+            String itemName = shopHandler.getShopList().get(itemIndex);
+            status = shopHandler.purchaseItem(itemIndex, player);
             if (status) {
                 JOptionPane.showMessageDialog(panel, "You purchased " + itemName + "!",
                         "Purchase succesful", JOptionPane.INFORMATION_MESSAGE);
@@ -300,10 +301,10 @@ public class Shop extends RoomPanel implements ActionListener {
 
     // MODIFIES: this, player, inventory
     // EFFECTS: handles selling an item
-    private void sellItem(String itemName) {
+    private void sellItem(int itemIndex) {
         Boolean status;
-        Item item = inventory.getItem(itemName);
-        status = shopHandler.sellItem(itemName, player);
+        String itemName = inventory.getItems().get(itemIndex).getName();
+        status = shopHandler.sellItem(itemIndex, player);
         if (status) {
             JOptionPane.showMessageDialog(panel, "Successfully sold your " + itemName + "!",
                     "Sell succesful", JOptionPane.INFORMATION_MESSAGE);
@@ -316,19 +317,18 @@ public class Shop extends RoomPanel implements ActionListener {
 
     // MODIFIES: this, player, inventory
     // EFFECTS: handles refining an item
-    private void refineItem(String itemName) {
+    private void refineItem(int itemIndex) {
         Boolean status;
-        Item item = inventory.getItem(itemName);
-        status = shopHandler.purchaseRefine(item, inventory);
+        Item item = inventory.getItems().get(itemIndex);
+        status = shopHandler.purchaseRefine(itemIndex, inventory);
         if (status) {
-            JOptionPane.showMessageDialog(panel, "Your " + itemName + " is now refine level"
+            JOptionPane.showMessageDialog(panel, "Your " + item.getName() + " is now refine level"
                     + item.getRefine() + "!", "Refinement succesful", JOptionPane.INFORMATION_MESSAGE);
             resetShopContents("refine");
         } else {
-            JOptionPane.showMessageDialog(panel, "You could not afford the refinement or "
-                    + itemName + " is at max refine level.", "Failed to refine",
+            JOptionPane.showMessageDialog(panel, "You could not afford the refinement or your "
+                    + item.getName() + " is at max refine level.", "Failed to refine",
                     JOptionPane.INFORMATION_MESSAGE);
-
         }
     }
 

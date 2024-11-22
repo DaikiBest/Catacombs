@@ -49,7 +49,7 @@ public class TestInventory {
     @Test
     void testCollectSameWeapon() {
         testInventory.collect(testDagger, testPlayer);
-        int countD = testInventory.countItem("Dagger", testInventory.getItems());
+        int countD = testInventory.selectItem("Dagger").size();
         assertEquals(2, countD);
     }
 
@@ -61,8 +61,8 @@ public class TestInventory {
         testInventory.collect(testMace, testPlayer);
         testInventory.collect(testMace, testPlayer);
 
-        int countD = testInventory.countItem("Dagger", testInventory.getItems());
-        int countM = testInventory.countItem("Mace", testInventory.getItems());
+        int countD = testInventory.selectItem("Dagger").size();
+        int countM = testInventory.selectItem("Mace").size();
 
         assertEquals(2, countD);
         assertEquals(3, countM);
@@ -80,32 +80,16 @@ public class TestInventory {
     @Test
     void testDiscard() {
         testInventory.collect(testMace, testPlayer);
-        testInventory.discard("Mace", testPlayer);
+        testInventory.discard(1, testPlayer);
         assertEquals(null, testInventory.getItem("Mace"));
-    }
-
-    @Test
-    void testNotDiscardLastWeapon() {
-        testInventory.discard("Dagger", testPlayer);
-        int countD = testInventory.countItem("Dagger", testInventory.getItems());
-        assertEquals(1, countD);
     }
     
     @Test
     void testDiscardOnlyOneCopy() {
         testInventory.collect(testMace, testPlayer);
         testInventory.collect(testMace, testPlayer);
-        testInventory.discard("Mace", testPlayer);
-        int countM = testInventory.countItem("Mace", testInventory.getItems());
-        assertEquals(1, countM);
-    }
-
-    @Test
-    void testNotDiscardLastWeaponNotDagger() {
-        testInventory.collect(testMace, testPlayer);
-        testInventory.discard("Dagger", testPlayer);
-        testInventory.discard("Mace", testPlayer);
-        int countM = testInventory.countItem("Mace", testInventory.getItems());
+        testInventory.discard(1, testPlayer);
+        int countM = testInventory.selectItem("Mace").size();
         assertEquals(1, countM);
     }
 
@@ -113,15 +97,10 @@ public class TestInventory {
     void testDiscardArmor() {
         testInventory.collect(testCap, testPlayer);
         testInventory.collect(testHood, testPlayer);
-        testInventory.discard("Thieve's Hood", testPlayer);
-        testInventory.discard("Farmer's Cap", testPlayer);
+        testInventory.discard(2, testPlayer);
+        testInventory.discard(1, testPlayer);
         assertEquals(null, testInventory.getItem("Farmer's Cap"));
         assertEquals(null, testInventory.getItem("Thieve's Hood"));
-    }
-
-    @Test
-    void testDiscardFail() {
-        testInventory.discard("mace", testPlayer);
     }
 
     @Test

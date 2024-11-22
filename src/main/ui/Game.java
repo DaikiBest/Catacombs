@@ -2,6 +2,8 @@ package ui;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
@@ -47,8 +49,7 @@ public class Game {
         runGame();
     }
 
-    // EFFECTS: display the beginning exposition and tutorial (inventory and
-    // inputs).
+    // EFFECTS: display the beginning exposition and tutorial (inventory and inputs).
     private void tutorial() {
         System.out.println("\nYou enter a mysterious dungeon with only some coins and dagger in hand...");
         System.out.println("    | - - - - - - - - - - - - - - - - - - - - - - - - - |"
@@ -94,7 +95,8 @@ public class Game {
         nextEncounter();
     }
 
-    // EFFECTS: determine the type of encounter: either a goblin, orc, chest, or shop.
+    // EFFECTS: determine the type of encounter: either a goblin, orc, chest, or
+    // shop.
     private void nextEncounter() {
         int next = RANDOM.nextInt(10) + 1;
         if (next <= 4) { // 1-4 40%
@@ -331,13 +333,17 @@ public class Game {
     // EFFECTS: Purchase item given the player's input
     private boolean handlePurchase(String purchase) {
 
-        Item item = itemFactory.makeItem(purchase);
-        if (item != null) {
-            return shopHandler.purchaseItem(item, player);
-        } else if (purchase.equals("heal")) {
-            return shopHandler.purchaseHealing(player);
+        List<String> shopList = new ArrayList<>();
+        for (String shopItem : shopHandler.getShopList()) {
+            shopList.add(shopItem.toLowerCase());
         }
-        return false;
+        
+        int itemIndex = shopList.indexOf(purchase.toLowerCase());
+        if (itemIndex == shopHandler.getShopList().size() - 1) { // last item in shopList, aka heal.
+            return shopHandler.purchaseHealing(player);
+        } else {
+            return shopHandler.purchaseItem(itemIndex, player);
+        }
     }
 
     // MODIFIES: inventory, player
@@ -350,25 +356,19 @@ public class Game {
         while (selling) {
             System.out.print("'What do you wish to sell?'; otherwise, say \u001B[1m'back'\u001B[0m: ");
             String command = input.nextLine();
-            checkInventory(command);
 
             if (command.equals("back")) {
                 selling = false;
                 break;
-            }
+            } else if (!checkInventory(command)) { // if we did not check inventory
+                int itemIndex = getItemIndex(command);
+                boolean status = shopHandler.sellItem(itemIndex, player);
 
-            for (Item item : inventory.getItems()) {
-
-                if (item.getName().equalsIgnoreCase(command)) { // check that item is in player's inventory
-                    boolean status = shopHandler.sellItem(command, player);
-
-                    if (status) { // sold item succesfully
-                        System.out.println("\n'This will make a fine addition to my collection.'");
-                        System.out.println("You sold your " + command + "! \n");
-                    } else {
-                        System.out.println("That's your last weapon. You can't sell that.\n");
-                    }
-                    break;
+                if (status) { // sold item succesfully
+                    System.out.println("\n'This will make a fine addition to my collection.'");
+                    System.out.println("You sold your " + command + "! \n");
+                } else {
+                    System.out.println("That's your last weapon. You can't sell that.\n");
                 }
             }
         }
@@ -386,13 +386,12 @@ public class Game {
             }
             System.out.print("Choose an item to refine; otherwise, say \u001B[1m'back'\u001B[0m: ");
             String command = input.nextLine();
-            checkInventory(command);
             if (command.equalsIgnoreCase("back")) {
                 refining = false;
                 break;
-            } else if (inventory.getItem(command) != null) {
-                Item item = inventory.getItem(command);
-                boolean status = shopHandler.purchaseRefine(item, inventory);
+            } else if (!checkInventory(command)) { // if we did not check inventory
+                int itemIndex = getItemIndex(command);
+                boolean status = shopHandler.purchaseRefine(itemIndex, inventory);
                 if (status) {
                     System.out.println("You offer your " + command + " to the shop keeper. "
                             + "With a grin, he smashes it with a hammer!\nYour item feels more refined somehow.");
@@ -401,6 +400,27 @@ public class Game {
                 }
             }
         }
+    }
+
+    // EFFECTS: obtains the item index in the player's inventory for given itemname (command). Obtains first instance
+    private int getItemIndex(String command) {
+        List<Item> itemInstancesList = inventory.selectItem(command);
+        int itemIndex;
+        // if (itemInstancesList.size() > 1) { //there is more than one of this item
+        // for () {
+
+        // }
+
+        // System.out.print("Type the index of the item which you wish to sell (first
+        // item is index 0)");
+        // itemIndex = input.nextInt();
+        // if (itemIndex > inventory.getItems().size()) {
+        // System.out.print("Index out of bounds");
+        // }
+        // } else {
+        itemIndex = inventory.getItems().indexOf(inventory.getItem(command));
+        // }
+        return itemIndex;
     }
 
     // EFFECTS: find a chest with randomized loot (either coins or a random item of
@@ -471,10 +491,11 @@ public class Game {
         }
     }
 
-    // EFFECTS: display the players inventory if the user input is "inventory". Show
-    // player stats, coins and items.
+    // EFFECTS: display the players inventory if the user input is "i". Show
+    // player stats, coins and items. Returns true if we did check inventory, false
+    // if we did not.
     // All of this method's complexity is pretty formatting.
-    private void checkInventory(String command) {
+    private boolean checkInventory(String command) {
         if (command.equalsIgnoreCase("i")) {
             System.out.println("\nCoins: " + inventory.getCoins() + "    HP: " + player.getHealth()
                     + "    MaxHP: " + player.getMaxHP() + "    Damage: " + player.getDamage());
@@ -485,7 +506,9 @@ public class Game {
             System.out.print("Type to exit: ");
             input.nextLine();
             System.out.println("");
+            return true;
         }
+        return false;
     }
 
     // EFFECTS: adjusts the print of the list of items

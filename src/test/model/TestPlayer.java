@@ -65,7 +65,7 @@ public class TestPlayer {
     @Test
     void testUpdateWeaponAfterDiscard() {
         testInventory.collect(testMace, testPlayer);
-        testInventory.discard("Mace", testPlayer);
+        testInventory.discard(1, testPlayer);
         assertEquals(1, testPlayer.getDamage());
     }
 
@@ -88,7 +88,7 @@ public class TestPlayer {
     @Test
     void testUpdateArmorAfterDiscard() {
         testInventory.collect(testCap, testPlayer);
-        testInventory.discard("Farmer's Cap", testPlayer);
+        testInventory.discard(1, testPlayer);
         assertEquals(5, testPlayer.getMaxHP());
         assertEquals(5, testPlayer.getHealth());
     }
@@ -97,7 +97,7 @@ public class TestPlayer {
     void testUpdateArmorNotIncreaseHP() {
         testInventory.collect(testCap, testPlayer);
         testPlayer.setHealth(1);
-        testInventory.discard("Farmer's Cap", testPlayer);
+        testInventory.discard(1, testPlayer);
         assertEquals(5, testPlayer.getMaxHP());
         assertEquals(1, testPlayer.getHealth()); //updated, but did not increase
     }

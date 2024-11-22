@@ -5,10 +5,11 @@ import java.util.ArrayList;
 
 // Represents a shop. Will perform the actions of shop.
 public class ShopHandler {
-    
     List<String> shopList;
     private int healPrice;
     private int refinePrice;
+
+    ItemFactory itemFactory = new ItemFactory();
 
     // EFFECTS: create a shop with a list of all item names, healPrice (1 coin), and refinePrice (4 coins)
     public ShopHandler() {
@@ -27,11 +28,13 @@ public class ShopHandler {
         refinePrice = 4;
     }
 
+    // REQUIRES: index < shopList.size() - 1
     // MODIFIES: inventory
     // EFFECTS: aquire item and deduct twice the value of the item if player has
     // enough coins, return true. Don't purchase if this is not met, return false.
-    public boolean purchaseItem(Item item, Player player) {
+    public boolean purchaseItem(int index, Player player) {
         Inventory inventory = player.getInventory();
+        Item item = itemFactory.makeItem(shopList.get(index));
         int cost = item.getValue() * 2;
 
         if (inventory.getCoins() >= cost) {
@@ -61,14 +64,15 @@ public class ShopHandler {
         }
     }
 
+    // REQUIRES: index < inventoryList.size() - 1
     // REQUIRES: item to be sold is in inventory.
     // MODIFIES: inventory
-    // EFFECTS: sell one item for coins from the player's inventory. Removes one copy
-    // of the item from the inventory, and adds coins in equivalent value in return.
+    // EFFECTS: sell one item for coins from the player's inventory. Removes the item
+    // selected (at the given index) from the inventory, and adds coins in equivalent value in return.
     // Won't allow to sell last weapon. Items sell for the actual value.
-    public boolean sellItem(String itemName, Player player) {
+    public boolean sellItem(int index, Player player) {
         Inventory inventory = player.getInventory();
-        Item item = inventory.getItem(itemName);
+        Item item = inventory.getItems().get(index);
 
         if (item instanceof Weapon) { //selling weapon?
             int weaponCount = 0;
@@ -82,16 +86,18 @@ public class ShopHandler {
                 return false;
             }
         }
-        inventory.discard(itemName, player);
-        inventory.collectCoins(item.getValue());
-        inventory.collectCoins(item.getRefine() * refinePrice / 2);
+        inventory.discard(index, player);
+        inventory.collectCoins(item.getValue() + item.getRefine() * refinePrice / 2);
         return true;
     }
 
+    // REQUIRES: index < inventoryList.size() - 1
     // MODIFIES: item, inventory
     // EFFECTS: refine an item in your inventory for refinePrice. Will return true if successful,
     // false if fails (either not enough coins or item is max refined).
-    public boolean purchaseRefine(Item item, Inventory inventory) {
+    public boolean purchaseRefine(int index, Inventory inventory) {
+        Item item = inventory.getItems().get(index);
+
         if (inventory.getCoins() >= refinePrice & item.getRefine() < 3) {
             item.refine();
             inventory.deductCoins(refinePrice);

@@ -57,7 +57,6 @@ public class TestJsonWriter {
 
             // Reset game state
             setGameState(5, 5, 0);
-            testInventory.discard("excalibur", testPlayer);
 
             JsonReader reader = new JsonReader("./data/testWriterOneItem.json");
             testPlayer = new Player();
@@ -90,7 +89,7 @@ public class TestJsonWriter {
 
             // Change the game state
             setGameState(11, 99, 24);
-            testInventory.discard("longsword", testPlayer);
+            testInventory.discard(1, testPlayer);
             testInventory.collect(itemFactory.makeHelmet(), testPlayer);
 
             JsonReader reader = new JsonReader("./data/testWriterManyItems.json");

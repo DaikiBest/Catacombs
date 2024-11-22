@@ -58,7 +58,7 @@ public class TestShopHandler {
     void testPurchaseItemSuccess() {
         testInventory.setCoins(10);
         assertEquals(null, testInventory.getItem("Longsword"));
-        assertTrue(testShop.purchaseItem(testLongsword, testPlayer));
+        assertTrue(testShop.purchaseItem(testSList.indexOf("Longsword"), testPlayer));
         assertEquals("Longsword", testInventory.getItem("Longsword").getName());
         assertEquals(0, testInventory.getCoins());
     }
@@ -67,7 +67,7 @@ public class TestShopHandler {
     void testPurchaseFail() {
         testInventory.setCoins(3);
         assertEquals(null, testInventory.getItem("Longsword"));
-        assertFalse(testShop.purchaseItem(testLongsword, testPlayer));
+        assertFalse(testShop.purchaseItem(testSList.indexOf("Longsword"), testPlayer));
         assertEquals(null, testInventory.getItem("Longsword"));
         assertEquals(3, testInventory.getCoins());
     }
@@ -80,18 +80,18 @@ public class TestShopHandler {
         assertEquals(null, testInventory.getItem("Crown"));
         assertEquals(null, testInventory.getItem("Knight's Helmet"));
 
-        assertTrue(testShop.purchaseItem(testLongsword, testPlayer));  //-10
-        assertTrue(testShop.purchaseItem(testExcalibur, testPlayer));  //-20
-        assertTrue(testShop.purchaseItem(testHelmet, testPlayer));     //-12
-        assertTrue(testShop.purchaseItem(testHelmet, testPlayer));     //-12
-        assertFalse(testShop.purchaseItem(testCrown, testPlayer));     //fail
-        assertTrue(testShop.purchaseItem(testLongsword, testPlayer));  //-10
-        assertFalse(testShop.purchaseItem(testExcalibur, testPlayer)); //fail
+        assertTrue(testShop.purchaseItem(testSList.indexOf("Longsword"), testPlayer));  //-10
+        assertTrue(testShop.purchaseItem(testSList.indexOf("Excalibur"), testPlayer));  //-20
+        assertTrue(testShop.purchaseItem(testSList.indexOf("Knight's Helmet"), testPlayer));     //-12
+        assertTrue(testShop.purchaseItem(testSList.indexOf("Knight's Helmet"), testPlayer));     //-12
+        assertFalse(testShop.purchaseItem(testSList.indexOf("Crown"), testPlayer));     //fail
+        assertTrue(testShop.purchaseItem(testSList.indexOf("Longsword"), testPlayer));  //-10
+        assertFalse(testShop.purchaseItem(testSList.indexOf("Excalibur"), testPlayer)); //fail
 
-        int countL = testInventory.countItem("Longsword", testInventory.getItems());
-        int countE = testInventory.countItem("Excalibur", testInventory.getItems());
-        int countH = testInventory.countItem("Knight's Helmet", testInventory.getItems());
-        int countC = testInventory.countItem("Crown", testInventory.getItems());
+        int countL = testInventory.selectItem("Longsword").size();
+        int countE = testInventory.selectItem("Excalibur").size();
+        int countH = testInventory.selectItem("Knight's Helmet").size();
+        int countC = testInventory.selectItem("Crown").size();
 
         assertEquals(2, countL); //two Longswords
         assertEquals(1, countE); //one Excalibur
@@ -133,8 +133,8 @@ public class TestShopHandler {
     void testSellItemOneCopy() {
         testInventory.collect(testLongsword, testPlayer);
         testInventory.collect(testLongsword, testPlayer);
-        assertTrue(testShop.sellItem("Longsword", testPlayer));
-        assertEquals(1, testInventory.countItem("Longsword", testInventory.getItems()));
+        assertTrue(testShop.sellItem(1, testPlayer));
+        assertEquals(1, testInventory.selectItem("Longsword").size());
         assertEquals(10, testInventory.getCoins());
     }
 
@@ -145,12 +145,12 @@ public class TestShopHandler {
         testInventory.collect(testCrown, testPlayer);
         testInventory.collect(testExcalibur, testPlayer);
         testInventory.collect(testLongsword, testPlayer);
-        assertTrue(testShop.sellItem("Longsword", testPlayer)); //+5
-        assertTrue(testShop.sellItem("Crown", testPlayer)); //+10
-        assertTrue(testShop.sellItem("Crown", testPlayer)); //+10
-        assertTrue(testShop.sellItem("Dagger", testPlayer)); //+1
-        assertTrue(testShop.sellItem("Excalibur", testPlayer)); //+10
-        assertFalse(testShop.sellItem("Longsword", testPlayer)); //no sell.
+        assertTrue(testShop.sellItem(1, testPlayer)); //+5
+        assertTrue(testShop.sellItem(1, testPlayer)); //+10
+        assertTrue(testShop.sellItem(1, testPlayer)); //+10
+        assertTrue(testShop.sellItem(0, testPlayer)); //+1
+        assertTrue(testShop.sellItem(0, testPlayer)); //+10
+        assertFalse(testShop.sellItem(0, testPlayer)); //no sell
         assertEquals(1, testInventory.getItems().size());
         assertEquals("Longsword", testInventory.getItem("Longsword").getName());
         assertEquals(41, testInventory.getCoins());
@@ -167,7 +167,7 @@ public class TestShopHandler {
         assertEquals(0, testLongsword.getRefine());
 
         assertEquals(5, testInventory.getCoins());
-        assertTrue(testShop.purchaseRefine(testLongsword, testInventory));
+        assertTrue(testShop.purchaseRefine(1, testInventory));
         assertEquals(1, testInventory.getCoins());
         assertEquals(1, testLongsword.getRefine());
     }
@@ -178,7 +178,7 @@ public class TestShopHandler {
         testInventory.setCoins(testShop.getRefinePrice()-1);
 
         assertEquals(3, testInventory.getCoins());
-        assertFalse(testShop.purchaseRefine(testHelmet, testInventory));
+        assertFalse(testShop.purchaseRefine(1, testInventory));
         assertEquals(3, testInventory.getCoins());
         assertEquals(0, testHelmet.getRefine());
     }
@@ -189,11 +189,11 @@ public class TestShopHandler {
         testInventory.setCoins(100);
 
         testCrown.setRefine(2);
-        assertTrue(testShop.purchaseRefine(testCrown, testInventory));
+        assertTrue(testShop.purchaseRefine(1, testInventory));
         assertEquals(96, testInventory.getCoins());
         assertEquals(3, testCrown.getRefine());
 
-        assertFalse(testShop.purchaseRefine(testCrown, testInventory));
+        assertFalse(testShop.purchaseRefine(1, testInventory));
         assertEquals(96, testInventory.getCoins());
         assertEquals(3, testCrown.getRefine());
     }
@@ -204,7 +204,7 @@ public class TestShopHandler {
         testInventory.setCoins(testShop.getRefinePrice()-1);
 
         testCrown.setRefine(3);
-        assertFalse(testShop.purchaseRefine(testCrown, testInventory));
+        assertFalse(testShop.purchaseRefine(1, testInventory));
         assertEquals(3, testInventory.getCoins());
         assertEquals(3, testCrown.getRefine());
     }
@@ -216,9 +216,9 @@ public class TestShopHandler {
         testInventory.collect(testCrown2, testPlayer);
         testInventory.setCoins(100);
 
-        assertTrue(testShop.purchaseRefine(testCrown, testInventory));
-        assertTrue(testShop.purchaseRefine(testCrown2, testInventory));
-        assertTrue(testShop.purchaseRefine(testCrown2, testInventory));
+        assertTrue(testShop.purchaseRefine(1, testInventory));
+        assertTrue(testShop.purchaseRefine(2, testInventory));
+        assertTrue(testShop.purchaseRefine(2, testInventory));
         assertEquals(88, testInventory.getCoins());
         assertEquals(1, testCrown.getRefine());
         assertEquals(2, testCrown2.getRefine());

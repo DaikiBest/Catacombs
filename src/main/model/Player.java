@@ -1,7 +1,5 @@
 package model;
 
-import java.util.List;
-
 // Represents the Player
 public class Player extends GameCharacter {
     
@@ -16,6 +14,7 @@ public class Player extends GameCharacter {
         inventory = new Inventory(this);
         setLow(1);
         setHigh(20);
+        setName("You");
     }
 
     // MODIFIES: this
@@ -29,7 +28,7 @@ public class Player extends GameCharacter {
     // MODIFIES: this
     // EFFECTS: update the player's damage to the highest tier weapon in
     // the inventory.
-    public void updateWeapon(List<Item> items) {
+    public void updateWeapon() {
         int maxDmg = inventory.getEquippedWeapon().getStat();
         this.setDamage(maxDmg);
     }
@@ -37,7 +36,7 @@ public class Player extends GameCharacter {
     // MODIFIES: this
     // EFFECTS: update the player's health to the highest tier armor in the inventory.
     // If the inventory has no armors left, then MAX player hp goes to the default 5.
-    public void updateArmor(List<Item> items) {
+    public void updateArmor() {
         int prevMax = getMaxHP();
         Item equippedArmor = inventory.getEquippedArmor();
         int maxArmor = ((equippedArmor == null) ? 5 : equippedArmor.getStat());

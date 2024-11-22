@@ -24,42 +24,24 @@ public class Inventory {
     public void collect(Item item, Player player) {
         items.add(item);
         if (item instanceof Weapon) {
-            player.updateWeapon(items);
+            player.updateWeapon();
         } else {
-            player.updateArmor(items);
+            player.updateArmor();
         }
     }
 
-    // REQUIRES: item to be removed is in the inventory
+    // REQUIRES: item to be removed is in the inventory, item is not last weapon in inventory
     // MODIFIES: this
     // EFFECTS: discards one copy of the selected item (identified using the item name)
     // from the inventory. If item is the last weapon in inventory, do not discard. Also update
     // either weapon or update armor.
-    public void discard(String itemName, Player player) {
-        for (Item item : items) {
-            if (item.getName().equalsIgnoreCase(itemName)) {
-
-                if (item instanceof Weapon) { 
-
-                    int weaponCount = 0;
-                    for (Item i : items) {
-                        if (i instanceof Weapon) {
-                            weaponCount++; //count number of weapons in inventory
-                        }
-                    }
-
-                    if (weaponCount <= 1) { //last weapon in inventory?
-                        //will not discard. No weapons left.
-                        break;
-                    }
-                    items.remove(item);
-                    player.updateWeapon(items);
-                    break;
-                }
-                items.remove(item);
-                player.updateArmor(items);
-                break;
-            }
+    public void discard(int index, Player player) {
+        Item item = items.get(index);
+        items.remove(item);
+        if (item instanceof Weapon) {
+            player.updateWeapon();
+        } else {
+            player.updateArmor();
         }
     }
 
@@ -82,15 +64,15 @@ public class Inventory {
         return this.items; //stub
     }
 
-    // EFFECTS returns the number of times the item appears in inventory list
-    public int countItem(String itemName, List<Item> items) {
-        int count = 0;
+    // EFFECTS returns a list with all instances of this item (by its name).
+    public List<Item> selectItem(String itemName) {
+        List<Item> selectedItems = new ArrayList<>();
         for (Item item : items) {
             if (item.getName() == itemName) {
-                count++;
+                selectedItems.add(item);
             }
         }
-        return count;
+        return selectedItems;
     }
 
     // EFFECTS: get item according to the name, returns null if not found. Returns the first instance of the item.
