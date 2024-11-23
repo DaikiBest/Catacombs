@@ -226,8 +226,8 @@ public class Room extends JFrame {
     }
 
     // EFFECTS: begin shop encounter
-    public void beginShop() {
-        shop.begin();
+    public void beginShop(int roomNum) {
+        shop.begin(roomNum);
     }
 
     // EFFECTS: begin loot (chest) encounter

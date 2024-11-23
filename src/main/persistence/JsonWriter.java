@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import model.Inventory;
 import model.Player;
-import model.RoomHandler;
 
 // Represents a writer that writes the game's state to a JSON file
 public class JsonWriter {

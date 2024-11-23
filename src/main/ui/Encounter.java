@@ -39,8 +39,8 @@ public class Encounter extends RoomPanel {
     private Player player;
     private GameCharacter enemy;
     private BattleHandler battleHandler = new BattleHandler();
+    private GameGUI game;
 
-    private static final String TAB = "       ";
     private static final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 24);
     private static final int BUTTON_WIDTH = 160;
     private static final int BUTTON_HEIGHT = 70;
@@ -50,6 +50,7 @@ public class Encounter extends RoomPanel {
     public Encounter(JLayeredPane roomsLayered, GameGUI game, Room room, RoomHandler roomHandler) {
         super(roomsLayered);
         panel.setLayout(null);
+        this.game = game;
 
         createEndPanel();
         panel.add(endPanel);
@@ -84,7 +85,8 @@ public class Encounter extends RoomPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: creates the enemy panel with the stats, portrait, and the feedback label
+    // EFFECTS: creates the enemy panel with the stats, portrait, and the feedback
+    // label
     private void createEncounter() {
         enemyStats = new JLabel();
         enemyStats.setFont(BUTTON_FONT);
@@ -142,7 +144,8 @@ public class Encounter extends RoomPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: begins the attack "round", where the and enemy roll their dice, and hit each other.
+    // EFFECTS: begins the attack "round", where the and enemy roll their dice, and
+    // hit each other.
     private void attack(GameGUI game, Room room, RoomHandler roomHandler) {
         attackButton.setEnabled(false);
         fleeButton.setEnabled(false);
@@ -197,7 +200,8 @@ public class Encounter extends RoomPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: displays the battle feedback depending on the outcome of the dice rolls. "Ouch" if enemy wins,
+    // EFFECTS: displays the battle feedback depending on the outcome of the dice
+    // rolls. "Ouch" if enemy wins,
     // "Pow" if player wins, "Clash" if they tie.
     private void battleFeedback(int playerRoll, int enemyRoll) {
         String feedback = ((playerRoll > enemyRoll) ? "Pow!" : (playerRoll < enemyRoll) ? "Ouch!" : "Clash");
@@ -215,7 +219,8 @@ public class Encounter extends RoomPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: the battle outcome of the round, checking if the enemy or the player have died.
+    // EFFECTS: the battle outcome of the round, checking if the enemy or the player
+    // have died.
     private void battleOutcome(String outcome, GameGUI game, Room room, RoomHandler roomHandler) {
         updateEncounter(room, roomHandler);
 
@@ -254,16 +259,15 @@ public class Encounter extends RoomPanel {
     }
 
     // MODIFIES: this
-    // EFFECTS: the player attempts to flee the encounter, with a 75% to succeed and end the encounter,
+    // EFFECTS: the player attempts to flee the encounter, with a 75% to succeed and
+    // end the encounter,
     // and 25% chance to take damage.
     private void flee(GameGUI game, Room room, RoomHandler roomHandler) {
         int rand = RANDOM.nextInt(4) + 1;
 
         if (rand <= 3) { // 75%
-            System.out.println("yay!");
             end(game); // successfuly fled encounter
         } else { // 25%
-            System.out.println("ouch!");
             int hit = enemy.getDamage() / 2;
             hit = ((hit == 0) ? 1 : hit); // take at least 1 damage
 
@@ -293,8 +297,14 @@ public class Encounter extends RoomPanel {
             endLabel.setText("You're dead.");
             endPanel.setBackground(new Color(255, 51, 51));
         }
-        JOptionPane.showMessageDialog(panel, "Game Over", "End", JOptionPane.INFORMATION_MESSAGE);
-        System.exit(0); // exit the game
+        Object[] options = {"Quit", "Restart"};
+        int result = JOptionPane.showOptionDialog(panel, "Would you like to quit or restart?", "Game Over",
+                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
+        if (result == 1) {
+            game.restart();
+        } else {
+            System.exit(0); // exit the game
+        }
     }
 
     // MODIFIES: this

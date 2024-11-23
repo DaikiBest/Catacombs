@@ -15,7 +15,7 @@ public class Item {
         this.stat = stat;
         this.value = value;
         refine = 0;
-        maxRefine = 3; //constant for all armor
+        maxRefine = 3; //constant for all items
     }
 
     // REQUIRES: refine <= maxRefine
@@ -29,7 +29,6 @@ public class Item {
         }
         return false; //else
     }
-
     
     public String getName() {
         return name;

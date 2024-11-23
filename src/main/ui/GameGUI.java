@@ -15,12 +15,9 @@ public class GameGUI {
     private Player player;
     private Inventory inventory;
     private int roomNum;
-    private String notOver;
 
     private RoomHandler roomHandler;
     private ItemFactory itemFactory;
-    private BattleHandler battleHandler;
-    private ShopHandler shopHandler;
 
     private static final String JSON_STORE = "./data/catacombs.json";
     private static final String CHEATS = "./data/catacombsCheat.json";
@@ -33,13 +30,10 @@ public class GameGUI {
     public GameGUI() {
         roomHandler = new RoomHandler();
         itemFactory = new ItemFactory();
-        battleHandler = new BattleHandler();
-        shopHandler = new ShopHandler();
 
         player = new Player();
         inventory = player.getInventory();
         inventory.collect(itemFactory.makeDagger(), player); // start with a dagger
-        notOver = "true";
 
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
@@ -61,14 +55,6 @@ public class GameGUI {
             room.toCrossroads();
         } else {
             room.toDoor();
-        }
-
-        if (notOver.equals("victory")) {
-            // WIN
-            System.out.println("\u001B[1m\nYou are victorious in your quest!");
-        } else if (notOver.equals("loss")) {
-            // GAME OVER
-            System.out.println("\nGame Over");
         }
     }
 
@@ -111,7 +97,7 @@ public class GameGUI {
 
     // EFFECTS: begin shop encounter
     private void shopEncounter() {
-        room.beginShop();
+        room.beginShop(roomNum);
     }
 
     // EFFECTS: save the game to a file
@@ -139,5 +125,14 @@ public class GameGUI {
         } catch (IOException e) {
             System.out.println("Unable to read file from: " + JSON_STORE);
         }
+    }
+
+    public void restart() {
+        player = new Player();
+        inventory = player.getInventory();
+        inventory.collect(itemFactory.makeDagger(), player); // start with a dagger
+        roomHandler.setRoomNum(1);
+        room = room.resetRooms(player, this, roomHandler);
+        room.updatePlayerData(player, roomHandler.getRoomNum());
     }
 }

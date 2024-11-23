@@ -11,7 +11,6 @@ import java.awt.Image;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -75,7 +74,6 @@ public class Shop extends RoomPanel implements ActionListener {
         this.player = player;
         inventory = player.getInventory();
         this.room = room;
-        roomNum = roomHandler.getRoomNum();
 
         panel.setLayout(null);
 
@@ -422,8 +420,8 @@ public class Shop extends RoomPanel implements ActionListener {
 
     // MODIFIES: this
     // EFFECTS: begins the shop encounter.
-    @Override
-    public void begin() {
+    public void begin(int roomNum) {
+        this.roomNum = roomNum;
         panel.setVisible(true);
         openButton.setVisible(true);
         shopPanel.setVisible(false);

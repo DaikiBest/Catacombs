@@ -404,7 +404,6 @@ public class Game {
 
     // EFFECTS: obtains the item index in the player's inventory for given itemname (command). Obtains first instance
     private int getItemIndex(String command) {
-        List<Item> itemInstancesList = inventory.selectItem(command);
         int itemIndex;
         // if (itemInstancesList.size() > 1) { //there is more than one of this item
         // for () {
