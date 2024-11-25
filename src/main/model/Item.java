@@ -1,7 +1,7 @@
 package model;
 
 // Represents an Item – either armor or weapon – for the Player.
-public class Item {
+public abstract class Item {
     protected String name;
     protected int stat;
     protected int value;

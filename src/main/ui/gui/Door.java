@@ -1,4 +1,4 @@
-package ui;
+package ui.gui;
 
 import java.awt.Font;
 import java.awt.Image;
@@ -10,6 +10,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
 import javax.swing.JOptionPane;
+
+import ui.GameGUI;
 
 // Represents the "in-between" room with a door and a rest spot
 public class Door extends RoomPanel {

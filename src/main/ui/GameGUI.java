@@ -3,6 +3,7 @@ package ui;
 import model.*;
 import persistence.JsonReader;
 import persistence.JsonWriter;
+import ui.gui.Room;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;

@@ -139,14 +139,14 @@ public class Inventory {
         JSONArray itemsJson = new JSONArray();
 
         for (Item item : items) {
-            itemsJson.put(itemToJson(item));
+            itemsJson.put(toJson(item));
         }
 
         return itemsJson;
     }
 
     // EFFECTS: return a single item (its name) as a jsonobject
-    private JSONObject itemToJson(Item item) {
+    private JSONObject toJson(Item item) {
         JSONObject json = new JSONObject();
         json.put("name", item.getName() + "-" + item.getRefine());
         return json;

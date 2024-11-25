@@ -14,7 +14,6 @@ public class Player extends GameCharacter {
         inventory = new Inventory(this);
         setLow(1);
         setHigh(20);
-        setName("You");
     }
 
     // MODIFIES: this

@@ -27,7 +27,7 @@ User stories:
 - You can locate my visual component throughout the game, such as the door image, the fireplace, the various enemies, etc.
 - You can save and load the state of my application by clicking on "rest" when in a regular room (the room with a door with "enter" or fireplace with "rest"). Then, a popup will appear asking to either "save" or "load". Clicking either, will give the desired loading and saving effects.
 
-## Phase 2 Task 2:
+## Phase 4 Task 2:
 Sun Nov 24 16:43:18 PST 2024
 Added Dagger to inventory
 Sun Nov 24 16:43:21 PST 2024
@@ -38,6 +38,9 @@ Sun Nov 24 16:43:35 PST 2024
 Refined Mace to level 1
 Sun Nov 24 16:43:53 PST 2024
 Added Farmer's Cap to inventory
+
+## Phase 4 Task 3:
+Of all the things in my UML diagram, the refactoring change I am most inclined to "wishlist" for, is refactoring the ItemFactory. Currently, it is being instantiated individually from all six classes which use it. A fix that would fit my program would be to make use of the singleton design pattern; the ItemFactory will only have one instance, which all classes (that need it) access.
 
 Citation (for JSON reading and writing):
   UBC Computer Science (2020) JsonSerializationDemo[Source Code]. https://github.students.cs.ubc.ca/CPSC210/JsonSerializationDemo.

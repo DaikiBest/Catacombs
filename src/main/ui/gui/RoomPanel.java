@@ -1,7 +1,9 @@
-package ui;
+package ui.gui;
 
 import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
+
+import ui.GameGUI;
 
 // Represents an abstract class for all rooms
 abstract class RoomPanel {

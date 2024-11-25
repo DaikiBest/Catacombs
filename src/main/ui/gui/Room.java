@@ -1,10 +1,11 @@
-package ui;
+package ui.gui;
 
 import model.GameCharacter;
 import model.Inventory;
 import model.Item;
 import model.Player;
 import model.RoomHandler;
+import ui.GameGUI;
 
 import javax.swing.*;
 import javax.swing.border.Border;

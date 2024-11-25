@@ -1,10 +1,9 @@
 package ui;
 
 // start the program
-public class Main {
+public class MainGUI {
     // EFFECTS: start game
     public static void main(String[] args) {
         new GameGUI();
-        //new GameCLI();
     }
 }

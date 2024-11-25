@@ -1,4 +1,4 @@
-package ui;
+package ui.gui;
 
 import java.awt.Font;
 import java.awt.Image;
@@ -18,6 +18,7 @@ import javax.swing.JOptionPane;
 import model.Inventory;
 import model.ItemFactory;
 import model.Player;
+import ui.GameGUI;
 
 // Represents a loot encounter
 public class Loot extends RoomPanel {

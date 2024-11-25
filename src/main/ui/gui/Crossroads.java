@@ -1,4 +1,4 @@
-package ui;
+package ui.gui;
 
 import java.awt.Font;
 import java.awt.Image;
@@ -9,6 +9,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JLayeredPane;
+
+import ui.GameGUI;
 
 // Represents the crossroads
 public class Crossroads extends RoomPanel {

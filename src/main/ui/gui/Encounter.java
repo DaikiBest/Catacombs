@@ -1,4 +1,4 @@
-package ui;
+package ui.gui;
 
 import java.util.Random;
 import java.util.Iterator;
@@ -23,6 +23,7 @@ import model.BattleHandler;
 import model.GameCharacter;
 import model.Player;
 import model.RoomHandler;
+import ui.GameGUI;
 
 // Represents an enemy encounter
 public class Encounter extends RoomPanel {
@@ -42,7 +43,6 @@ public class Encounter extends RoomPanel {
     private Player player;
     private GameCharacter enemy;
     private BattleHandler battleHandler = new BattleHandler();
-    private GameGUI game;
 
     private static final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 24);
     private static final int BUTTON_WIDTH = 160;
@@ -53,7 +53,6 @@ public class Encounter extends RoomPanel {
     public Encounter(JLayeredPane roomsLayered, GameGUI game, Room room, RoomHandler roomHandler) {
         super(roomsLayered);
         panel.setLayout(null);
-        this.game = game;
 
         createEndPanel();
         panel.add(endPanel);
@@ -230,7 +229,7 @@ public class Encounter extends RoomPanel {
         if (outcome.equals("win")) { // enemy takes a hit
 
             if (!enemy.getAlive() && enemy.getName().equals("Dark Wizard")) { // defeated dark wizard
-                gameOver(true);
+                gameOver(true, game);
 
             } else if (!enemy.getAlive()) { // defeated regular enemy
                 JOptionPane.showMessageDialog(panel, "You defeated the " + enemy.getName() + " and received "
@@ -240,7 +239,7 @@ public class Encounter extends RoomPanel {
             }
 
         } else if (outcome.equals("lose")) { // player takes a hit
-            checkPlayerState();
+            checkPlayerState(game);
         }
         attackButton.setEnabled(true);
         fleeButton.setEnabled(true);
@@ -277,20 +276,20 @@ public class Encounter extends RoomPanel {
             player.takeDamage(hit); // take half of enemy damage, rounded down; or 1 if 0.
             battleFeedback(0, 1);
             updateEncounter(room, roomHandler);
-            checkPlayerState();
+            checkPlayerState(game);
         }
     }
 
     // EFFECTS: checks player state. If dead, finish game.
-    private void checkPlayerState() {
+    private void checkPlayerState(GameGUI game) {
         if (!player.getAlive()) {
-            gameOver(false);
+            gameOver(false, game);
         }
     }
 
     // MODIFIES: this, room
     // EFFECTS: Game Over. Finish the game, either win or lose
-    private void gameOver(boolean hasWon) {
+    private void gameOver(boolean hasWon, GameGUI game) {
         if (hasWon) { // win
             endPanel.setVisible(true);
             endLabel.setText("You Win! Nice.");

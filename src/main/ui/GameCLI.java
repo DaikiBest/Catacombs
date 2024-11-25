@@ -17,6 +17,7 @@ import model.*;
 public class GameCLI {
     private Player player;
     private Inventory inventory;
+    private GameCharacter enemy;
     private String notOver;
     private static final Scanner input = new Scanner(System.in);
 
@@ -107,13 +108,13 @@ public class GameCLI {
         int next = RANDOM.nextInt(10) + 1;
         if (next <= 4) { // 1-4 40%
             System.out.println("\nAs you enter the next room, a sneaky Goblin lunges at you!");
-            GameCharacter goblin = new Goblin();
-            enemyEncounter(goblin);
+            enemy = new Goblin();
+            enemyEncounter(enemy);
 
         } else if (next <= 7) { // 5-7 30%
             System.out.println("\nYou enter the next room and hear heavy grunting. An Orc readies his sword.");
-            GameCharacter orc = new Orc();
-            enemyEncounter(orc);
+            enemy = new Orc();
+            enemyEncounter(enemy);
 
         } else if (next == 8) { // only 8: 10%
             System.out.println("\nAn ominous chest rests at the center of the room...");
@@ -144,8 +145,8 @@ public class GameCLI {
             } else if (command.equalsIgnoreCase("right")) {
                 System.out.println("\nA malicious atmosphere swarms you... A sorcerer with a white beard and "
                         + "dark robes aims his staff at you, chanting corrupt whispers.");
-                GameCharacter darkWizard = new DarkWizard();
-                enemyEncounter(darkWizard);
+                enemy = new DarkWizard();
+                enemyEncounter(enemy);
                 inCrossroads = false;
             }
         }

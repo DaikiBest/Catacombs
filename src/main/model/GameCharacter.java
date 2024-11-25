@@ -2,7 +2,7 @@ package model;
 
 import java.util.Random;
 
-public class GameCharacter {
+public abstract class GameCharacter {
 
     private int hp;
     private int dmg;

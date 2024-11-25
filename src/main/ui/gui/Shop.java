@@ -1,4 +1,4 @@
-package ui;
+package ui.gui;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
@@ -30,6 +30,7 @@ import model.Player;
 import model.RoomHandler;
 import model.ShopHandler;
 import model.Weapon;
+import ui.GameGUI;
 
 // Represents a shop encounter
 public class Shop extends RoomPanel implements ActionListener {
