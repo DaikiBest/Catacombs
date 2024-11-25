@@ -7,6 +7,8 @@ public class Item {
     protected int value;
     protected int refine;
     protected int maxRefine;
+    
+    private EventLog log = EventLog.getInstance();
 
     // EFFECTS: create an armor with name, hp bonus stat, value, zero refine, and a maxRefine.
     // Each refine level decreases the dice roll of the enemy by 1, and can be increased up to maxRefine
@@ -25,6 +27,7 @@ public class Item {
     public boolean refine() {
         if (refine < maxRefine) {
             refine++;
+            log.logEvent(new Event("Refined " + getName() + " to level " + getRefine()));
             return true;
         }
         return false; //else
@@ -48,5 +51,6 @@ public class Item {
     
     public void setRefine(int refine) {
         this.refine = refine;
+        log.logEvent(new Event("Set refinement of " + getName() + " to level " + getRefine()));
     }
 }

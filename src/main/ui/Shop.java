@@ -176,7 +176,6 @@ public class Shop extends RoomPanel implements ActionListener {
         shopPanel.add(shopButtonsPanel, BorderLayout.NORTH);
     }
 
-    // MODIFIES: this
     // EFFECTS: creates the buying menu
     private void createBuyMenu() {
         buyPanel = new JPanel();
@@ -204,7 +203,6 @@ public class Shop extends RoomPanel implements ActionListener {
         buyPanel.add(Box.createVerticalGlue());
     }
 
-    // MODIFIES: this
     // EFFECTS: creates the selling menu
     private void createSellMenu() {
         sellPanel = new JPanel();
@@ -238,7 +236,6 @@ public class Shop extends RoomPanel implements ActionListener {
         refinePanel.add(Box.createVerticalGlue());
     }
 
-    // MODIFIES: this
     // EFFECTS: creates a shop button with given buttonLabel as the text displayed
     // in the button.
     private JButton createShopButton(String buttonLabel) {

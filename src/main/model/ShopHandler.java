@@ -5,11 +5,11 @@ import java.util.ArrayList;
 
 // Represents a shop. Will perform the actions of shop.
 public class ShopHandler {
-    List<String> shopList;
+    private List<String> shopList;
     private int healPrice;
     private int refinePrice;
 
-    ItemFactory itemFactory = new ItemFactory();
+    private ItemFactory itemFactory = new ItemFactory();
 
     // EFFECTS: create a shop with a list of all item names, healPrice (1 coin), and refinePrice (4 coins)
     public ShopHandler() {

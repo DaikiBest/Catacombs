@@ -11,9 +11,11 @@ public class Inventory {
     
     private List<Item> items;
     private int coins;
+    private EventLog log;
 
     // EFFECTS: create an inventory with no items and 5 coins. 
     public Inventory(Player player) {
+        log = EventLog.getInstance();
         items = new ArrayList<>();
         coins = 5;
     }
@@ -28,6 +30,7 @@ public class Inventory {
         } else {
             player.updateArmor();
         }
+        log.logEvent(new Event("Added " + item.getName() + " to inventory"));
     }
 
     // REQUIRES: item to be removed is in the inventory, item is not last weapon in inventory
@@ -43,6 +46,7 @@ public class Inventory {
         } else {
             player.updateArmor();
         }
+        log.logEvent(new Event("Removed " + item.getName() + " from inventory"));
     }
 
     // REQUIRES: newCoins >= 0

@@ -1,6 +1,7 @@
 package ui;
 
 import java.util.Random;
+import java.util.Iterator;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +17,8 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.Timer;
 
+import model.Event;
+import model.EventLog;
 import model.BattleHandler;
 import model.GameCharacter;
 import model.Player;
@@ -303,6 +306,12 @@ public class Encounter extends RoomPanel {
         if (result == 1) {
             game.restart();
         } else {
+            // display logs
+            EventLog log = EventLog.getInstance();
+            Iterator<Event> gameLogs = log.iterator();
+            while (gameLogs.hasNext()) {
+                System.out.println(gameLogs.next());
+            }
             System.exit(0); // exit the game
         }
     }

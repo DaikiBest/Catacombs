@@ -6,17 +6,19 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.Iterator;
 
 import persistence.JsonReader;
 import persistence.JsonWriter;
 import model.*;
 
+
 // Represents the game; handles the room by room progression and encounters.
-public class Game {
+public class GameCLI {
     private Player player;
     private Inventory inventory;
     private String notOver;
-    private Scanner input;
+    private static final Scanner input = new Scanner(System.in);
 
     private RoomHandler roomHandler;
     private ItemFactory itemFactory;
@@ -30,7 +32,7 @@ public class Game {
     private static final Random RANDOM = new Random();
 
     // EFFECTS: begin the game
-    public Game() {
+    public GameCLI() {
         roomHandler = new RoomHandler();
         itemFactory = new ItemFactory();
         battleHandler = new BattleHandler();
@@ -40,7 +42,6 @@ public class Game {
         inventory = player.getInventory();
         inventory.collect(itemFactory.makeDagger(), player); // start with a dagger
         notOver = "true";
-        input = new Scanner(System.in);
 
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
@@ -79,6 +80,11 @@ public class Game {
             System.out.println("\u001B[1m\nYou are victorious in your quest!");
         }
         System.out.println("\nGame Over");
+        EventLog log = EventLog.getInstance();
+        Iterator<Event> gameLogs = log.iterator();
+        while (gameLogs.hasNext()) {
+            System.out.println(gameLogs.next());
+        }
     }
 
     // EFFECTS: move to the next "room" and begin the encounter
@@ -357,10 +363,11 @@ public class Game {
             System.out.print("'What do you wish to sell?'; otherwise, say \u001B[1m'back'\u001B[0m: ");
             String command = input.nextLine();
 
+            checkInventory(command);
             if (command.equals("back")) {
                 selling = false;
                 break;
-            } else if (!checkInventory(command)) { // if we did not check inventory
+            } else if (inventory.getItem(command) != null) { // if inventory contains item
                 int itemIndex = getItemIndex(command);
                 boolean status = shopHandler.sellItem(itemIndex, player);
 
@@ -386,10 +393,12 @@ public class Game {
             }
             System.out.print("Choose an item to refine; otherwise, say \u001B[1m'back'\u001B[0m: ");
             String command = input.nextLine();
+
+            checkInventory(command);
             if (command.equalsIgnoreCase("back")) {
                 refining = false;
                 break;
-            } else if (!checkInventory(command)) { // if we did not check inventory
+            } else if (inventory.getItem(command) != null) { // if inventory contains item
                 int itemIndex = getItemIndex(command);
                 boolean status = shopHandler.purchaseRefine(itemIndex, inventory);
                 if (status) {
