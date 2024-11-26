@@ -184,7 +184,7 @@ public class Encounter extends RoomPanel {
     // MODIFIES: this
     // EFFECTS: displays the enemy and player's refined dice rolls
     private void refineDice(int newPRoll, int newERoll, String outcome, GameGUI game, Room room,
-            RoomHandler roomHandler) {
+        RoomHandler roomHandler) {
         playerDice.setText(String.valueOf(newPRoll));
         enemyDice.setText(String.valueOf(newERoll));
 

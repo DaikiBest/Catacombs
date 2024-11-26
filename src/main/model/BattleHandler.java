@@ -23,12 +23,16 @@ public class BattleHandler {
         }
     }
 
+    // MODIFIES: player, enemy
+    // EFFECTS: refines player's dice
     public int playerDiceRefined(int playerRoll, Inventory inventory) {
         int weaponBoost = inventory.getEquippedWeapon().getRefine();
         playerRoll = ((playerRoll + weaponBoost > 20) ? 20 : playerRoll + weaponBoost);
         return playerRoll;
     }
 
+    // MODIFIES: player, enemy
+    // EFFECTS: refines enemy's dice
     public int enemyDiceRefined(int enemyRoll, Inventory inventory) {
         int armorBoost = ((inventory.getEquippedArmor() == null) ? 0 : inventory.getEquippedArmor().getRefine());
         enemyRoll = ((enemyRoll - armorBoost < 0) ? 0 : enemyRoll - armorBoost);

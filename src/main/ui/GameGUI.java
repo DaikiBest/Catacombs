@@ -128,6 +128,8 @@ public class GameGUI {
         }
     }
 
+    // MODIFIES: this, player, inventory
+    // EFFECTS: restarts the game
     public void restart() {
         player = new Player();
         inventory = player.getInventory();

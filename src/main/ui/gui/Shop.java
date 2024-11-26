@@ -54,7 +54,6 @@ public class Shop extends RoomPanel implements ActionListener {
     private JButton itemButton;
 
     private Player player;
-    private Inventory inventory;
     private ShopHandler shopHandler = new ShopHandler();
     private ItemFactory itemFactory = new ItemFactory();
     private Room room;
@@ -73,7 +72,6 @@ public class Shop extends RoomPanel implements ActionListener {
     public Shop(JLayeredPane roomsLayered, GameGUI game, Player player, Room room, RoomHandler roomHandler) {
         super(roomsLayered);
         this.player = player;
-        inventory = player.getInventory();
         this.room = room;
 
         panel.setLayout(null);
@@ -211,6 +209,7 @@ public class Shop extends RoomPanel implements ActionListener {
         sellPanel.setLayout(new BoxLayout(sellPanel, BoxLayout.Y_AXIS));
         sellPanel.setAlignmentY(Component.TOP_ALIGNMENT);
 
+        Inventory inventory = player.getInventory();
         for (int i = 0; i < inventory.getItems().size(); i++) {
             Item item = inventory.getItems().get(i);
             itemButton = createShopButton(item.getName() + TAB + (item.getValue() + item.getRefine() * 2) + " coins");
@@ -227,6 +226,7 @@ public class Shop extends RoomPanel implements ActionListener {
         refinePanel.setBackground(new Color(51, 51, 51));
         refinePanel.setLayout(new BoxLayout(refinePanel, BoxLayout.Y_AXIS));
 
+        Inventory inventory = player.getInventory();
         for (int i = 0; i < inventory.getItems().size(); i++) {            
             Item item = inventory.getItems().get(i);
             itemButton = createShopButton(item.getName() + TAB + item.getRefine() + " lvl"
@@ -298,6 +298,7 @@ public class Shop extends RoomPanel implements ActionListener {
     // MODIFIES: this, player, inventory
     // EFFECTS: handles selling an item
     private void sellItem(int itemIndex) {
+        Inventory inventory = player.getInventory();
         Boolean status;
         String itemName = inventory.getItems().get(itemIndex).getName();
         status = shopHandler.sellItem(itemIndex, player);
@@ -314,6 +315,7 @@ public class Shop extends RoomPanel implements ActionListener {
     // MODIFIES: this, player, inventory
     // EFFECTS: handles refining an item
     private void refineItem(int itemIndex) {
+        Inventory inventory = player.getInventory();
         Boolean status;
         Item item = inventory.getItems().get(itemIndex);
         status = shopHandler.purchaseRefine(itemIndex, inventory);
