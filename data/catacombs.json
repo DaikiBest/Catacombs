@@ -1,10 +1,9 @@
 {
-    "roomNumber": 53,
-    "coins": 10,
-    "health": 15,
+    "roomNumber": 6,
+    "coins": 4,
+    "health": 7,
     "items": [
-        {"name": "Knight's Helmet-0"},
-        {"name": "Excalibur-3"},
-        {"name": "Crown-0"}
+        {"name": "Dagger-0"},
+        {"name": "Farmer's Cap-0"}
     ]
 }

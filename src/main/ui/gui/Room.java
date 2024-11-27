@@ -1,5 +1,7 @@
 package ui.gui;
 
+import model.Event;
+import model.EventLog;
 import model.GameCharacter;
 import model.Inventory;
 import model.Item;
@@ -14,11 +16,14 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowListener;
 import java.util.Vector;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.Iterator;
+import java.awt.event.WindowEvent;
 
 //Represents the rooms where the game takes place
 public class Room extends JFrame {
@@ -65,6 +70,8 @@ public class Room extends JFrame {
         addHud(player, roomHandler.getRoomNum());
         hudPanel.setBackground(GRAY);
         setupRooms(game, player, roomHandler);
+
+        displayLogsOnQuit();
 
         frame.setVisible(true);
     }
@@ -191,6 +198,45 @@ public class Room extends JFrame {
         }
     }
 
+    // EFFECTS: display logs when frame is closed
+    private void displayLogsOnQuit() {
+        frame.addWindowListener(new WindowListener() {
+            public void windowClosed(WindowEvent e) {
+                displayLogs();
+            }
+
+            @Override
+            public void windowClosing(WindowEvent e) {
+                displayLogs();
+            }
+
+            public void windowOpened(WindowEvent e) {
+            }
+
+            public void windowIconified(WindowEvent e) {
+            }
+
+            public void windowDeiconified(WindowEvent e) {
+            }
+
+            public void windowActivated(WindowEvent e) {
+            }
+
+            public void windowDeactivated(WindowEvent e) {
+            }
+        });
+    }
+
+    // EFFECTS: print out all the event logs
+    private void displayLogs() {
+        EventLog log = EventLog.getInstance();
+        Iterator<Event> gameLogs = log.iterator();
+        while (gameLogs.hasNext()) {
+            System.out.println(gameLogs.next());
+        }
+        log.clear(); //clear the logs everytime the frame is closed (aka. loading, and quitting app)
+    }
+
     // MODIFIES: door, loot, shop, crossroads, encounter
     // EFFECTS: create all rooms
     private void setupRooms(GameGUI game, Player player, RoomHandler roomHandler) {
@@ -243,5 +289,11 @@ public class Room extends JFrame {
         createRoom(player, game, roomHandler);
         toDoor();
         return this;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: ends game
+    public void end() {
+        frame.dispose();
     }
 }

@@ -1,7 +1,6 @@
 package ui.gui;
 
 import java.util.Random;
-import java.util.Iterator;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,8 +16,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.Timer;
 
-import model.Event;
-import model.EventLog;
 import model.BattleHandler;
 import model.GameCharacter;
 import model.Player;
@@ -184,7 +181,7 @@ public class Encounter extends RoomPanel {
     // MODIFIES: this
     // EFFECTS: displays the enemy and player's refined dice rolls
     private void refineDice(int newPRoll, int newERoll, String outcome, GameGUI game, Room room,
-        RoomHandler roomHandler) {
+            RoomHandler roomHandler) {
         playerDice.setText(String.valueOf(newPRoll));
         enemyDice.setText(String.valueOf(newERoll));
 
@@ -299,19 +296,13 @@ public class Encounter extends RoomPanel {
             endLabel.setText("You're dead.");
             endPanel.setBackground(new Color(255, 51, 51));
         }
-        Object[] options = {"Quit", "Restart"};
+        Object[] options = { "Quit", "Restart" };
         int result = JOptionPane.showOptionDialog(panel, "Would you like to quit or restart?", "Game Over",
                 JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
         if (result == 1) {
             game.restart();
         } else {
-            // display logs
-            EventLog log = EventLog.getInstance();
-            Iterator<Event> gameLogs = log.iterator();
-            while (gameLogs.hasNext()) {
-                System.out.println(gameLogs.next());
-            }
-            System.exit(0); // exit the game
+            game.gameOver();
         }
     }
 

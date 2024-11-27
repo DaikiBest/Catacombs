@@ -138,4 +138,10 @@ public class GameGUI {
         room = room.resetRooms(player, this, roomHandler);
         room.updatePlayerData(player, roomHandler.getRoomNum());
     }
+
+    // EFFECTS: finishes game
+    public void gameOver() {
+        room.end();
+        System.exit(0);
+    }
 }
