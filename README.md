@@ -15,3 +15,5 @@ Press open shop to open the menu. You will have the option to buy, sell, or "ref
 ### Enemy Encounter
 You may choose to flee an enemy encounter with a chance to be unsuccesful and take damage.
 Otherwise, you may attack the enemy, where dice will be thrown. Your dice is blue (left), the enemy's is red (right). After dice are thrown, if the player has refinements, the dice are updated accordingly. The one who has the lower dice roll will take damage according to their opponent's DMG (damage) stat. 
+### Save and Load
+You may choose to save and load the game by clicking "Rest" below the campfire. Then choose to save a file or load from a saved file.
