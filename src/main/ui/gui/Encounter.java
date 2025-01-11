@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 
 import javax.swing.JLayeredPane;
@@ -133,6 +134,9 @@ public class Encounter extends RoomPanel {
         attackButton = new JButton("Attack");
         attackButton.setFont(BUTTON_FONT);
         attackButton.setBounds(70, 260, BUTTON_WIDTH, BUTTON_HEIGHT);
+
+        Cursor cursor = attackButton.getCursor();
+        attackButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 
         attackButton.addActionListener(new ActionListener() {
             @Override

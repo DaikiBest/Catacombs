@@ -19,6 +19,7 @@ public class Door extends RoomPanel {
     private JButton enterButton;
     private JLabel fireplace;
     private JButton restButton;
+    private JButton cheats;
 
     private static final Font BUTTON_FONT = new Font("Arial", Font.PLAIN, 18);
     private static final int BUTTON_WIDTH = 120;
@@ -42,6 +43,8 @@ public class Door extends RoomPanel {
         createFireplace();
         panel.add(fireplace);
         fireplace.setBounds(530, 120, 250, 250);
+
+        createCheatsButton(game);
 
         restButton = createRestButton(game);
         panel.add(restButton);
@@ -108,8 +111,25 @@ public class Door extends RoomPanel {
         if (result == 2) {
             game.save();
         } else if (result == 1) {
-            game.load();
+            game.load("normal");
         }
+    }
+
+    // EFFECTS: load cheat save file
+    private void createCheatsButton(GameGUI game) {
+        cheats = new JButton();
+
+        cheats.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                game.load("cheats");
+            }
+        });
+        panel.add(cheats);
+        cheats.setBounds(850, 540, 50, 50);
+        cheats.setOpaque(false);
+        cheats.setContentAreaFilled(false);
+        cheats.setBorderPainted(false);
     }
 
     // MODIFIES: this

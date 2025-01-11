@@ -24,6 +24,7 @@ public class GameGUI {
     private static final String CHEATS = "./data/catacombsCheat.json";
     private JsonWriter jsonWriter;
     private JsonReader jsonReader;
+    private JsonReader cheatsReader;
 
     private static final Random RANDOM = new Random();
 
@@ -38,6 +39,7 @@ public class GameGUI {
 
         jsonWriter = new JsonWriter(JSON_STORE);
         jsonReader = new JsonReader(JSON_STORE);
+        cheatsReader = new JsonReader(CHEATS);
 
         room = new Room(player, this, roomHandler);
         runGame();
@@ -115,16 +117,21 @@ public class GameGUI {
 
     // MODIFIES: this, player, inventory
     // EFFECTS: load the game from a file
-    public void load() {
+    public void load(String file) {
+        String load = ((file.equals("cheats") ? CHEATS : JSON_STORE));
         try {
             player = new Player();
             inventory = player.getInventory();
-            jsonReader.read(player, inventory, roomHandler);
-            System.out.println("Succesfully loaded the game from " + JSON_STORE + "\n");
+            if (file.equals("cheats")) {
+                cheatsReader.read(player, inventory, roomHandler);
+            } else {
+                jsonReader.read(player, inventory, roomHandler);
+            }
+            System.out.println("Succesfully loaded the game from " + load + "\n");
             room = room.resetRooms(player, this, roomHandler);
             room.updatePlayerData(player, roomHandler.getRoomNum());
         } catch (IOException e) {
-            System.out.println("Unable to read file from: " + JSON_STORE);
+            System.out.println("Unable to read file from: " + load);
         }
     }
 

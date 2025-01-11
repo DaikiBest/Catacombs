@@ -1,9 +1,6 @@
 {
-    "roomNumber": 6,
-    "coins": 4,
-    "health": 7,
-    "items": [
-        {"name": "Dagger-0"},
-        {"name": "Farmer's Cap-0"}
-    ]
+    "roomNumber": 1,
+    "coins": 5,
+    "health": 5,
+    "items": [{"name": "Dagger-0"}]
 }
